@@ -236,7 +236,7 @@ $ /usr/local/apache2/bin/apachectl stop
 <ul><li>Copy all the files under the directory of deployment/Whois43Proxy to /usr/whoisProxy.
 </li><li>Configure environment parameter.
 </li></ul><pre class="wiki">$ export WHOISPROPERTIES_HOME=/usr/whoisProxy/bin
-$ ./startup.sh
+$ nohup ./startup.sh &
 </pre><h2 id="Instruction">Instruction</h2>
 <h3 id="DataFormats">Data Formats</h3>
 <p>
