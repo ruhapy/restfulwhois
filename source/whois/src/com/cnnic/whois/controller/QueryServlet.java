@@ -601,7 +601,7 @@ public class QueryServlet extends HttpServlet {
 
 		if (format == null)
 			format = "application/html";
-
+		//System.out.println(format);
 		PrintWriter out = response.getWriter();
 		request.setAttribute("queryFormat", format);
 		response.setHeader("Access-Control-Allow-Origin", "*");

@@ -192,18 +192,18 @@ public class QueryService {
 			throws QueryException {
 		Map<String, Object> rirMap = queryDAO.queryRIREntity(queryPara, role);
 		Map<String, Object> dnrMap = queryDAO.queryDNREntity(queryPara, role);
-		Map<String, Object> regMap = queryRegistrar(queryPara,role,false);
+		Map<String, Object> regMap = queryRegistrar(queryPara, role, false);
 		if (rirMap == null && dnrMap == null && regMap.get("errorCode") != null) {
 			return queryError();
 		}
 
 		Map<String, Object> wholeMap = new LinkedHashMap<String, Object>();
 		if (rirMap != null) {
-			wholeMap.putAll(toVCard(rirMap));
+			wholeMap.putAll(rirMap);
 		}
 
 		if (dnrMap != null) {
-			wholeMap.putAll(toVCard(dnrMap));
+			wholeMap.putAll(dnrMap);
 		}
 		
 		if (regMap.get("errorCode") == null) {
@@ -212,160 +212,160 @@ public class QueryService {
 		return wholeMap;
 	}
 
-	/**
-	 * Changes will be part of the data into the VCard style
-	 * 
-	 * @param map
-	 * @return map collection
-	 */
-	private Map<String, Object> toVCard(Map<String, Object> map) {
-		//TODO:vacard format modified
-		
-		List<List<String>> list = new ArrayList<List<String>>();
-		Object entityNames = map.get("Entity Names");
-		Object postalAddress = map.get("postalAddress");
-		Object emails = map.get("Emails");
-		Object phones = map.get("phones");
-
-		List<String> firstNameList = new ArrayList<String>();
-		firstNameList.add("version");
-		firstNameList.add("{}");
-		firstNameList.add("text");
-		firstNameList.add("4.0");
-		list.add(firstNameList);
-		if (entityNames != null) {
-			if (entityNames instanceof String[]) {
-				String[] namesArray = (String[]) entityNames;
-				for (String names : namesArray) {
-					List<String> nameList = new ArrayList<String>();
-					nameList.add("fn");
-					nameList.add("{}");
-					nameList.add("text");
-					nameList.add(names);
-					list.add(nameList);
-				}
-			}else{
-				List<String> nameList = new ArrayList<String>();
-				nameList.add("fn");
-				nameList.add("{}");
-				nameList.add("text");
-				nameList.add(entityNames.toString());
-				list.add(nameList);
-			}
-			map.remove("Entity Names");
-		}
-		if (postalAddress != null) {
-			if (postalAddress instanceof Map) {
-				Set<String> key = ((Map) postalAddress).keySet();
-				List<String> nameList = new ArrayList<String>();
-				nameList.add("label");
-				nameList.add("{}");
-				nameList.add("text");
-				for (String name : key) {
-					nameList.add(((Map) postalAddress).get(name).toString());
-				}
-				list.add(nameList);
-			} else if (postalAddress instanceof Object[]) {
-				for (Object postalAddressObject : ((Object[]) postalAddress)) {
-					Set<String> key = ((Map) postalAddressObject).keySet();
-					List<String> nameList = new ArrayList<String>();
-					nameList.add("label");
-					nameList.add("{}");
-					nameList.add("text");
-					for (String name : key) {
-						nameList.add(((Map) postalAddressObject).get(name)
-								.toString());
-					}
-					list.add(nameList);
-				}
-			}
-			map.remove("postalAddress");
-		}
-		;
-		if (emails != null) {
-			String[] namesArray = (String[]) emails;
-			for (String names : namesArray) {
-				List<String> nameList = new ArrayList<String>();
-				nameList.add("email");
-				nameList.add("{}");
-				nameList.add("text");
-				nameList.add(names);
-				list.add(nameList);
-			}
-			map.remove("Emails");
-		}
-		;
-		if (phones != null) {
-			if (phones instanceof Map) {
-				Set<String> key = ((Map) phones).keySet();
-				List<String> nameList = new ArrayList<String>();
-				for (String name : key) {
-					Object values = ((Map) phones).get(name);
-					if (values instanceof String[]) {
-						String typeName = "";
-						if (name.equals("Office")) {
-							typeName = "{type:work}";
-						} else if (name.equals("Fax")) {
-							typeName = "{type:fax}";
-						} else if (name.equals("Mobile")) {
-							typeName = "{type:cell}";
-						}
-						for (String valueName : (String[]) values) {
-							List<String> nameListArray = new ArrayList<String>();
-							nameListArray.add("tel");
-							nameListArray.add(typeName);
-							nameListArray.add("text");
-							nameListArray.add(valueName);
-							list.add(nameListArray);
-						}
-
-						continue;
-					}
-					nameList.add("tel");
-					nameList.add("{}");
-					nameList.add("text");
-					nameList.add(values.toString());
-					list.add(nameList);
-				}
-
-			} else if (phones instanceof Object[]) {
-				for (Object phonesObject : ((Object[]) phones)) {
-					Set<String> key = ((Map) phonesObject).keySet();
-					List<String> nameList = new ArrayList<String>();
-					for (String name : key) {
-						Object values = ((Map) phonesObject).get(name);
-						if (values instanceof String[]) {
-							String typeName = "";
-							if (name.equals("Office")) {
-								typeName = "{type:work}";
-							} else if (name.equals("Fax")) {
-								typeName = "{type:fax}";
-							} else if (name.equals("Mobile")) {
-								typeName = "{type:cell}";
-							}
-							for (String valueName : (String[]) values) {
-								List<String> nameListArray = new ArrayList<String>();
-								nameListArray.add("tel");
-								nameListArray.add(typeName);
-								nameListArray.add("text");
-								nameListArray.add(valueName);
-								list.add(nameListArray);
-							}
-							continue;
-						}
-						nameList.add("tel");
-						nameList.add("{}");
-						nameList.add("text");
-						nameList.add(values.toString());
-						list.add(nameList);
-					}
-				}
-			}
-			map.remove("phones");
-		}
-		map.put("vCard", list.toArray());
-		return map;
-	}
+//	/**
+//	 * Changes will be part of the data into the VCard style
+//	 * 
+//	 * @param map
+//	 * @return map collection
+//	 */
+//	private Map<String, Object> toVCard(Map<String, Object> map) {
+//		//TODO:vacard format modified
+//		
+//		List<List<String>> list = new ArrayList<List<String>>();
+//		Object entityNames = map.get("Entity Names");
+//		Object postalAddress = map.get("postalAddress");
+//		Object emails = map.get("Emails");
+//		Object phones = map.get("phones");
+//
+//		List<String> firstNameList = new ArrayList<String>();
+//		firstNameList.add("version");
+//		firstNameList.add("{}");
+//		firstNameList.add("text");
+//		firstNameList.add("4.0");
+//		list.add(firstNameList);
+//		if (entityNames != null) {
+//			if (entityNames instanceof String[]) {
+//				String[] namesArray = (String[]) entityNames;
+//				for (String names : namesArray) {
+//					List<String> nameList = new ArrayList<String>();
+//					nameList.add("fn");
+//					nameList.add("{}");
+//					nameList.add("text");
+//					nameList.add(names);
+//					list.add(nameList);
+//				}
+//			}else{
+//				List<String> nameList = new ArrayList<String>();
+//				nameList.add("fn");
+//				nameList.add("{}");
+//				nameList.add("text");
+//				nameList.add(entityNames.toString());
+//				list.add(nameList);
+//			}
+//			map.remove("Entity Names");
+//		}
+//		if (postalAddress != null) {
+//			if (postalAddress instanceof Map) {
+//				Set<String> key = ((Map) postalAddress).keySet();
+//				List<String> nameList = new ArrayList<String>();
+//				nameList.add("label");
+//				nameList.add("{}");
+//				nameList.add("text");
+//				for (String name : key) {
+//					nameList.add(((Map) postalAddress).get(name).toString());
+//				}
+//				list.add(nameList);
+//			} else if (postalAddress instanceof Object[]) {
+//				for (Object postalAddressObject : ((Object[]) postalAddress)) {
+//					Set<String> key = ((Map) postalAddressObject).keySet();
+//					List<String> nameList = new ArrayList<String>();
+//					nameList.add("label");
+//					nameList.add("{}");
+//					nameList.add("text");
+//					for (String name : key) {
+//						nameList.add(((Map) postalAddressObject).get(name)
+//								.toString());
+//					}
+//					list.add(nameList);
+//				}
+//			}
+//			map.remove("postalAddress");
+//		}
+//		;
+//		if (emails != null) {
+//			String[] namesArray = (String[]) emails;
+//			for (String names : namesArray) {
+//				List<String> nameList = new ArrayList<String>();
+//				nameList.add("email");
+//				nameList.add("{}");
+//				nameList.add("text");
+//				nameList.add(names);
+//				list.add(nameList);
+//			}
+//			map.remove("Emails");
+//		}
+//		;
+//		if (phones != null) {
+//			if (phones instanceof Map) {
+//				Set<String> key = ((Map) phones).keySet();
+//				List<String> nameList = new ArrayList<String>();
+//				for (String name : key) {
+//					Object values = ((Map) phones).get(name);
+//					if (values instanceof String[]) {
+//						String typeName = "";
+//						if (name.equals("Office")) {
+//							typeName = "{type:work}";
+//						} else if (name.equals("Fax")) {
+//							typeName = "{type:fax}";
+//						} else if (name.equals("Mobile")) {
+//							typeName = "{type:cell}";
+//						}
+//						for (String valueName : (String[]) values) {
+//							List<String> nameListArray = new ArrayList<String>();
+//							nameListArray.add("tel");
+//							nameListArray.add(typeName);
+//							nameListArray.add("text");
+//							nameListArray.add(valueName);
+//							list.add(nameListArray);
+//						}
+//
+//						continue;
+//					}
+//					nameList.add("tel");
+//					nameList.add("{}");
+//					nameList.add("text");
+//					nameList.add(values.toString());
+//					list.add(nameList);
+//				}
+//
+//			} else if (phones instanceof Object[]) {
+//				for (Object phonesObject : ((Object[]) phones)) {
+//					Set<String> key = ((Map) phonesObject).keySet();
+//					List<String> nameList = new ArrayList<String>();
+//					for (String name : key) {
+//						Object values = ((Map) phonesObject).get(name);
+//						if (values instanceof String[]) {
+//							String typeName = "";
+//							if (name.equals("Office")) {
+//								typeName = "{type:work}";
+//							} else if (name.equals("Fax")) {
+//								typeName = "{type:fax}";
+//							} else if (name.equals("Mobile")) {
+//								typeName = "{type:cell}";
+//							}
+//							for (String valueName : (String[]) values) {
+//								List<String> nameListArray = new ArrayList<String>();
+//								nameListArray.add("tel");
+//								nameListArray.add(typeName);
+//								nameListArray.add("text");
+//								nameListArray.add(valueName);
+//								list.add(nameListArray);
+//							}
+//							continue;
+//						}
+//						nameList.add("tel");
+//						nameList.add("{}");
+//						nameList.add("text");
+//						nameList.add(values.toString());
+//						list.add(nameList);
+//					}
+//				}
+//			}
+//			map.remove("phones");
+//		}
+//		map.put("vCard", list.toArray());
+//		return map;
+//	}
 
 	/**
 	 * Query link type
@@ -497,7 +497,7 @@ public class QueryService {
 			return queryError();
 		}
 
-		return toVCard(map);
+		return map;
 	}
 
 	/**

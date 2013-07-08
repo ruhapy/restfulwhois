@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class WhoisUtil {
 	public static final String BLANKSPACE = "    ";
@@ -33,6 +34,7 @@ public class WhoisUtil {
 	public static final String SPONSOREDBY = "SponsoredBy";
 	public static final String REMARKS = "remarks";
 	public static final String EVENTS = "events";
+	public static final String ENTITIES = "entities";
 
 	public static final String PRX = "/";
 	public static final String JNDI_NAME = "java:comp/env/jdbc/DataSource";
@@ -78,7 +80,7 @@ public class WhoisUtil {
 	public static final String SELECT_JOIN_LIST_REGISTRAR = "select * from registrar join m2m_registrar on m2m_registrar.registrarHandle=registrar.Handle and  m2m_registrar.Handle=";
 	public static final String SELECT_JOIN_LIST_JOINNAMESERVER = "select * from nameserver join m2m_nameserver on m2m_nameserver.nameserverHandle=nameserver.Handle and m2m_nameserver.Handle=";
 	public static final String SELECT_JOIN_LIST_VARIANTS = "select * from variants join m2m_variants on m2m_variants.variantsId=variants.variantsId and m2m_variants.Handle=";
-	public static final String SELECT_JOIN_LIST_JOINDNRENTITY = "select * from dnrentity join m2m_dnrentity on m2m_dnrentity.Handle=dnrentity.Handle and m2m_dnrentity.Handle=";
+	public static final String SELECT_JOIN_LIST_JOINDNRENTITY = "select * from dnrentity join m2m_dnrentity on m2m_dnrentity.dnrentityHandle=dnrentity.Handle and m2m_dnrentity.Handle=";
 
 	public static final String SELECT_LIST_LINK = "select * from link where linkId=";
 	public static final String SELECT_LIST_PHONE = "select * from phones where phonesId=";
@@ -134,14 +136,14 @@ public class WhoisUtil {
 
 	public static String[] IPKeyFileds = { JOINNANOTICES, "Handle", "StartHighAddress",
 			"StartLowAddress", "EndLowAddress", "EndHighAddress", "Lang",
-			"IP_Version", "Name", ARRAYFILEDPRX + "Description",
+			"IP_Version", "Name", //ARRAYFILEDPRX + "Description",
 			"Type", "Country", "Parent_Handle", JOINREMARKS,
 			ARRAYFILEDPRX + "Status", JOINEVENTS, JOINENTITESFILED,
 			JOINLINKFILED };
 
 	public static String[] DNREntityKeyFileds = { "Handle",
 			ARRAYFILEDPRX + "Entity_Names", "Lang", JOINNANOTICES,
-			ARRAYFILEDPRX + "Status", "Roles", JOINPOSTATLADDRESSFILED,
+			ARRAYFILEDPRX + "Status", ARRAYFILEDPRX + "Roles", JOINPOSTATLADDRESSFILED,
 			ARRAYFILEDPRX + "Emails", JOINPHONFILED, JOINREMARKS,
 			JOINLINKFILED, "Port43", JOINEVENTS, JOINNAREGISTRAR };
 
@@ -163,7 +165,8 @@ public class WhoisUtil {
 
 	public static String[] ASKeyFileds = { "Handle", "Start_Autnum",
 			"End_Autnum", "Name", "Lang", JOINNANOTICES,
-			ARRAYFILEDPRX + "Description", "Type", "Country", JOINREMARKS,
+			//ARRAYFILEDPRX + "Description", 
+			"Type", "Country", JOINREMARKS,
 			JOINLINKFILED, JOINEVENTS, JOINENTITESFILED };
 
 	public static String[] nameServerKeyFileds = { "Handle", "LdhName",
@@ -735,5 +738,157 @@ public class WhoisUtil {
 			parra += new String(valueByte, "utf-8");
 		}
 		return parra;
+	}
+	/**
+	 * Changes will be part of the data into the VCard style
+	 * 
+	 * @param map
+	 * @return map collection
+	 */
+	public static Map<String, Object> toVCard(Map<String, Object> map) {
+		List<List<String>> list = new ArrayList<List<String>>();
+		Object entityNames = map.get("Entity Names");
+		Object postalAddress = map.get("postalAddress");
+		Object emails = map.get("Emails");
+		Object phones = map.get("phones");
+
+		List<String> firstNameList = new ArrayList<String>();
+		firstNameList.add("version");
+		firstNameList.add("{}");
+		firstNameList.add("text");
+		firstNameList.add("4.0");
+		list.add(firstNameList);
+		if (entityNames != null) {
+			if (entityNames instanceof String[]) {
+				String[] namesArray = (String[]) entityNames;
+				for (String names : namesArray) {
+					List<String> nameList = new ArrayList<String>();
+					nameList.add("fn");
+					nameList.add("{}");
+					nameList.add("text");
+					nameList.add(names);
+					list.add(nameList);
+				}
+			}else{
+				List<String> nameList = new ArrayList<String>();
+				nameList.add("fn");
+				nameList.add("{}");
+				nameList.add("text");
+				nameList.add(entityNames.toString());
+				list.add(nameList);
+			}
+			map.remove("Entity Names");
+		}
+		if (postalAddress != null) {
+			if (postalAddress instanceof Map) {
+				Set<String> key = ((Map) postalAddress).keySet();
+				List<String> nameList = new ArrayList<String>();
+				nameList.add("label");
+				nameList.add("{}");
+				nameList.add("text");
+				for (String name : key) {
+					nameList.add(((Map) postalAddress).get(name).toString());
+				}
+				list.add(nameList);
+			} else if (postalAddress instanceof Object[]) {
+				for (Object postalAddressObject : ((Object[]) postalAddress)) {
+					Set<String> key = ((Map) postalAddressObject).keySet();
+					List<String> nameList = new ArrayList<String>();
+					nameList.add("label");
+					nameList.add("{}");
+					nameList.add("text");
+					for (String name : key) {
+						nameList.add(((Map) postalAddressObject).get(name)
+								.toString());
+					}
+					list.add(nameList);
+				}
+			}
+			map.remove("postalAddress");
+		}
+		;
+		if (emails != null) {
+			String[] namesArray = (String[]) emails;
+			for (String names : namesArray) {
+				List<String> nameList = new ArrayList<String>();
+				nameList.add("email");
+				nameList.add("{}");
+				nameList.add("text");
+				nameList.add(names);
+				list.add(nameList);
+			}
+			map.remove("Emails");
+		}
+		;
+		if (phones != null) {
+			if (phones instanceof Map) {
+				Set<String> key = ((Map) phones).keySet();
+				List<String> nameList = new ArrayList<String>();
+				for (String name : key) {
+					Object values = ((Map) phones).get(name);
+					if (values instanceof String[]) {
+						String typeName = "";
+						if (name.equals("Office")) {
+							typeName = "{type:work}";
+						} else if (name.equals("Fax")) {
+							typeName = "{type:fax}";
+						} else if (name.equals("Mobile")) {
+							typeName = "{type:cell}";
+						}
+						for (String valueName : (String[]) values) {
+							List<String> nameListArray = new ArrayList<String>();
+							nameListArray.add("tel");
+							nameListArray.add(typeName);
+							nameListArray.add("text");
+							nameListArray.add(valueName);
+							list.add(nameListArray);
+						}
+
+						continue;
+					}
+					nameList.add("tel");
+					nameList.add("{}");
+					nameList.add("text");
+					nameList.add(values.toString());
+					list.add(nameList);
+				}
+
+			} else if (phones instanceof Object[]) {
+				for (Object phonesObject : ((Object[]) phones)) {
+					Set<String> key = ((Map) phonesObject).keySet();
+					List<String> nameList = new ArrayList<String>();
+					for (String name : key) {
+						Object values = ((Map) phonesObject).get(name);
+						if (values instanceof String[]) {
+							String typeName = "";
+							if (name.equals("Office")) {
+								typeName = "{type:work}";
+							} else if (name.equals("Fax")) {
+								typeName = "{type:fax}";
+							} else if (name.equals("Mobile")) {
+								typeName = "{type:cell}";
+							}
+							for (String valueName : (String[]) values) {
+								List<String> nameListArray = new ArrayList<String>();
+								nameListArray.add("tel");
+								nameListArray.add(typeName);
+								nameListArray.add("text");
+								nameListArray.add(valueName);
+								list.add(nameListArray);
+							}
+							continue;
+						}
+						nameList.add("tel");
+						nameList.add("{}");
+						nameList.add("text");
+						nameList.add(values.toString());
+						list.add(nameList);
+					}
+				}
+			}
+			map.remove("phones");
+		}
+		map.put("vCard", list.toArray());
+		return map;
 	}
 }

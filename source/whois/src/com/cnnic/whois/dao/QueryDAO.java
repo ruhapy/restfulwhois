@@ -660,13 +660,14 @@ public class QueryDAO {
 					map.put("rdapConformance", conform);
 				}
 				
-				for (int i = 0; i < keyFlieds.size(); i++) { 
+				for (int i = 0; i < keyFlieds.size(); i++) {
 					String resultsInfo = "";
 					
-					if(keyFlieds.get(i).toString().equals("StartLowAddress") || 
-							keyFlieds.get(i).toString().equals("EndLowAddress") ||
-							keyFlieds.get(i).toString().equals("StartHighAddress") ||
-							keyFlieds.get(i).toString().equals("EndHighAddress")){
+					if(keyName.equals(WhoisUtil.MULTIPRXIP) && keyFlieds.get(i).toString().equals("StartLowAddress")// || 
+							//keyFlieds.get(i).toString().equals("EndLowAddress") ||
+							//keyFlieds.get(i).toString().equals("StartHighAddress") ||
+							//keyFlieds.get(i).toString().equals("EndHighAddress")
+							){
 						if(map.get("Start Address") == null && map.get("End Address") == null){
 							String ipVersion = results.getString("IP_Version");
 							
@@ -740,14 +741,19 @@ public class QueryDAO {
 				map.remove("StartHighAddress");
 				map.remove("EndHighAddress");
 				
-				list.add(map);
+				//vcard format
+				if(keyName.equals(WhoisUtil.JOINENTITESFILED) || keyName.equals(WhoisUtil.MULTIPRXENTITY)){
+					list.add(WhoisUtil.toVCard(map));
+				}else{
+					list.add(map);
+				}
 			}
 
 			if (list.size() == 0)
 				return null;
 			Map<String, Object> mapInfo = new LinkedHashMap<String, Object>();
 			//System.out.println(keyName+"=====================");
-			
+			// link , remark and notice change to array
 			if(keyName.equals(WhoisUtil.JOINLINKFILED)|| 
 					keyName.equals(WhoisUtil.JOINNANOTICES) ||
 					keyName.equals(WhoisUtil.JOINREMARKS) ||
@@ -762,7 +768,6 @@ public class QueryDAO {
 					mapInfo = list.get(0);
 				}
 			}
-
 			return mapInfo;
 		} finally {
 			if (results != null) {
@@ -799,9 +804,13 @@ public class QueryDAO {
 			if (sql.indexOf("ip") >= 0 || sql.indexOf("autnum") >= 0
 					|| sql.indexOf("RIRDomain") >= 0) {
 				entitysql = WhoisUtil.SELECT_JOIN_LIST_JOINRIRENTITY;
+				return querySpecificJoinTable(key, handle, entitysql, role,
+						connection, permissionCache.getRIREntityKeyFileds(role));
+			}else{
+				return querySpecificJoinTable(key, handle, entitysql, role,
+						connection, permissionCache.getDNREntityKeyFileds(role));
 			}
-			return querySpecificJoinTable(key, handle, entitysql, role,
-					connection, permissionCache.getRIREntityKeyFileds(role));
+			
 		} else if (key.equals(WhoisUtil.JOINLINKFILED)) {
 			return querySpecificJoinTable(key, handle,
 					WhoisUtil.SELECT_JOIN_LIST_LINK, role, connection,
