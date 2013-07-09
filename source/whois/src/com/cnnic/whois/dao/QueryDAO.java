@@ -731,7 +731,8 @@ public class QueryDAO {
 						if (value != null)
 							map.put(key, value);
 					} else {
-						resultsInfo = results.getString(keyFlieds.get(i));
+						//System.out.println(results.getString(keyFlieds.get(i)));
+						resultsInfo = results.getString(keyFlieds.get(i)) == null ? "": results.getString(keyFlieds.get(i));
 						String key = keyFlieds.get(i).replaceAll("_", " ");
 						map.put(key, resultsInfo);
 					}
