@@ -133,6 +133,9 @@ public class WhoisUtil {
 	public static final String LINEBREAK = "<br/>";
 	public static final String IFNULL = null;
 	public static final String PERMISSIONPRX = "~";
+	public static final String IPPREFIX = "ipAddresses";
+	public static final String IPV4PREFIX = "v4";
+	public static final String IPV6PREFIX = "v6";
 
 	public static String[] IPKeyFileds = { JOINNANOTICES, "Handle", "StartHighAddress",
 			"StartLowAddress", "EndLowAddress", "EndHighAddress", "Lang",
