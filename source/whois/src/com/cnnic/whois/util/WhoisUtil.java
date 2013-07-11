@@ -323,15 +323,15 @@ public class WhoisUtil {
 
 	public static final String ERRORCODE = "4143";
 	public static final String ERRORTITLE = "Eror Message";
-	public static final String ERRORDESCRIPTION = "NO_RESULT";
+	public static final String [] ERRORDESCRIPTION = {"NO_RESULT"};
 
 	public static final String COMMENDRRORCODE = "4144";
 	public static final String OMMENDERRORTITLE = "Eror Message";
-	public static final String OMMENDERRORDESCRIPTION = "COMMAND_SYNTAX_ERROR";
+	public static final String [] OMMENDERRORDESCRIPTION = {"COMMAND_SYNTAX_ERROR"};
 
 	public static final String UNCOMMENDRRORCODE = "4145";
 	public static final String UNOMMENDERRORTITLE = "Eror Message";
-	public static final String UNOMMENDERRORDESCRIPTION = "UNKNOWN_COMMAND";
+	public static final String [] UNOMMENDERRORDESCRIPTION = {"UNKNOWN_COMMAND"};
 
 	public static final String ADDCOLUMN1 = "alter table ";
 	public static final String ADDCOLUMN2 = " add column ";
@@ -669,7 +669,7 @@ public class WhoisUtil {
 	 * @return map
 	 */
 	public static Map<String, Object> getErrorMessage(String errorCode,
-			String title, String description) {
+			String title, String [] description) {
 		Map<String, Object> errorMessageMap = new HashMap<String, Object>();
 		errorMessageMap.put("errorCode", errorCode);
 		errorMessageMap.put("title", title);
