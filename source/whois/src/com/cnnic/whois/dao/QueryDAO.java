@@ -742,7 +742,7 @@ public class QueryDAO {
 				map.remove("StartHighAddress");
 				map.remove("EndHighAddress");
 				
-				if (keyName.equals("$mul$nameServer")){
+				if (keyName.equals("$mul$nameServer") || keyName.equals("$join$nameServer")){
 					Map<String, Object> map_IP = new LinkedHashMap<String, Object>();
 					Object IPAddressArray = map.get("IPV4 Addresses");
 					map_IP.put(WhoisUtil.IPV4PREFIX, IPAddressArray);
