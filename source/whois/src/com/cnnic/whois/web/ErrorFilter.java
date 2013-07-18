@@ -40,7 +40,14 @@ public class ErrorFilter implements Filter {
 		
 		String format = WhoisUtil.getFormatCookie(request);
 		String role = WhoisUtil.getUserRole(request);
-		if (format == null)
+
+		CharSequence ie = "msie";
+		CharSequence firefox = "firefox";
+		CharSequence chrome = "chrome";
+		CharSequence safiri = "safiri";
+		CharSequence opera = "opera";
+		if (format == null && (userAgent.contains(ie) || userAgent.contains(firefox) ||
+				userAgent.contains(chrome) || userAgent.contains(safiri) || userAgent.contains(opera)))
 			format = "application/html";
 		if (format == null){
 			format = request.getHeader("Accept"); 
@@ -57,12 +64,6 @@ public class ErrorFilter implements Filter {
 		
 		if(!path.equals("")){
 			queryInfo = path.substring(request.getContextPath().length() + 1);
-			
-			CharSequence ie = "msie";
-			CharSequence firefox = "firefox";
-			CharSequence chrome = "chrome";
-			CharSequence safiri = "safiri";
-			CharSequence opera = "opera";
 			
 			if(queryInfo.equals("") && (userAgent.contains(ie) || userAgent.contains(firefox) ||
 					userAgent.contains(chrome) || userAgent.contains(safiri) || userAgent.contains(opera))){

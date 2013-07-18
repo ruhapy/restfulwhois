@@ -93,12 +93,12 @@ public class QueryDAO {
 			}
 			map = query(connection, selectSql,
 					permissionCache.getIPKeyFileds(role), "$mul$IP", role, format);
-			
-			map.remove(WhoisUtil.getDisplayKeyName("StartLowAddress", format));
-			map.remove(WhoisUtil.getDisplayKeyName("EndLowAddress", format));
-			map.remove(WhoisUtil.getDisplayKeyName("StartHighAddress", format));
-			map.remove(WhoisUtil.getDisplayKeyName("EndHighAddress", format));
-			
+			if(map != null){
+				map.remove(WhoisUtil.getDisplayKeyName("StartLowAddress", format));
+				map.remove(WhoisUtil.getDisplayKeyName("EndLowAddress", format));
+				map.remove(WhoisUtil.getDisplayKeyName("StartHighAddress", format));
+				map.remove(WhoisUtil.getDisplayKeyName("EndHighAddress", format));
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
