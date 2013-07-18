@@ -16,6 +16,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.DataFormat;
 import com.cnnic.whois.util.WhoisUtil;
 
@@ -38,6 +39,7 @@ public class ErrorFilter implements Filter {
 		String userAgent = request.getHeader("user-agent").toLowerCase();
 		
 		String format = WhoisUtil.getFormatCookie(request);
+		String role = WhoisUtil.getUserRole(request);
 		if (format == null)
 			format = "application/html";
 		if (format == null){
@@ -72,7 +74,7 @@ public class ErrorFilter implements Filter {
 			}
 		}
 		
-		displayErrorMessage(request, response, chain, format, queryType);
+		displayErrorMessage(request, response, chain, format, queryType, role);
 	}
 
 	@Override
@@ -104,7 +106,7 @@ public class ErrorFilter implements Filter {
 		}
 	}
 	private void displayErrorMessage(HttpServletRequest request, HttpServletResponse response, FilterChain chain, 
-			String format, String queryType) throws IOException, ServletException{
+			String format, String queryType, String role) throws IOException, ServletException{
 		if(format.equals("application/html")){
 			chain.doFilter(request, response);
 		}else {
@@ -113,8 +115,12 @@ public class ErrorFilter implements Filter {
 			
 			Map<String, Object> map = new LinkedHashMap<String, Object>();
 			
-			map = WhoisUtil.getErrorMessage(WhoisUtil.COMMENDRRORCODE,
-					WhoisUtil.OMMENDERRORTITLE, WhoisUtil.OMMENDERRORDESCRIPTION);
+			try {
+				map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+			} catch (QueryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			PrintWriter out = response.getWriter();
 			request.setAttribute("queryFormat", format);
 			response.setHeader("Access-Control-Allow-Origin", "*");

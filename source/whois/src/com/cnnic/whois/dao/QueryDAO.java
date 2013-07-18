@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -629,6 +630,50 @@ public class QueryDAO {
 		}
 		return map;
 	}
+	
+	/**
+	 * Generate an error map collection
+	 * 
+	 * @param errorCode
+	 * @param title
+	 * @param description
+	 * @return map
+	 */
+	public Map<String, Object> getErrorMessage(String errorCode, String role, String format)
+			throws QueryException {
+		Connection connection = null;
+		Map<String, Object> errorMessageMap = null;
+		try {
+			connection = ds.getConnection();
+
+			String selectSql = WhoisUtil.SELECT_LIST_ERRORMESSAGE + "'"
+					+ errorCode + "'";
+			errorMessageMap = query(connection, selectSql,
+					permissionCache.getErrorMessageKeyFileds(role),
+					"$mul$errormessage", role, format);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new QueryException(e);
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException se) {
+				}
+			}
+		}
+		return errorMessageMap;
+		/*{
+			Map<String, Object> errorMessageMap = new HashMap<String, Object>();
+			errorMessageMap.put("errorCode", errorCode);
+			//errorMessageMap.put("title", title);
+			//errorMessageMap.put("description", description);
+			return errorMessageMap;
+		}*/
+	}
+	
+	
+
 
 	/**
 	 * According to the table field collections and SQL to obtain the
@@ -645,7 +690,7 @@ public class QueryDAO {
 	private Map<String, Object> query(Connection connection, String sql,
 			List<String> keyFlieds, String keyName, String role, String format)
 			throws SQLException {
-		PreparedStatement stmt = null;
+		PreparedStatement stmt = null; 
 		ResultSet results = null;
 
 		try {
@@ -703,8 +748,7 @@ public class QueryDAO {
 					}
 					
 					if (keyFlieds.get(i).startsWith(WhoisUtil.ARRAYFILEDPRX)) {
-						String key = keyFlieds.get(i).substring(
-								WhoisUtil.ARRAYFILEDPRX.length());
+						String key = keyFlieds.get(i).substring(WhoisUtil.ARRAYFILEDPRX.length());
 						resultsInfo = results.getString(key);
 						String[] values = null;
 						if (resultsInfo != null) {
@@ -713,17 +757,15 @@ public class QueryDAO {
 						map.put(WhoisUtil.getDisplayKeyName(key, format), values);
 					} else if (keyFlieds.get(i).startsWith(WhoisUtil.EXTENDPRX)) {
 						resultsInfo = results.getString(keyFlieds.get(i));
-						map.put(keyFlieds.get(i).substring(
-								WhoisUtil.EXTENDPRX.length()), resultsInfo);
-					} else if (keyFlieds.get(i).startsWith(
-							WhoisUtil.JOINFILEDPRX)) {
-						String key = keyFlieds.get(i).substring(
-								WhoisUtil.JOINFILEDPRX.length());
+						map.put(keyFlieds.get(i).substring(WhoisUtil.EXTENDPRX.length()), resultsInfo);
+					} else if (keyFlieds.get(i).startsWith(WhoisUtil.JOINFILEDPRX)) {
+						String key = keyFlieds.get(i).substring(WhoisUtil.JOINFILEDPRX.length());
 						String fliedName = "";
 						if (keyName.equals("$mul$notices")
 								|| keyName.equals("$mul$remarks")) {
-							fliedName = keyName.substring("$mul$".length())
-									+ "Id";
+							fliedName = keyName.substring("$mul$".length()) + "Id";
+						} else if (keyName.equals("$mul$errormessage")){
+							fliedName = "Error_Code";
 						} else {
 							fliedName = WhoisUtil.HANDLE;
 						}
@@ -745,7 +787,7 @@ public class QueryDAO {
 				}
 				
 				
-				if (keyName.equals("$mul$nameServer")){
+				if (keyName.equals("$mul$nameServer") || keyName.equals("$join$nameServer")){
 					Map<String, Object> map_IP = new LinkedHashMap<String, Object>();
 					Object IPAddressArray = map.get(WhoisUtil.getDisplayKeyName("IPV4_Addresses", format));
 					map_IP.put(WhoisUtil.IPV4PREFIX, IPAddressArray);

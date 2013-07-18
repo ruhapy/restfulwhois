@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.DataFormat;
 import com.cnnic.whois.util.WhoisProperties;
 import com.cnnic.whois.util.WhoisUtil;
@@ -108,8 +109,12 @@ public class WhoisFilter implements Filter {
 			
 			Map<String, Object> map = new LinkedHashMap<String, Object>();
 			
-			map = WhoisUtil.getErrorMessage(WhoisUtil.RATELIMITECODE,
-					WhoisUtil.RATELIMITEERRORTITLE, WhoisUtil.RATELIMITEERRORDESCRIPTION);
+			try {
+				map = WhoisUtil.processError(WhoisUtil.RATELIMITECODE, role, format);
+			} catch (QueryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			PrintWriter out = response.getWriter();
 			request.setAttribute("queryFormat", format);
 			response.setHeader("Access-Control-Allow-Origin", "*");

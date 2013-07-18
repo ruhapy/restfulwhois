@@ -7,10 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.cnnic.whois.execption.QueryException;
+import com.cnnic.whois.service.QueryService;
 
 public class WhoisUtil {
 	public static final String BLANKSPACE = "    ";
@@ -18,7 +20,6 @@ public class WhoisUtil {
 	public static final String IP = "ip";
 	public static final String DMOAIN = "domain";
 	public static final String ENTITY = "entity";
-	//public static final String AUTUM = "autnum";
 	public static final String NAMESERVER = "nameserver";
 
 	public static final String DELEGATIONKEYS = "delegationkeys";
@@ -39,6 +40,7 @@ public class WhoisUtil {
 	public static final String REMARKS = "remarks";
 	public static final String EVENTS = "events";
 	public static final String ENTITIES = "entities";
+	public static final String ERRORMESSAGE = "errormessage";
 
 	public static final String PRX = "/";
 	public static final String JNDI_NAME = "java:comp/env/jdbc/DataSource";
@@ -67,6 +69,7 @@ public class WhoisUtil {
 	public static final String SELECT_LIST_RIRDOMAIN = "select * from RIRDomain where LdhName=";
 	public static final String SELECT_LIST_DNRDOMAIN = "select * from DNRDomain where LdhName=";
 	public static final String SELECT_LIST_NAMESREVER = "select * from nameServer where LdhName=";
+	public static final String SELECT_LIST_ERRORMESSAGE = "select * from errormessage where Error_Code=";
 
 	public static final String SELECT_LIST_AS1 = "select * from autnum where Start_Autnum <=";
 	public static final String SELECT_LIST_AS2 = " and ";
@@ -79,7 +82,7 @@ public class WhoisUtil {
 	public static final String SELECT_JOIN_LIST_DELEGATIONKEYS = "select * from delegationKeys join m2m_delegationKeys on m2m_delegationKeys.delegationKeyId= delegationKeys.delegationKeysId and  m2m_delegationKeys.Handle=";
 	public static final String SELECT_JOIN_LIST_NOTICES = "select * from notices join m2m_notices on m2m_notices.noticesId=notices.noticesId and  m2m_notices.Handle=";
 	public static final String SELECT_JOIN_LIST_REMARKS = "select * from remarks join m2m_remarks on m2m_remarks.remarksId=remarks.remarksId and  m2m_remarks.Handle=";
-	public static final String SELECT_JOIN_LIST_EVENTS = "select * from events join m2m_events on m2m_events.eventsId=events.eventsId and  m2m_events.Handle=";
+	public static final String SELECT_JOIN_LIST_EVENTS = "select * from events join m2m_events on m2m_events.eventsId=events.eventsId and m2m_events.Handle=";
 
 	public static final String SELECT_JOIN_LIST_REGISTRAR = "select * from registrar join m2m_registrar on m2m_registrar.registrarHandle=registrar.Handle and  m2m_registrar.Handle=";
 	public static final String SELECT_JOIN_LIST_JOINNAMESERVER = "select * from nameserver join m2m_nameserver on m2m_nameserver.nameserverHandle=nameserver.Handle and m2m_nameserver.Handle=";
@@ -186,7 +189,10 @@ public class WhoisUtil {
 			ARRAYFILEDPRX + "Fax", ARRAYFILEDPRX + "Mobile", "phonesId" };
 
 	public static String[] variantsKeyFileds = { ARRAYFILEDPRX + "Relation",
-			ARRAYFILEDPRX + "VariantNames", "variantsId" };
+			ARRAYFILEDPRX + "VariantNames", "variantsId", "IDNTable" };
+	
+	public static String[] ErrorMessageKeyFileds = { "Error_Code", "Title",
+		ARRAYFILEDPRX + "Description", JOINNANOTICES};
 
 	public static String[] linkKeyFileds = { "Value", "Rel", "Href", "linkId",
 			"$array$hreflang", "$array$title", "media", "type" };
@@ -216,16 +222,16 @@ public class WhoisUtil {
 			"phones", "postalAddress", "registrar", "remarks", "variants", "help" };
 
 	public static String[] extendColumnTableTypes = { "autnum",
-			"delegationkeys", "dnrdomain", "dnrentity", "events", "ip", "link",
+			"delegationkeys", "dnrdomain", "dnrentity", "errormessage", "events", "ip", "link",
 			"nameserver", "notices", "phones", "postaladdress", "registrar",
-			"remarks", "rirdomain", "rirentity", "variants" };
+			"remarks", "rirdomain", "rirentity", "variants"};
 
 	public static String[][] keyFiledsSet = { ASKeyFileds, delegationKeyFileds,
-			DNRDomainKeyFileds, DNREntityKeyFileds, eventsKeyFileds,
+			DNRDomainKeyFileds, DNREntityKeyFileds, ErrorMessageKeyFileds, eventsKeyFileds,
 			IPKeyFileds, linkKeyFileds, nameServerKeyFileds, noticesKeyFileds,
 			phonesKeyFileds, postalAddressKeyFileds, registrarKeyFileds,
 			remarksKeyFileds, RIRDomainKeyFileds, RIREntityKeyFileds,
-			variantsKeyFileds };
+			variantsKeyFileds};
 
 	public static long[] IPV4Array = { 0x80000000l, // 1000 0000 0000 0000 0000
 													// 0000 0000 0000,//1
@@ -329,19 +335,19 @@ public class WhoisUtil {
 	};
 
 	public static final String ERRORCODE = "4143";
-	public static final String ERRORTITLE = "Eror Message";
+	public static final String ERRORTITLE = "Error Message";
 	public static final String [] ERRORDESCRIPTION = {"NO_RESULT"};
 
 	public static final String COMMENDRRORCODE = "4144";
-	public static final String OMMENDERRORTITLE = "Eror Message";
+	public static final String OMMENDERRORTITLE = "Error Message";
 	public static final String [] OMMENDERRORDESCRIPTION = {"COMMAND_SYNTAX_ERROR"};
 
 	public static final String UNCOMMENDRRORCODE = "4145";
-	public static final String UNOMMENDERRORTITLE = "Eror Message";
+	public static final String UNOMMENDERRORTITLE = "Error Message";
 	public static final String [] UNOMMENDERRORDESCRIPTION = {"UNKNOWN_COMMAND"};
 	
 	public static final String RATELIMITECODE = "429";
-	public static final String RATELIMITEERRORTITLE = "Eror Message";
+	public static final String RATELIMITEERRORTITLE = "Error Message";
 	public static final String [] RATELIMITEERRORDESCRIPTION = {"RATE_LIMIT"};
 
 	public static final String ADDCOLUMN1 = "alter table ";
@@ -429,7 +435,7 @@ public class WhoisUtil {
 	public static final String SELECT_PERMISSION = "select * from permissions where tableName = ?";
 
 	public static final String SELECT_PERMISSION_ISNULL = "select columnName from permissions where tableName = ? and columnName=?";
-
+	
 	public static final Map<String, Long> queryRemoteIPMap = new HashMap<String, Long>();
 
 	public static long[] parsingIp(String ipInfo, int ipLength) {
@@ -669,24 +675,7 @@ public class WhoisUtil {
 		longs[0] = high;
 		longs[1] = low;
 		return longs;
-	}
-
-	/**
-	 * Generate an error map collection
-	 * 
-	 * @param errorCode
-	 * @param title
-	 * @param description
-	 * @return map
-	 */
-	public static Map<String, Object> getErrorMessage(String errorCode,
-			String title, String [] description) {
-		Map<String, Object> errorMessageMap = new HashMap<String, Object>();
-		errorMessageMap.put("errorCode", errorCode);
-		errorMessageMap.put("title", title);
-		errorMessageMap.put("description", description);
-		return errorMessageMap;
-	}
+	}	
 
 	/**
 	 * Generated to store a collection of fields
@@ -942,5 +931,36 @@ public class WhoisUtil {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Determine what kind of role the user
+	 * 
+	 * @param request
+	 * @return role
+	 */
+	public static String getUserRole(HttpServletRequest request){
+		String role = "anonymous";
+		if (request.isUserInRole("authenticated") || request.getSession().getAttribute("openIdUser") != null){ //determine what kind of role
+			role = "authenticated";
+		}else if (request.isUserInRole("root")){
+			role = "root";
+		}
+		return role;
+	}
+	
+	/**
+	 * The processing Error
+	 * 
+	 * @return error map collection
+	 * @throws QueryException 
+	 */
+	public static Map<String, Object> processError(String errorCode, String role, String format) throws QueryException {
+		Map<String, Object>ErrorMessageMap = null;
+		QueryService queryService = QueryService.getQueryService();
+		ErrorMessageMap = queryService.queryError(errorCode, role, format);
+		return ErrorMessageMap;
+		//return WhoisUtil.getErrorMessage(WhoisUtil.COMMENDRRORCODE,
+				//WhoisUtil.OMMENDERRORTITLE, WhoisUtil.OMMENDERRORDESCRIPTION);
 	}
 }
