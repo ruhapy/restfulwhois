@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.cnnic.whois.dao.QueryDAO;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.service.QueryService;
@@ -66,7 +65,7 @@ public class QueryServlet extends HttpServlet {
 		} catch (QueryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}		
 	}
 
 	/**
@@ -574,11 +573,9 @@ public class QueryServlet extends HttpServlet {
 	 */
 	private Map<String, Object> processError(String errorCode, String role) throws QueryException {
 		Map<String, Object>ErrorMessageMap = null;
-		QueryDAO queryDAO = QueryDAO.getQueryDAO();
-		ErrorMessageMap = queryDAO.getErrorMessage(errorCode, role);
+		QueryService queryService = QueryService.getQueryService();
+		ErrorMessageMap = queryService.queryErrorMessage(errorCode, role);
 		return ErrorMessageMap;
-		//return WhoisUtil.getErrorMessage(WhoisUtil.COMMENDRRORCODE,
-				//WhoisUtil.OMMENDERRORTITLE, WhoisUtil.OMMENDERRORDESCRIPTION);
 	}
 
 	/**

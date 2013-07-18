@@ -5,11 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
@@ -666,7 +664,7 @@ public class QueryDAO {
 	 * @param description
 	 * @return map
 	 */
-	public Map<String, Object> getErrorMessage(String errorCode, String role)
+	public Map<String, Object> queryErrorInfor(String errorCode, String role)
 			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> errorMessageMap = null;
@@ -690,13 +688,6 @@ public class QueryDAO {
 			}
 		}
 		return errorMessageMap;
-		/*{
-			Map<String, Object> errorMessageMap = new HashMap<String, Object>();
-			errorMessageMap.put("errorCode", errorCode);
-			//errorMessageMap.put("title", title);
-			//errorMessageMap.put("description", description);
-			return errorMessageMap;
-		}*/
 	}
 	
 	

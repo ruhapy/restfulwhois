@@ -3,7 +3,6 @@ package com.cnnic.whois.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.cnnic.whois.dao.QueryDAO;
 import com.cnnic.whois.execption.QueryException;
@@ -537,6 +536,24 @@ public class QueryService {
 
 		return map;
 	}
+	
+	/**
+	 * Query queryErrorMessage type
+	 * 
+	 * @param queryPara
+	 * @param role
+	 * @return map collection
+	 * @throws QueryException
+	 */
+	public Map<String, Object> queryErrorMessage(String queryPara, String role)
+			throws QueryException {
+		Map<String, Object> map = queryDAO.queryErrorInfor(queryPara, role);
+		if (map == null) {
+			return queryError(WhoisUtil.ERRORCODE, role);
+		}
+
+		return map;
+	}
 
 	/**
 	 * The processing Error
@@ -546,11 +563,8 @@ public class QueryService {
 	 */
 	private Map<String, Object> queryError(String errorCode, String role) throws QueryException {
 		Map<String, Object>ErrorMessageMap = null;
-		QueryDAO queryDAO = QueryDAO.getQueryDAO();
-		ErrorMessageMap = queryDAO.getErrorMessage(errorCode, role);
+		ErrorMessageMap = queryDAO.queryErrorInfor(errorCode, role);
 		return ErrorMessageMap;
-		//return WhoisUtil.getErrorMessage(WhoisUtil.ERRORCODE,
-				//WhoisUtil.ERRORTITLE, WhoisUtil.ERRORDESCRIPTION);
 	}
 
 	/**
