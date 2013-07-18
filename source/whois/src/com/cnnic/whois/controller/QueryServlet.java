@@ -317,7 +317,7 @@ public class QueryServlet extends HttpServlet {
 			return processError();
 
 		QueryService queryService = QueryService.getQueryService();
-		return nameToUnicode(queryService.queryDoamin(queryPara, role, format));
+		return queryService.queryDoamin(queryPara, role, format);
 	}
 
 	/**
@@ -380,7 +380,7 @@ public class QueryServlet extends HttpServlet {
 			return processError();
 
 		QueryService queryService = QueryService.getQueryService();
-		return nameToUnicode(queryService.queryNameServer(queryPara, role, format));
+		return queryService.queryNameServer(queryPara, role, format);
 	}
 
 	/**
@@ -691,11 +691,11 @@ public class QueryServlet extends HttpServlet {
 	 * @param map
 	 * @return Conversion completed map collection
 	 */
-	private Map<String, Object> nameToUnicode(Map<String, Object> map) {
-		String name = (String) map.get("LdhName");
-		if (name != null)
-			map.put("LdhName", IDN.toUnicode(name));
-
-		return map;
-	}
+//	private Map<String, Object> nameToUnicode(Map<String, Object> map) {
+//		String name = (String) map.get("LdhName");
+//		if (name != null)
+//			map.put("LdhName", IDN.toUnicode(name));
+//
+//		return map;
+//	}
 }

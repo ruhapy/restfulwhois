@@ -36,9 +36,8 @@ public class ErrorFilter implements Filter {
 		HttpServletResponse response = (HttpServletResponse) arg1;
 		
 		String userAgent = request.getHeader("user-agent").toLowerCase();
-		//System.out.println(userAgent);
 		
-		String format = getFormatCookie(request);
+		String format = WhoisUtil.getFormatCookie(request);
 		if (format == null)
 			format = "application/html";
 		if (format == null){
@@ -66,7 +65,7 @@ public class ErrorFilter implements Filter {
 			if(queryInfo.equals("") && (userAgent.contains(ie) || userAgent.contains(firefox) ||
 					userAgent.contains(chrome) || userAgent.contains(safiri) || userAgent.contains(opera))){
 				format = "application/html";
-				clearFormatCookie(request, response);
+				WhoisUtil.clearFormatCookie(request, response);
 			}
 			if(queryInfo.indexOf("/") != -1){				
 				queryType = queryInfo.substring(0, queryInfo.indexOf("/"));
@@ -82,31 +81,7 @@ public class ErrorFilter implements Filter {
 
 	}
 	
-	private String getFormatCookie(HttpServletRequest request) {
-		Cookie[] cookies = request.getCookies();
-
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				if (cookie.getName().equals("Format")) {
-					return cookie.getValue();
-				}
-			}
-		}
-		return null;
-	}
 	
-	private void clearFormatCookie(HttpServletRequest request, HttpServletResponse response){
-		Cookie[] cookies = request.getCookies();
-
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				if (cookie.getName().equals("Format")) {
-					cookie.setMaxAge(0);
-					response.addCookie(cookie);
-				}
-			}
-		}
-	}
 	private boolean isIllegalType(String queryType){
 		if(queryType.equals(WhoisUtil.IP) ||
 				queryType.equals(WhoisUtil.DMOAIN) ||
@@ -159,8 +134,7 @@ public class ErrorFilter implements Filter {
 					response.setHeader("Content-Type", "application/xml");
 					out.write(DataFormat.getXmlString(map));
 				}
-			}else
-			{
+			}else{
 				if(isIllegalType(queryType)){
 					chain.doFilter(request, response);
 				}

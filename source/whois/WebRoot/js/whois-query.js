@@ -250,7 +250,7 @@ function processQuery() {
 	    	alert("Please input correct IP");
 	        return false;
 		} 
-	} else if (queryType == "autum"){
+	} else if (queryType == "autnum"){
 		if (!checkAS(queryInfo)){
 			return false;
 		} 

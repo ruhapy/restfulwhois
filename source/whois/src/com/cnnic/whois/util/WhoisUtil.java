@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 public class WhoisUtil {
 	public static final String BLANKSPACE = "    ";
 	
@@ -188,7 +192,7 @@ public class WhoisUtil {
 			"$array$hreflang", "$array$title", "media", "type" };
 
 	public static String[] postalAddressKeyFileds = { "Street", "Street1",
-			"Street2", "City", "SP", "Postal_Code", "County_Code",
+			"Street2", "City", "SP", "Postal_Code", "Country_Code",
 			"postalAddressId" };
 	public static String[] delegationKeyFileds = { "Algorithm", "Digest",
 			"Disgest_Type", "Key_Tag", "delegationKeysId" };
@@ -335,6 +339,10 @@ public class WhoisUtil {
 	public static final String UNCOMMENDRRORCODE = "4145";
 	public static final String UNOMMENDERRORTITLE = "Eror Message";
 	public static final String [] UNOMMENDERRORDESCRIPTION = {"UNKNOWN_COMMAND"};
+	
+	public static final String RATELIMITECODE = "429";
+	public static final String RATELIMITEERRORTITLE = "Eror Message";
+	public static final String [] RATELIMITEERRORDESCRIPTION = {"RATE_LIMIT"};
 
 	public static final String ADDCOLUMN1 = "alter table ";
 	public static final String ADDCOLUMN2 = " add column ";
@@ -907,6 +915,32 @@ public class WhoisUtil {
 			return name;
 		} else {
 			return name.replaceAll("_", " ");
+		}
+	}
+	
+	public static String getFormatCookie(HttpServletRequest request) {
+		Cookie[] cookies = request.getCookies();
+
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (cookie.getName().equals("Format")) {
+					return cookie.getValue();
+				}
+			}
+		}
+		return null;
+	}
+	
+	public static void clearFormatCookie(HttpServletRequest request, HttpServletResponse response){
+		Cookie[] cookies = request.getCookies();
+
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (cookie.getName().equals("Format")) {
+					cookie.setMaxAge(0);
+					response.addCookie(cookie);
+				}
+			}
 		}
 	}
 }
