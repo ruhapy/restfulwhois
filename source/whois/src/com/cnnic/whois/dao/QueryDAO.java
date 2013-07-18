@@ -60,7 +60,7 @@ public class QueryDAO {
 	 * @throws QueryException
 	 */
 	public Map<String, Object> queryIP(long startHighAddr, long endHighAddr,
-			long startLowAddr, long endLowAddr, String role)
+			long startLowAddr, long endLowAddr, String role, String format)
 			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -91,7 +91,13 @@ public class QueryDAO {
 								+ WhoisUtil.SELECT_LIST_IPv6_7 + WhoisUtil.SELECT_LIST_IPv6_9);
 			}
 			map = query(connection, selectSql,
-					permissionCache.getIPKeyFileds(role), "$mul$IP", role);
+					permissionCache.getIPKeyFileds(role), "$mul$IP", role, format);
+			
+			map.remove(WhoisUtil.getDisplayKeyName("StartLowAddress", format));
+			map.remove(WhoisUtil.getDisplayKeyName("EndLowAddress", format));
+			map.remove(WhoisUtil.getDisplayKeyName("StartHighAddress", format));
+			map.remove(WhoisUtil.getDisplayKeyName("EndHighAddress", format));
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -114,7 +120,7 @@ public class QueryDAO {
 	 * @return map collection
 	 * @throws QueryException
 	 */
-	public Map<String, Object> queryDNRDoamin(String queryInfo, String role)
+	public Map<String, Object> queryDNRDoamin(String queryInfo, String role, String format)
 			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -125,7 +131,7 @@ public class QueryDAO {
 					+ queryInfo + "'";
 			map = query(connection, selectSql,
 					permissionCache.getDNRDomainKeyFileds(role), "$mul$domain",
-					role);
+					role, format);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -148,7 +154,7 @@ public class QueryDAO {
 	 * @return map collection
 	 * @throws QueryException
 	 */
-	public Map<String, Object> queryRIRDoamin(String queryInfo, String role)
+	public Map<String, Object> queryRIRDoamin(String queryInfo, String role, String format)
 			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -160,7 +166,7 @@ public class QueryDAO {
 
 			map = query(connection, selectSql,
 					permissionCache.getRIRDomainKeyFileds(role), "$mul$domain",
-					role);
+					role, format);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -183,7 +189,7 @@ public class QueryDAO {
 	 * @return map collection
 	 * @throws QueryException
 	 */
-	public Map<String, Object> queryDNREntity(String queryInfo, String role)
+	public Map<String, Object> queryDNREntity(String queryInfo, String role, String format)
 			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -194,7 +200,7 @@ public class QueryDAO {
 					+ queryInfo + "'";
 			map = query(connection, selectSql,
 					permissionCache.getDNREntityKeyFileds(role), "$mul$entity",
-					role);
+					role, format);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -217,7 +223,7 @@ public class QueryDAO {
 	 * @return map collection
 	 * @throws QueryException
 	 */
-	public Map<String, Object> queryRIREntity(String queryInfo, String role)
+	public Map<String, Object> queryRIREntity(String queryInfo, String role, String format)
 			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -228,7 +234,7 @@ public class QueryDAO {
 					+ queryInfo + "'";
 			map = query(connection, selectSql,
 					permissionCache.getRIREntityKeyFileds(role), "$mul$entity",
-					role);
+					role, format);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -251,7 +257,7 @@ public class QueryDAO {
 	 * @return map collection
 	 * @throws QueryException
 	 */
-	public Map<String, Object> queryAS(int queryInfo, String role)
+	public Map<String, Object> queryAS(int queryInfo, String role, String format)
 			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -262,7 +268,7 @@ public class QueryDAO {
 					+ WhoisUtil.SELECT_LIST_AS2 + queryInfo
 					+ WhoisUtil.SELECT_LIST_AS3;
 			map = query(connection, selectSql,
-					permissionCache.getASKeyFileds(role), "$mul$autnum", role);
+					permissionCache.getASKeyFileds(role), "$mul$autnum", role, format);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -285,7 +291,7 @@ public class QueryDAO {
 	 * @return map collection
 	 * @throws QueryException
 	 */
-	public Map<String, Object> queryNameServer(String queryInfo, String role)
+	public Map<String, Object> queryNameServer(String queryInfo, String role, String format)
 			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -297,7 +303,7 @@ public class QueryDAO {
 					+ queryInfo + "'";
 			map = query(connection, selectSql,
 					permissionCache.getNameServerKeyFileds(role),
-					"$mul$nameServer", role);
+					"$mul$nameServer", role, format);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -320,7 +326,7 @@ public class QueryDAO {
 	 * @return map collection
 	 * @throws QueryException
 	 */
-	public Map<String, Object> queryLinks(String queryPara, String role)
+	public Map<String, Object> queryLinks(String queryPara, String role, String format)
 			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -330,7 +336,7 @@ public class QueryDAO {
 			String selectSql = WhoisUtil.SELECT_LIST_LINK + "'" + queryPara
 					+ "'";
 			map = query(connection, selectSql,
-					permissionCache.getLinkKeyFileds(role), "$mul$link", role);
+					permissionCache.getLinkKeyFileds(role), "$mul$link", role, format);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -353,7 +359,7 @@ public class QueryDAO {
 	 * @return map collection
 	 * @throws QueryException
 	 */
-	public Map<String, Object> queryPhones(String queryInfo, String role)
+	public Map<String, Object> queryPhones(String queryInfo, String role, String format)
 			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -364,7 +370,7 @@ public class QueryDAO {
 					+ "'";
 			map = query(connection, selectSql,
 					permissionCache.getPhonesKeyFileds(role), "$mul$phones",
-					role);
+					role, format);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -387,7 +393,7 @@ public class QueryDAO {
 	 * @return map collection
 	 * @throws QueryException
 	 */
-	public Map<String, Object> queryPostalAddress(String queryInfo, String role)
+	public Map<String, Object> queryPostalAddress(String queryInfo, String role, String format)
 			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -398,7 +404,7 @@ public class QueryDAO {
 					+ queryInfo + "'";
 			map = query(connection, selectSql,
 					permissionCache.getPostalAddressKeyFileds(role),
-					"$mul$postalAddress", role);
+					"$mul$postalAddress", role, format);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -421,7 +427,7 @@ public class QueryDAO {
 	 * @return map collection
 	 * @throws QueryException
 	 */
-	public Map<String, Object> queryVariants(String queryInfo, String role)
+	public Map<String, Object> queryVariants(String queryInfo, String role, String format)
 			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -432,7 +438,7 @@ public class QueryDAO {
 					+ "'";
 			map = query(connection, selectSql,
 					permissionCache.getVariantsKeyFileds(role),
-					"$mul$variants", role);
+					"$mul$variants", role, format);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -455,7 +461,7 @@ public class QueryDAO {
 	 * @return map collection
 	 * @throws QueryException
 	 */
-	public Map<String, Object> queryDelegationKeys(String queryInfo, String role)
+	public Map<String, Object> queryDelegationKeys(String queryInfo, String role, String format)
 			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -466,7 +472,7 @@ public class QueryDAO {
 					+ queryInfo + "'";
 			map = query(connection, selectSql,
 					permissionCache.getDelegationKeyFileds(role),
-					"$mul$delegationKeys", role);
+					"$mul$delegationKeys", role, format);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -489,7 +495,7 @@ public class QueryDAO {
 	 * @return map collection
 	 * @throws QueryException
 	 */
-	public Map<String, Object> queryNotices(String queryInfo, String role)
+	public Map<String, Object> queryNotices(String queryInfo, String role, String format)
 			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -500,7 +506,7 @@ public class QueryDAO {
 					+ "'";
 			map = query(connection, selectSql,
 					permissionCache.getNoticesKeyFileds(role), "$mul$notices",
-					role);
+					role, format);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -523,7 +529,8 @@ public class QueryDAO {
 	 * @return map collection
 	 * @throws QueryException
 	 */
-	public Map<String, Object> queryRegistrar(String queryInfo, String role,boolean isJoinTable)
+	public Map<String, Object> queryRegistrar(String queryInfo, String role, 
+			boolean isJoinTable, String format)
 			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -540,7 +547,7 @@ public class QueryDAO {
 			
 			map = query(connection, selectSql,
 					permissionCache.getRegistrarKeyFileds(role),
-					"$mul$registrar", role);
+					"$mul$registrar", role, format);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -563,7 +570,7 @@ public class QueryDAO {
 	 * @return map collection
 	 * @throws QueryException
 	 */
-	public Map<String, Object> queryRemarks(String queryInfo, String role)
+	public Map<String, Object> queryRemarks(String queryInfo, String role, String format)
 			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -574,7 +581,7 @@ public class QueryDAO {
 					+ "'";
 			map = query(connection, selectSql,
 					permissionCache.getRemarksKeyFileds(role), "$mul$remarks",
-					role);
+					role, format);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -597,7 +604,7 @@ public class QueryDAO {
 	 * @return map collection
 	 * @throws QueryException
 	 */
-	public Map<String, Object> queryEvents(String queryInfo, String role)
+	public Map<String, Object> queryEvents(String queryInfo, String role, String format)
 			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -608,7 +615,7 @@ public class QueryDAO {
 					+ "'";
 			map = query(connection, selectSql,
 					permissionCache.getEventsKeyFileds(role), "$mul$events",
-					role);
+					role, format);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -636,7 +643,7 @@ public class QueryDAO {
 	 * @throws SQLException
 	 */
 	private Map<String, Object> query(Connection connection, String sql,
-			List<String> keyFlieds, String keyName, String role)
+			List<String> keyFlieds, String keyName, String role, String format)
 			throws SQLException {
 		PreparedStatement stmt = null;
 		ResultSet results = null;
@@ -663,12 +670,8 @@ public class QueryDAO {
 				for (int i = 0; i < keyFlieds.size(); i++) {
 					String resultsInfo = "";
 					
-					if(keyName.equals(WhoisUtil.MULTIPRXIP) && keyFlieds.get(i).toString().equals("StartLowAddress")// || 
-							//keyFlieds.get(i).toString().equals("EndLowAddress") ||
-							//keyFlieds.get(i).toString().equals("StartHighAddress") ||
-							//keyFlieds.get(i).toString().equals("EndHighAddress")
-							){
-						if(map.get("Start Address") == null && map.get("End Address") == null){
+					if(keyName.equals(WhoisUtil.MULTIPRXIP) && keyFlieds.get(i).toString().equals("StartLowAddress")){
+						if((map.get("Start Address") == null && map.get("End Address") == null) || (map.get("startAddress") == null && map.get("endAddress") == null)){
 							String ipVersion = results.getString("IP_Version");
 							
 							String startHighAddress = results.getString("StartHighAddress");
@@ -693,8 +696,8 @@ public class QueryDAO {
 									endAddress = WhoisUtil
 											.longtoipV4(Long.parseLong(endLowAddress));
 								}
-								map.put("Start Address", startAddress);
-								map.put("End Address", endAddress);
+								map.put(WhoisUtil.getDisplayKeyName("Start_Address", format), startAddress);//a different fromat have different name;
+								map.put(WhoisUtil.getDisplayKeyName("End_Address", format), endAddress);
 							}
 						}
 					}
@@ -707,7 +710,7 @@ public class QueryDAO {
 						if (resultsInfo != null) {
 							values = resultsInfo.split(WhoisUtil.VALUEARRAYPRX);
 						}
-						map.put(key.replaceAll("_", " "), values);
+						map.put(WhoisUtil.getDisplayKeyName(key, format), values);
 					} else if (keyFlieds.get(i).startsWith(WhoisUtil.EXTENDPRX)) {
 						resultsInfo = results.getString(keyFlieds.get(i));
 						map.put(keyFlieds.get(i).substring(
@@ -727,35 +730,35 @@ public class QueryDAO {
 
 						Object value = queryJoinTable(keyFlieds.get(i),
 								results.getString(fliedName), sql, role,
-								connection);
+								connection, format);
 						if (value != null)
 							map.put(key, value);
 					} else {
-						//System.out.println(results.getString(keyFlieds.get(i)));
 						resultsInfo = results.getString(keyFlieds.get(i)) == null ? "": results.getString(keyFlieds.get(i));
-						String key = keyFlieds.get(i).replaceAll("_", " ");
-						map.put(key, resultsInfo);
+						CharSequence id = "id";
+						if(WhoisUtil.getDisplayKeyName(keyFlieds.get(i), format).contains(id) && !format.equals("application/html")){
+							continue;
+						}else{
+							map.put(WhoisUtil.getDisplayKeyName(keyFlieds.get(i), format), resultsInfo);//a different format have different name;
+						}
 					}
 				}
-				map.remove("StartLowAddress");
-				map.remove("EndLowAddress");
-				map.remove("StartHighAddress");
-				map.remove("EndHighAddress");
+				
 				
 				if (keyName.equals("$mul$nameServer")){
 					Map<String, Object> map_IP = new LinkedHashMap<String, Object>();
-					Object IPAddressArray = map.get("IPV4 Addresses");
+					Object IPAddressArray = map.get(WhoisUtil.getDisplayKeyName("IPV4_Addresses", format));
 					map_IP.put(WhoisUtil.IPV4PREFIX, IPAddressArray);
-					IPAddressArray = map.get("IPV6 Addresses");
+					IPAddressArray = map.get(WhoisUtil.getDisplayKeyName("IPV6_Addresses", format));
 					map_IP.put(WhoisUtil.IPV6PREFIX, IPAddressArray);
 					map.put(WhoisUtil.IPPREFIX, map_IP);
-					map.remove("IPV4 Addresses");
-					map.remove("IPV6 Addresses");
+					map.remove(WhoisUtil.getDisplayKeyName("IPV4_Addresses", format));
+					map.remove(WhoisUtil.getDisplayKeyName("IPV6_Addresses", format));
 				}
 				
 				//vcard format
 				if(keyName.equals(WhoisUtil.JOINENTITESFILED) || keyName.equals(WhoisUtil.MULTIPRXENTITY)){
-					list.add(WhoisUtil.toVCard(map));
+					list.add(WhoisUtil.toVCard(map, format));
 				}else{
 					list.add(map);
 				}
@@ -763,8 +766,8 @@ public class QueryDAO {
 
 			if (list.size() == 0)
 				return null;
+			
 			Map<String, Object> mapInfo = new LinkedHashMap<String, Object>();
-			//System.out.println(keyName+"=====================");
 			// link , remark and notice change to array
 			if(keyName.equals(WhoisUtil.JOINLINKFILED)|| 
 					keyName.equals(WhoisUtil.JOINNANOTICES) ||
@@ -796,7 +799,7 @@ public class QueryDAO {
 			}
 		}
 	}
-
+	
 	/**
 	 * Determine the different types of schedule and query information according
 	 * to the parameters
@@ -810,59 +813,59 @@ public class QueryDAO {
 	 * @throws SQLException
 	 */
 	public Object queryJoinTable(String key, String handle, String sql,
-			String role, Connection connection) throws SQLException {
+			String role, Connection connection, String format) throws SQLException {
 		if (key.equals(WhoisUtil.JOINENTITESFILED)) {
 			String entitysql = WhoisUtil.SELECT_JOIN_LIST_JOINDNRENTITY;
 			if (sql.indexOf("ip") >= 0 || sql.indexOf("autnum") >= 0
 					|| sql.indexOf("RIRDomain") >= 0) {
 				entitysql = WhoisUtil.SELECT_JOIN_LIST_JOINRIRENTITY;
 				return querySpecificJoinTable(key, handle, entitysql, role,
-						connection, permissionCache.getRIREntityKeyFileds(role));
+						connection, permissionCache.getRIREntityKeyFileds(role), format);
 			}else{
 				return querySpecificJoinTable(key, handle, entitysql, role,
-						connection, permissionCache.getDNREntityKeyFileds(role));
+						connection, permissionCache.getDNREntityKeyFileds(role), format);
 			}
 			
 		} else if (key.equals(WhoisUtil.JOINLINKFILED)) {
 			return querySpecificJoinTable(key, handle,
 					WhoisUtil.SELECT_JOIN_LIST_LINK, role, connection,
-					permissionCache.getLinkKeyFileds(role));
+					permissionCache.getLinkKeyFileds(role), format);
 		} else if (key.equals(WhoisUtil.JOINPHONFILED)) {
 			return querySpecificJoinTable(key, handle,
 					WhoisUtil.SELECT_JOIN_LIST_PHONE, role, connection,
-					permissionCache.getPhonesKeyFileds(role));
+					permissionCache.getPhonesKeyFileds(role), format);
 		} else if (key.equals(WhoisUtil.JOINPOSTATLADDRESSFILED)) {
 			return querySpecificJoinTable(key, handle,
 					WhoisUtil.SELECT_JOIN_LIST_POSTALADDRESS, role, connection,
-					permissionCache.getPostalAddressKeyFileds(role));
+					permissionCache.getPostalAddressKeyFileds(role), format);
 		} else if (key.equals(WhoisUtil.JOINVARIANTS)) {
 			return querySpecificJoinTable(key, handle,
 					WhoisUtil.SELECT_JOIN_LIST_VARIANTS, role, connection,
-					permissionCache.getVariantsKeyFileds(role));
+					permissionCache.getVariantsKeyFileds(role), format);
 		} else if (key.equals(WhoisUtil.JOINDALEGATIONKEYS)) {
 			return querySpecificJoinTable(key, handle,
 					WhoisUtil.SELECT_JOIN_LIST_DELEGATIONKEYS, role,
-					connection, permissionCache.getDelegationKeyFileds(role));
+					connection, permissionCache.getDelegationKeyFileds(role), format);
 		} else if (key.equals(WhoisUtil.JOINNAMESERVER)) {
 			return querySpecificJoinTable(key, handle,
 					WhoisUtil.SELECT_JOIN_LIST_JOINNAMESERVER, role,
-					connection, permissionCache.getNameServerKeyFileds(role));
+					connection, permissionCache.getNameServerKeyFileds(role), format);
 		} else if (key.equals(WhoisUtil.JOINNAREGISTRAR)) {
 			return querySpecificJoinTable(key, handle,
 					WhoisUtil.SELECT_JOIN_LIST_REGISTRAR, role, connection,
-					permissionCache.getRegistrarKeyFileds(role));
+					permissionCache.getRegistrarKeyFileds(role), format);
 		} else if (key.equals(WhoisUtil.JOINNANOTICES)) {
 			return querySpecificJoinTable(key, handle,
 					WhoisUtil.SELECT_JOIN_LIST_NOTICES, role, connection,
-					permissionCache.getNoticesKeyFileds(role));
+					permissionCache.getNoticesKeyFileds(role), format);
 		} else if (key.equals(WhoisUtil.JOINEVENTS)) {
 			return querySpecificJoinTable(key, handle,
 					WhoisUtil.SELECT_JOIN_LIST_EVENTS, role, connection,
-					permissionCache.getEventsKeyFileds(role));
+					permissionCache.getEventsKeyFileds(role), format);
 		} else if (key.equals(WhoisUtil.JOINREMARKS)) {
 			return querySpecificJoinTable(key, handle,
 					WhoisUtil.SELECT_JOIN_LIST_REMARKS, role, connection,
-					permissionCache.getRemarksKeyFileds(role));
+					permissionCache.getRemarksKeyFileds(role), format);
 		}
 
 		return null;
@@ -881,11 +884,12 @@ public class QueryDAO {
 	 * @throws SQLException
 	 */
 	public Object querySpecificJoinTable(String key, String handle, String sql,
-			String role, Connection connection, List<String> keyFlieds)
+			String role, Connection connection, List<String> keyFlieds,
+			String format)
 			throws SQLException {
 
 		Map<String, Object> map = query(connection, sql + "'" + handle + "'",
-				keyFlieds, key, role);
+				keyFlieds, key, role, format);
 		if (map != null) {
 			if (null == map.get(key)) {
 				return map;

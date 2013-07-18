@@ -14,7 +14,7 @@ public class WhoisUtil {
 	public static final String IP = "ip";
 	public static final String DMOAIN = "domain";
 	public static final String ENTITY = "entity";
-	public static final String AUTUM = "autnum";
+	//public static final String AUTUM = "autnum";
 	public static final String NAMESERVER = "nameserver";
 
 	public static final String DELEGATIONKEYS = "delegationkeys";
@@ -86,7 +86,7 @@ public class WhoisUtil {
 	public static final String SELECT_LIST_PHONE = "select * from phones where phonesId=";
 	public static final String SELECT_LIST_POSTALADDRESS = "select * from postaladdress where postalAddressId=";
 	public static final String SELECT_LIST_VARIANTS = "select * from variants where variantsId=";
-	public static final String SELECT_LIST_DELEGATIONKEYS = "select * from delegationKeys where delegationKeyId=";
+	public static final String SELECT_LIST_DELEGATIONKEYS = "select * from delegationKeys where delegationKeysId=";
 	public static final String SELECT_LIST_NOTICES = "select * from notices where noticesId=";
 	public static final String SELECT_LIST_JOIN_REGISTRAR = "select * from registrar where Handle=";
 	public static final String SELECT_LIST_REGISTRAR = "select * from registrar where Entity_Names=";
@@ -742,18 +742,19 @@ public class WhoisUtil {
 		}
 		return parra;
 	}
+	
 	/**
 	 * Changes will be part of the data into the VCard style
 	 * 
 	 * @param map
 	 * @return map collection
 	 */
-	public static Map<String, Object> toVCard(Map<String, Object> map) {
+	public static Map<String, Object> toVCard(Map<String, Object> map, String format) {
 		List<List<String>> list = new ArrayList<List<String>>();
-		Object entityNames = map.get("Entity Names");
-		Object postalAddress = map.get("postalAddress");
-		Object emails = map.get("Emails");
-		Object phones = map.get("phones");
+		Object entityNames = map.get(getDisplayKeyName("Entity_Names", format));
+		Object postalAddress = map.get(getDisplayKeyName("postal_Address", format));
+		Object emails = map.get(getDisplayKeyName("Emails", format));
+		Object phones = map.get(getDisplayKeyName("phones", format));
 
 		List<String> firstNameList = new ArrayList<String>();
 		firstNameList.add("version");
@@ -780,7 +781,7 @@ public class WhoisUtil {
 				nameList.add(entityNames.toString());
 				list.add(nameList);
 			}
-			map.remove("Entity Names");
+			map.remove(getDisplayKeyName("Entity_Names", format));
 		}
 		if (postalAddress != null) {
 			if (postalAddress instanceof Map) {
@@ -807,7 +808,7 @@ public class WhoisUtil {
 					list.add(nameList);
 				}
 			}
-			map.remove("postalAddress");
+			map.remove(getDisplayKeyName("postal_Address", format));
 		}
 		;
 		if (emails != null) {
@@ -820,7 +821,7 @@ public class WhoisUtil {
 				nameList.add(names);
 				list.add(nameList);
 			}
-			map.remove("Emails");
+			map.remove(getDisplayKeyName("Emails", format));
 		}
 		;
 		if (phones != null) {
@@ -831,18 +832,18 @@ public class WhoisUtil {
 					Object values = ((Map) phones).get(name);
 					if (values instanceof String[]) {
 						String typeName = "";
-						if (name.equals("Office")) {
-							typeName = "{type:work}";
-						} else if (name.equals("Fax")) {
-							typeName = "{type:fax}";
-						} else if (name.equals("Mobile")) {
-							typeName = "{type:cell}";
+						if (name.equals(getDisplayKeyName("Office", format))) {
+							typeName = "{\"type\":\"work\"}";
+						} else if (name.equals(getDisplayKeyName("Fax", format))) {
+							typeName = "{\"type\":\"fax\"}";
+						} else if (name.equals(getDisplayKeyName("Mobile", format))) {
+							typeName = "{\"type\":\"cell\"}";
 						}
 						for (String valueName : (String[]) values) {
 							List<String> nameListArray = new ArrayList<String>();
 							nameListArray.add("tel");
 							nameListArray.add(typeName);
-							nameListArray.add("text");
+							nameListArray.add("uri");
 							nameListArray.add(valueName);
 							list.add(nameListArray);
 						}
@@ -851,7 +852,7 @@ public class WhoisUtil {
 					}
 					nameList.add("tel");
 					nameList.add("{}");
-					nameList.add("text");
+					nameList.add("uri");
 					nameList.add(values.toString());
 					list.add(nameList);
 				}
@@ -864,18 +865,18 @@ public class WhoisUtil {
 						Object values = ((Map) phonesObject).get(name);
 						if (values instanceof String[]) {
 							String typeName = "";
-							if (name.equals("Office")) {
-								typeName = "{type:work}";
-							} else if (name.equals("Fax")) {
-								typeName = "{type:fax}";
-							} else if (name.equals("Mobile")) {
-								typeName = "{type:cell}";
+							if (name.equals(getDisplayKeyName("Office", format))) {
+								typeName = "{\"type\":\"work\"}";
+							} else if (name.equals(getDisplayKeyName("Fax", format))) {
+								typeName = "{\"type\":\"fax\"}";
+							} else if (name.equals(getDisplayKeyName("Mobile", format))) {
+								typeName = "{\"type\":\"cell\"}";
 							}
 							for (String valueName : (String[]) values) {
 								List<String> nameListArray = new ArrayList<String>();
 								nameListArray.add("tel");
 								nameListArray.add(typeName);
-								nameListArray.add("text");
+								nameListArray.add("uri");
 								nameListArray.add(valueName);
 								list.add(nameListArray);
 							}
@@ -883,15 +884,29 @@ public class WhoisUtil {
 						}
 						nameList.add("tel");
 						nameList.add("{}");
-						nameList.add("text");
+						nameList.add("uri");
 						nameList.add(values.toString());
 						list.add(nameList);
 					}
 				}
 			}
-			map.remove("phones");
+			map.remove(getDisplayKeyName("phones", format));
 		}
 		map.put("vCard", list.toArray());
 		return map;
+	}
+	
+	public static String getDisplayKeyName(String name, String format) {
+		if (format.equals("application/json")
+				|| format.equals("application/xml")) {
+			String[] names = name.split("_");
+			name = names[0].toLowerCase();
+			for (int i = 1; i < names.length; i++) {
+				name += names[i];
+			}
+			return name;
+		} else {
+			return name.replaceAll("_", " ");
+		}
 	}
 }
