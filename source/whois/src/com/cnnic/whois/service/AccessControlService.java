@@ -82,8 +82,7 @@ public class AccessControlService {
 	private void setPermissionList(String tableName) {
 		PermissionCache permissionCache = PermissionCache.getPermissionCache();
 		
-		int typeBinary = Arrays.binarySearch(WhoisUtil.extendColumnTableTypes,
-				tableName);//to determine what type of collection
+		int typeBinary = Arrays.binarySearch(WhoisUtil.extendColumnTableTypes, tableName);//to determine what type of collection
 		
 		switch (typeBinary) {
 		case 0:
@@ -99,39 +98,42 @@ public class AccessControlService {
 			permissionCache.setDNREntityMap();
 			break;
 		case 4:
-			permissionCache.setEventsMap();
+			
 			break;
 		case 5:
-			permissionCache.setIPMap();
+			permissionCache.setEventsMap();
 			break;
 		case 6:
-			permissionCache.setLinkMap();
+			permissionCache.setIPMap();
 			break;
 		case 7:
-			permissionCache.setNameServerMap();
+			permissionCache.setLinkMap();
 			break;
 		case 8:
-			permissionCache.setNoticesMap();
+			permissionCache.setNameServerMap();
 			break;
 		case 9:
-			permissionCache.setPhonesMap();
+			permissionCache.setNoticesMap();
 			break;
 		case 10:
-			permissionCache.setPostalAddressMap();
+			permissionCache.setPhonesMap();
 			break;
 		case 11:
-			permissionCache.setRegistrarMap();
+			permissionCache.setPostalAddressMap();
 			break;
 		case 12:
-			permissionCache.setRemarksMap();
+			permissionCache.setRegistrarMap();
 			break;
 		case 13:
-			permissionCache.setRIRDomainMap();
+			permissionCache.setRemarksMap();
 			break;
 		case 14:
-			permissionCache.setRIREntityMap();
+			permissionCache.setRIRDomainMap();
 			break;
 		case 15:
+			permissionCache.setRIREntityMap();
+			break;
+		case 16:
 			permissionCache.setVariantsMap();
 			break;
 		}
