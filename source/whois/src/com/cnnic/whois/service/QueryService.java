@@ -193,7 +193,7 @@ public class QueryService {
 		Map<String, Object> rirMap = queryDAO.queryRIREntity(queryPara, role, format);
 		Map<String, Object> dnrMap = queryDAO.queryDNREntity(queryPara, role, format);
 		Map<String, Object> regMap = queryRegistrar(queryPara, role, false, format);
-		if (rirMap == null && dnrMap == null && regMap.get("errorCode") != null) {
+		if (rirMap == null && dnrMap == null && regMap.get(WhoisUtil.getDisplayKeyName("Error_Code", format)) != null) {
 			return queryError(WhoisUtil.ERRORCODE, role, format);
 		}
 
@@ -206,7 +206,7 @@ public class QueryService {
 			wholeMap.putAll(dnrMap);
 		}
 		
-		if (regMap.get("errorCode") == null) {
+		if (regMap.get(WhoisUtil.getDisplayKeyName("Error_Code", format)) == null) {
 			wholeMap.putAll(regMap);
 		}
 		return wholeMap;
