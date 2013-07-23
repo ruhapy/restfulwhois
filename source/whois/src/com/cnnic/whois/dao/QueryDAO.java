@@ -761,10 +761,11 @@ public class QueryDAO {
 					} else if (keyFlieds.get(i).startsWith(WhoisUtil.JOINFILEDPRX)) {
 						String key = keyFlieds.get(i).substring(WhoisUtil.JOINFILEDPRX.length());
 						String fliedName = "";
-						if (keyName.equals("$mul$notices")
-								|| keyName.equals("$mul$remarks")) {
-							fliedName = keyName.substring("$mul$".length()) + "Id";
-						} else if (keyName.equals("$mul$errormessage")){
+						if (keyName.equals(WhoisUtil.MULTIPRXNOTICES) || keyName.equals(WhoisUtil.MULTIPRXREMARKS)) {
+							fliedName = keyName.substring(WhoisUtil.MULTIPRX.length()) + "Id";
+						} else if(keyName.equals(WhoisUtil.JOINNANOTICES) || keyName.equals(WhoisUtil.JOINREMARKS)){
+							fliedName = keyName.substring(WhoisUtil.JOINFILEDPRX.length()) + "Id";
+						}else if (keyName.equals("$mul$errormessage")){
 							fliedName = "Error_Code";
 						} else {
 							fliedName = WhoisUtil.HANDLE;
