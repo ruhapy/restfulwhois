@@ -1,18 +1,18 @@
 package com.cnnic.whois.util;
 
 import java.io.UnsupportedEncodingException;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.sql.DataSource;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.cnnic.whois.execption.QueryException;
+import com.cnnic.whois.service.QueryService;
 
 public class WhoisUtil {
 	public static final String BLANKSPACE = "    ";
@@ -20,7 +20,6 @@ public class WhoisUtil {
 	public static final String IP = "ip";
 	public static final String DMOAIN = "domain";
 	public static final String ENTITY = "entity";
-	public static final String AUTUM = "autnum";
 	public static final String NAMESERVER = "nameserver";
 
 	public static final String DELEGATIONKEYS = "delegationkeys";
@@ -70,7 +69,7 @@ public class WhoisUtil {
 	public static final String SELECT_LIST_RIRDOMAIN = "select * from RIRDomain where LdhName=";
 	public static final String SELECT_LIST_DNRDOMAIN = "select * from DNRDomain where LdhName=";
 	public static final String SELECT_LIST_NAMESREVER = "select * from nameServer where LdhName=";
-	public static final String SELECT_LIST_ERRORMESSAGE = "select * from errormessage where errorCode=";
+	public static final String SELECT_LIST_ERRORMESSAGE = "select * from errormessage where Error_Code=";
 
 	public static final String SELECT_LIST_AS1 = "select * from autnum where Start_Autnum <=";
 	public static final String SELECT_LIST_AS2 = " and ";
@@ -83,7 +82,7 @@ public class WhoisUtil {
 	public static final String SELECT_JOIN_LIST_DELEGATIONKEYS = "select * from delegationKeys join m2m_delegationKeys on m2m_delegationKeys.delegationKeyId= delegationKeys.delegationKeysId and  m2m_delegationKeys.Handle=";
 	public static final String SELECT_JOIN_LIST_NOTICES = "select * from notices join m2m_notices on m2m_notices.noticesId=notices.noticesId and  m2m_notices.Handle=";
 	public static final String SELECT_JOIN_LIST_REMARKS = "select * from remarks join m2m_remarks on m2m_remarks.remarksId=remarks.remarksId and  m2m_remarks.Handle=";
-	public static final String SELECT_JOIN_LIST_EVENTS = "select * from events join m2m_events on m2m_events.eventsId=events.eventsId and  m2m_events.Handle=";
+	public static final String SELECT_JOIN_LIST_EVENTS = "select * from events join m2m_events on m2m_events.eventsId=events.eventsId and m2m_events.Handle=";
 
 	public static final String SELECT_JOIN_LIST_REGISTRAR = "select * from registrar join m2m_registrar on m2m_registrar.registrarHandle=registrar.Handle and  m2m_registrar.Handle=";
 	public static final String SELECT_JOIN_LIST_JOINNAMESERVER = "select * from nameserver join m2m_nameserver on m2m_nameserver.nameserverHandle=nameserver.Handle and m2m_nameserver.Handle=";
@@ -94,7 +93,7 @@ public class WhoisUtil {
 	public static final String SELECT_LIST_PHONE = "select * from phones where phonesId=";
 	public static final String SELECT_LIST_POSTALADDRESS = "select * from postaladdress where postalAddressId=";
 	public static final String SELECT_LIST_VARIANTS = "select * from variants where variantsId=";
-	public static final String SELECT_LIST_DELEGATIONKEYS = "select * from delegationKeys where delegationKeyId=";
+	public static final String SELECT_LIST_DELEGATIONKEYS = "select * from delegationKeys where delegationKeysId=";
 	public static final String SELECT_LIST_NOTICES = "select * from notices where noticesId=";
 	public static final String SELECT_LIST_JOIN_REGISTRAR = "select * from registrar where Handle=";
 	public static final String SELECT_LIST_REGISTRAR = "select * from registrar where Entity_Names=";
@@ -190,16 +189,16 @@ public class WhoisUtil {
 			ARRAYFILEDPRX + "Fax", ARRAYFILEDPRX + "Mobile", "phonesId" };
 
 	public static String[] variantsKeyFileds = { ARRAYFILEDPRX + "Relation",
-			ARRAYFILEDPRX + "VariantNames", "variantsId" };
+			ARRAYFILEDPRX + "VariantNames", "variantsId", "IDNTable" };
 	
-	public static String[] ErrorMessageKeyFileds = { "errorCode", "title",
-		ARRAYFILEDPRX + "description", JOINNANOTICES};
+	public static String[] ErrorMessageKeyFileds = { "Error_Code", "Title",
+		ARRAYFILEDPRX + "Description", JOINNANOTICES};
 
 	public static String[] linkKeyFileds = { "Value", "Rel", "Href", "linkId",
 			"$array$hreflang", "$array$title", "media", "type" };
 
 	public static String[] postalAddressKeyFileds = { "Street", "Street1",
-			"Street2", "City", "SP", "Postal_Code", "County_Code",
+			"Street2", "City", "SP", "Postal_Code", "Country_Code",
 			"postalAddressId" };
 	public static String[] delegationKeyFileds = { "Algorithm", "Digest",
 			"Disgest_Type", "Key_Tag", "delegationKeysId" };
@@ -336,16 +335,20 @@ public class WhoisUtil {
 	};
 
 	public static final String ERRORCODE = "4143";
-	public static final String ERRORTITLE = "Eror Message";
+	public static final String ERRORTITLE = "Error Message";
 	public static final String [] ERRORDESCRIPTION = {"NO_RESULT"};
 
 	public static final String COMMENDRRORCODE = "4144";
-	public static final String OMMENDERRORTITLE = "Eror Message";
+	public static final String OMMENDERRORTITLE = "Error Message";
 	public static final String [] OMMENDERRORDESCRIPTION = {"COMMAND_SYNTAX_ERROR"};
 
 	public static final String UNCOMMENDRRORCODE = "4145";
-	public static final String UNOMMENDERRORTITLE = "Eror Message";
+	public static final String UNOMMENDERRORTITLE = "Error Message";
 	public static final String [] UNOMMENDERRORDESCRIPTION = {"UNKNOWN_COMMAND"};
+	
+	public static final String RATELIMITECODE = "429";
+	public static final String RATELIMITEERRORTITLE = "Error Message";
+	public static final String [] RATELIMITEERRORDESCRIPTION = {"RATE_LIMIT"};
 
 	public static final String ADDCOLUMN1 = "alter table ";
 	public static final String ADDCOLUMN2 = " add column ";
@@ -736,18 +739,19 @@ public class WhoisUtil {
 		}
 		return parra;
 	}
+	
 	/**
 	 * Changes will be part of the data into the VCard style
 	 * 
 	 * @param map
 	 * @return map collection
 	 */
-	public static Map<String, Object> toVCard(Map<String, Object> map) {
+	public static Map<String, Object> toVCard(Map<String, Object> map, String format) {
 		List<List<String>> list = new ArrayList<List<String>>();
-		Object entityNames = map.get("Entity Names");
-		Object postalAddress = map.get("postalAddress");
-		Object emails = map.get("Emails");
-		Object phones = map.get("phones");
+		Object entityNames = map.get(getDisplayKeyName("Entity_Names", format));
+		Object postalAddress = map.get(getDisplayKeyName("postal_Address", format));
+		Object emails = map.get(getDisplayKeyName("Emails", format));
+		Object phones = map.get(getDisplayKeyName("phones", format));
 
 		List<String> firstNameList = new ArrayList<String>();
 		firstNameList.add("version");
@@ -774,7 +778,7 @@ public class WhoisUtil {
 				nameList.add(entityNames.toString());
 				list.add(nameList);
 			}
-			map.remove("Entity Names");
+			map.remove(getDisplayKeyName("Entity_Names", format));
 		}
 		if (postalAddress != null) {
 			if (postalAddress instanceof Map) {
@@ -801,7 +805,7 @@ public class WhoisUtil {
 					list.add(nameList);
 				}
 			}
-			map.remove("postalAddress");
+			map.remove(getDisplayKeyName("postal_Address", format));
 		}
 		;
 		if (emails != null) {
@@ -814,7 +818,7 @@ public class WhoisUtil {
 				nameList.add(names);
 				list.add(nameList);
 			}
-			map.remove("Emails");
+			map.remove(getDisplayKeyName("Emails", format));
 		}
 		;
 		if (phones != null) {
@@ -825,18 +829,18 @@ public class WhoisUtil {
 					Object values = ((Map) phones).get(name);
 					if (values instanceof String[]) {
 						String typeName = "";
-						if (name.equals("Office")) {
-							typeName = "{type:work}";
-						} else if (name.equals("Fax")) {
-							typeName = "{type:fax}";
-						} else if (name.equals("Mobile")) {
-							typeName = "{type:cell}";
+						if (name.equals(getDisplayKeyName("Office", format))) {
+							typeName = "{\"type\":\"work\"}";
+						} else if (name.equals(getDisplayKeyName("Fax", format))) {
+							typeName = "{\"type\":\"fax\"}";
+						} else if (name.equals(getDisplayKeyName("Mobile", format))) {
+							typeName = "{\"type\":\"cell\"}";
 						}
 						for (String valueName : (String[]) values) {
 							List<String> nameListArray = new ArrayList<String>();
 							nameListArray.add("tel");
 							nameListArray.add(typeName);
-							nameListArray.add("text");
+							nameListArray.add("uri");
 							nameListArray.add(valueName);
 							list.add(nameListArray);
 						}
@@ -845,7 +849,7 @@ public class WhoisUtil {
 					}
 					nameList.add("tel");
 					nameList.add("{}");
-					nameList.add("text");
+					nameList.add("uri");
 					nameList.add(values.toString());
 					list.add(nameList);
 				}
@@ -858,18 +862,18 @@ public class WhoisUtil {
 						Object values = ((Map) phonesObject).get(name);
 						if (values instanceof String[]) {
 							String typeName = "";
-							if (name.equals("Office")) {
-								typeName = "{type:work}";
-							} else if (name.equals("Fax")) {
-								typeName = "{type:fax}";
-							} else if (name.equals("Mobile")) {
-								typeName = "{type:cell}";
+							if (name.equals(getDisplayKeyName("Office", format))) {
+								typeName = "{\"type\":\"work\"}";
+							} else if (name.equals(getDisplayKeyName("Fax", format))) {
+								typeName = "{\"type\":\"fax\"}";
+							} else if (name.equals(getDisplayKeyName("Mobile", format))) {
+								typeName = "{\"type\":\"cell\"}";
 							}
 							for (String valueName : (String[]) values) {
 								List<String> nameListArray = new ArrayList<String>();
 								nameListArray.add("tel");
 								nameListArray.add(typeName);
-								nameListArray.add("text");
+								nameListArray.add("uri");
 								nameListArray.add(valueName);
 								list.add(nameListArray);
 							}
@@ -877,15 +881,86 @@ public class WhoisUtil {
 						}
 						nameList.add("tel");
 						nameList.add("{}");
-						nameList.add("text");
+						nameList.add("uri");
 						nameList.add(values.toString());
 						list.add(nameList);
 					}
 				}
 			}
-			map.remove("phones");
+			map.remove(getDisplayKeyName("phones", format));
 		}
 		map.put("vCard", list.toArray());
 		return map;
+	}
+	
+	public static String getDisplayKeyName(String name, String format) {
+		if (format.equals("application/json")
+				|| format.equals("application/xml")) {
+			String[] names = name.split("_");
+			name = names[0].toLowerCase();
+			for (int i = 1; i < names.length; i++) {
+				name += names[i];
+			}
+			return name;
+		} else {
+			return name.replaceAll("_", " ");
+		}
+	}
+	
+	public static String getFormatCookie(HttpServletRequest request) {
+		Cookie[] cookies = request.getCookies();
+
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (cookie.getName().equals("Format")) {
+					return cookie.getValue();
+				}
+			}
+		}
+		return null;
+	}
+	
+	public static void clearFormatCookie(HttpServletRequest request, HttpServletResponse response){
+		Cookie[] cookies = request.getCookies();
+
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (cookie.getName().equals("Format")) {
+					cookie.setMaxAge(0);
+					response.addCookie(cookie);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Determine what kind of role the user
+	 * 
+	 * @param request
+	 * @return role
+	 */
+	public static String getUserRole(HttpServletRequest request){
+		String role = "anonymous";
+		if (request.isUserInRole("authenticated") || request.getSession().getAttribute("openIdUser") != null){ //determine what kind of role
+			role = "authenticated";
+		}else if (request.isUserInRole("root")){
+			role = "root";
+		}
+		return role;
+	}
+	
+	/**
+	 * The processing Error
+	 * 
+	 * @return error map collection
+	 * @throws QueryException 
+	 */
+	public static Map<String, Object> processError(String errorCode, String role, String format) throws QueryException {
+		Map<String, Object>ErrorMessageMap = null;
+		QueryService queryService = QueryService.getQueryService();
+		ErrorMessageMap = queryService.queryError(errorCode, role, format);
+		return ErrorMessageMap;
+		//return WhoisUtil.getErrorMessage(WhoisUtil.COMMENDRRORCODE,
+				//WhoisUtil.OMMENDERRORTITLE, WhoisUtil.OMMENDERRORDESCRIPTION);
 	}
 }

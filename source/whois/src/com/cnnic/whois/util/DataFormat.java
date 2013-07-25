@@ -243,7 +243,8 @@ public class DataFormat {
 					keyName = "Fax";
 				} else if (vcard.get(i + 1).indexOf("cell") != -1) {
 					keyName = "Moblie";
-				} else {
+				} 
+				else {
 					keyName = "phonesId";
 				}
 			}

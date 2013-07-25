@@ -173,7 +173,7 @@ public class ColumnCache {
 	 * Set ASKeyFileds
 	 */
 	public void setASKeyFileds() {
-		ASKeyFileds = getKeyList(WhoisUtil.AUTUM);
+		ASKeyFileds = getKeyList(WhoisUtil.AUTNUM);
 	}
 
 	/**
