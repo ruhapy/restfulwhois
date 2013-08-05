@@ -663,13 +663,6 @@ public class QueryDAO {
 			}
 		}
 		return errorMessageMap;
-		/*{
-			Map<String, Object> errorMessageMap = new HashMap<String, Object>();
-			errorMessageMap.put("errorCode", errorCode);
-			//errorMessageMap.put("title", title);
-			//errorMessageMap.put("description", description);
-			return errorMessageMap;
-		}*/
 	}
 	
 	

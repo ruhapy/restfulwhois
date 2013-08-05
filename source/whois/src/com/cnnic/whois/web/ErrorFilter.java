@@ -56,9 +56,9 @@ public class ErrorFilter implements Filter {
 			if(format.contains(sqhtml))
 				format = "application/html";
 		}
-		if(format == null || !(format.equals("application/html") || format.equals("application/json") || format.equals("application/xml"))){
-			format = "application/html";
-		}
+//		if(format == null || !(format.equals("application/html") || format.equals("application/json") || format.equals("application/xml"))){
+//			format = "application/html";
+//		}
 		
 		String queryInfo = "";
 		String queryType = "";
@@ -120,7 +120,7 @@ public class ErrorFilter implements Filter {
 			Map<String, Object> map = new LinkedHashMap<String, Object>();
 			
 			try {
-				map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+				map = WhoisUtil.processError(WhoisUtil.ERRORCODE, role, format);
 			} catch (QueryException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -134,6 +134,7 @@ public class ErrorFilter implements Filter {
 				}
 				else{
 					response.setHeader("Content-Type", "application/json");
+					response.setStatus(404);
 					out.print(DataFormat.getJsonObject(map));
 				}
 			}else if(format.equals("application/xml")){
@@ -142,6 +143,7 @@ public class ErrorFilter implements Filter {
 				}
 				else{
 					response.setHeader("Content-Type", "application/xml");
+					response.setStatus(404);
 					out.write(DataFormat.getXmlString(map));
 				}
 			}else{
@@ -150,6 +152,7 @@ public class ErrorFilter implements Filter {
 				}
 				else{
 					response.setHeader("Content-Type", "text/plain");
+					response.setStatus(404);
 					out.write(DataFormat.getPresentation(map));
 				}
 			}
