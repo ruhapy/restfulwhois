@@ -56,9 +56,9 @@ public class ErrorFilter implements Filter {
 			if(format.contains(sqhtml))
 				format = "application/html";
 		}
-//		if(format == null || !(format.equals("application/html") || format.equals("application/json") || format.equals("application/xml"))){
-//			format = "application/html";
-//		}
+		if(format == null || !(format.equals("application/html") || format.equals("application/json") || format.equals("application/xml"))){
+			format = "application/html";
+		}
 		
 		String queryInfo = "";
 		String queryType = "";
