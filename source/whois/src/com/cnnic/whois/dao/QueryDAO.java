@@ -451,6 +451,40 @@ public class QueryDAO {
 		}
 		return map;
 	}
+	
+	/**
+	 * Connect to the database query SecureDNS information
+	 * 
+	 * @param queryInfo
+	 * @param role
+	 * @return map collection
+	 * @throws QueryException
+	 */
+	public Map<String, Object> querySecureDNS(String queryInfo, String role, String format)
+			throws QueryException {
+		Connection connection = null;
+		Map<String, Object> map = null;
+
+		try {
+			connection = ds.getConnection();
+			String selectSql = WhoisUtil.SELECT_LIST_SECUREDNS + "'" + queryInfo
+					+ "'";
+			map = query(connection, selectSql,
+					permissionCache.getSecureDNSMapKeyFileds(role),
+					"$mul$secureDNS", role, format);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new QueryException(e);
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException se) {
+				}
+			}
+		}
+		return map;
+	}
 
 	/**
 	 * Connect to the database query delegationKey information
@@ -758,7 +792,13 @@ public class QueryDAO {
 							fliedName = keyName.substring(WhoisUtil.JOINFILEDPRX.length()) + "Id";
 						}else if (keyName.equals("$mul$errormessage")){
 							fliedName = "Error_Code";
-						} else {
+						}else if (keyName.equals("$mul$secureDNS")){
+							fliedName = "secureDNSID";
+						}else if (keyName.equals(WhoisUtil.JOINDSDATA)){
+							fliedName = "dsDataID";
+						}else if (keyName.equals(WhoisUtil.JOINKEYDATA)){
+							fliedName = "keyDataID";
+						}else {
 							fliedName = WhoisUtil.HANDLE;
 						}
 
@@ -919,6 +959,18 @@ public class QueryDAO {
 			return querySpecificJoinTable(key, handle,
 					WhoisUtil.SELECT_JOIN_LIST_PUBLICIDS, role, connection,
 					permissionCache.getPublicIdsKeyFileds(role), format);
+		}else if (key.equals(WhoisUtil.JOINSECUREDNS)) {
+			return querySpecificJoinTable(key, handle,
+					WhoisUtil.SELECT_JOIN_LIST_SECUREDNS, role, connection,
+					permissionCache.getSecureDNSMapKeyFileds(role), format);
+		}else if (key.equals(WhoisUtil.JOINDSDATA)) {
+			return querySpecificJoinTable(key, handle,
+					WhoisUtil.SELECT_JOIN_LIST_DSDATA, role, connection,
+					permissionCache.getDsDataMapKeyFileds(role), format);
+		}else if (key.equals(WhoisUtil.JOINKEYDATA)) {
+			return querySpecificJoinTable(key, handle,
+					WhoisUtil.SELECT_JOIN_LIST_KEYDATA, role, connection,
+					permissionCache.getKeyDataMapKeyFileds(role), format);
 		}
 
 		return null;

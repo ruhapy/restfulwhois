@@ -177,38 +177,40 @@ public class QueryServlet extends HttpServlet {
 			case 4:
 				map = processQueryEvents(queryPara, role, format);
 				break;
-
 			case 5:
-				map = processQueryIP(queryPara, role, format);
+				map = processQueryHelp();
 				break;
 			case 6:
-				map = processQueryLinks(queryPara, role, format);
+				map = processQueryIP(queryPara, role, format);
 				break;
 			case 7:
+				map = processQueryLinks(queryPara, role, format);
+				break;
+			case 8:
 				map = processQueryNameServer(
 						IDN.toASCII(WhoisUtil.toChineseUrl(queryPara)), role, format);
 				queryPara = IDN.toUnicode(IDN.toASCII(WhoisUtil.toChineseUrl(queryPara)));
 				break;
-			case 8:
+			case 9:
 				map = processQueryNotices(queryPara, role, format);
 				break;
-			case 9:
+			case 10:
 				map = processQueryPhones(queryPara, role, format);
 				break;
-			case 10:
+			case 11:
 				map = processQueryPostalAddress(queryPara, role, format);
 				break;
-			case 11:
+			case 12:
 				map = processQueryRegistrar(queryPara, role, format);
 				break;
-			case 12:
-				map = processQueryRemarks(queryPara, role, format);
-				break;
 			case 13:
-				map = processQueryVariants(queryPara, role, format);
-				break;
+				map = processQueryRemarks(queryPara, role, format);
+				break;			
 			case 14:
-				map = processQueryHelp();
+				map = processQuerySecureDNS(queryPara, role, format);
+				break;
+			case 15:
+				map = processQueryVariants(queryPara, role, format);
 				break;
 			default:
 				map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
@@ -476,6 +478,23 @@ public class QueryServlet extends HttpServlet {
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryVariants(queryPara, role, format);
+	}
+	
+	/**
+	 * Query SecureDNS
+	 * 
+	 * @param queryPara
+	 * @param role
+	 * @return map collection
+	 * @throws QueryException
+	 */
+	private Map<String, Object> processQuerySecureDNS(String queryPara,
+			String role, String format) throws QueryException {
+		if (!isBlankStr(queryPara))
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+
+		QueryService queryService = QueryService.getQueryService();
+		return queryService.querySecureDNS(queryPara, role, format);
 	}
 
 	/**

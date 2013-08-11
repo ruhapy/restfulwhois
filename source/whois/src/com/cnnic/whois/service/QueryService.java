@@ -286,6 +286,25 @@ public class QueryService {
 
 		return map;
 	}
+	
+	/**
+	 * Query SecureDNS
+	 * 
+	 * @param queryPara
+	 * @param role
+	 * @return map collection
+	 * @throws QueryException
+	 */
+	public Map<String, Object> querySecureDNS(String queryPara, String role, String format)
+			throws QueryException {
+		Map<String, Object> map = queryDAO.querySecureDNS(queryPara, role, format);
+
+		if (map == null) {
+			return queryError(WhoisUtil.ERRORCODE, role, format);
+		}
+
+		return map;
+	}
 
 	/**
 	 * Query delegationKey type
