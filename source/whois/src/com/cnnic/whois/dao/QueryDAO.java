@@ -485,6 +485,74 @@ public class QueryDAO {
 		}
 		return map;
 	}
+	
+	/**
+	 * Connect to the database query DsData information
+	 * 
+	 * @param queryInfo
+	 * @param role
+	 * @return map collection
+	 * @throws QueryException
+	 */
+	public Map<String, Object> queryDsData(String queryInfo, String role, String format)
+			throws QueryException {
+		Connection connection = null;
+		Map<String, Object> map = null;
+
+		try {
+			connection = ds.getConnection();
+			String selectSql = WhoisUtil.SELECT_LIST_DSDATA + "'" + queryInfo
+					+ "'";
+			map = query(connection, selectSql,
+					permissionCache.getDsDataMapKeyFileds(role),
+					"$mul$dsData", role, format);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new QueryException(e);
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException se) {
+				}
+			}
+		}
+		return map;
+	}
+	
+	/**
+	 * Connect to the database query SecureDNS information
+	 * 
+	 * @param queryInfo
+	 * @param role
+	 * @return map collection
+	 * @throws QueryException
+	 */
+	public Map<String, Object> queryKeyData(String queryInfo, String role, String format)
+			throws QueryException {
+		Connection connection = null;
+		Map<String, Object> map = null;
+
+		try {
+			connection = ds.getConnection();
+			String selectSql = WhoisUtil.SELECT_LIST_KEYDATA + "'" + queryInfo
+					+ "'";
+			map = query(connection, selectSql,
+					permissionCache.getKeyDataMapKeyFileds(role),
+					"$mul$keyData", role, format);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new QueryException(e);
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException se) {
+				}
+			}
+		}
+		return map;
+	}
 
 	/**
 	 * Connect to the database query delegationKey information
@@ -792,11 +860,11 @@ public class QueryDAO {
 							fliedName = keyName.substring(WhoisUtil.JOINFILEDPRX.length()) + "Id";
 						}else if (keyName.equals("$mul$errormessage")){
 							fliedName = "Error_Code";
-						}else if (keyName.equals("$mul$secureDNS")){
+						}else if (keyName.equals(WhoisUtil.JOINSECUREDNS) || keyName.equals("$mul$secureDNS")){
 							fliedName = "secureDNSID";
-						}else if (keyName.equals(WhoisUtil.JOINDSDATA)){
+						}else if (keyName.equals(WhoisUtil.JOINDSDATA) || keyName.equals("$mul$dsData")){
 							fliedName = "dsDataID";
-						}else if (keyName.equals(WhoisUtil.JOINKEYDATA)){
+						}else if (keyName.equals(WhoisUtil.JOINKEYDATA) || keyName.equals("$mul$keyData")){
 							fliedName = "keyDataID";
 						}else {
 							fliedName = WhoisUtil.HANDLE;
@@ -863,7 +931,9 @@ public class QueryDAO {
 					keyName.equals(WhoisUtil.MULTIPRXLINK ) ||
 					keyName.equals(WhoisUtil.MULTIPRXNOTICES )||
 					keyName.equals(WhoisUtil.MULTIPRXREMARKS) ||
-					keyName.equals(WhoisUtil.JOINPUBLICIDS)){
+					keyName.equals(WhoisUtil.JOINPUBLICIDS) ||
+					keyName.equals(WhoisUtil.JOINDSDATA)||
+					keyName.equals(WhoisUtil.JOINKEYDATA)){
 				mapInfo.put(keyName, list.toArray());
 			}else{
 				if (list.size() > 1) {

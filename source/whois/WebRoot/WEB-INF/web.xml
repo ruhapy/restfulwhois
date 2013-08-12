@@ -69,6 +69,8 @@
 		<url-pattern>/remarks/*</url-pattern>
 		<url-pattern>/help/*</url-pattern>
 		<url-pattern>/secureDNS/*</url-pattern>
+		<url-pattern>/dsData/*</url-pattern>
+		<url-pattern>/keyData/*</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>AuthOpenIDServlet</servlet-name>

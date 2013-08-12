@@ -102,6 +102,8 @@ public class WhoisUtil {
 	public static final String SELECT_LIST_POSTALADDRESS = "select * from postaladdress where postalAddressId=";
 	public static final String SELECT_LIST_VARIANTS = "select * from variants where variantsId=";
 	public static final String SELECT_LIST_SECUREDNS = "select * from secureDNS where secureDNSID=";
+	public static final String SELECT_LIST_DSDATA = "select * from dsData where dsDataID=";
+	public static final String SELECT_LIST_KEYDATA = "select * from keyData where keyDataID=";
 	public static final String SELECT_LIST_DELEGATIONKEYS = "select * from delegationKeys where delegationKeysId=";
 	public static final String SELECT_LIST_NOTICES = "select * from notices where noticesId=";
 	public static final String SELECT_LIST_JOIN_REGISTRAR = "select * from registrar where Handle=";
@@ -227,9 +229,9 @@ public class WhoisUtil {
 	
 	public static String[] secureDNSKeyFileds = {"zoneSigned", "delegationSigned", "maxSigLife", "secureDNSID", JOINDSDATA, JOINKEYDATA};
 	
-	public static String[] dsDataKeyFileds = { "keyTag", "algorithm", "digest", "digestType", JOINEVENTS};
+	public static String[] dsDataKeyFileds = { "keyTag", "algorithm", "digest", "digestType", "dsDataID", JOINEVENTS};
 	
-	public static String[] keyDataKeyFileds = { "flags", "protocol", "publicKey", "algorithm", JOINEVENTS};
+	public static String[] keyDataKeyFileds = { "flags", "protocol", "publicKey", "algorithm", "keyDataID", JOINEVENTS};
 
 	public static String[] remarksKeyFileds = { "Title",
 			ARRAYFILEDPRX + "Description", "remarksId", JOINLINKFILED };
@@ -237,8 +239,8 @@ public class WhoisUtil {
 	public static String[] eventsKeyFileds = { "EventAction", "EventActor",
 			"EventDate", "eventsId" };
 
-	public static String[] queryTypes = { "autnum", "delegationKeys", "domain",
-			"entity", "events", "help", "ip", "links", "nameserver", "notices",
+	public static String[] queryTypes = { "autnum", "delegationKeys", "domain", "dsData",
+			"entity", "events", "help", "ip", "keyData", "links", "nameserver", "notices",
 			"phones", "postalAddress", "registrar", "remarks", "secureDNS", "variants" };
 
 	public static String[] extendColumnTableTypes = { "autnum",

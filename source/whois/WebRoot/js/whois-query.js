@@ -50,6 +50,10 @@ function toTable(JsonObject){
 			tableStr += toCommonTable(urlhead, values, "nameserver", "LdhName");
 		}else if(keyName == "secureDNS"){			
 			tableStr += toCommonTable(urlhead, values, "secureDNS", "secureDNSID");
+		}else if(keyName == "dsData"){			
+			tableStr += toCommonTable(urlhead, values, "dsData", "dsDataID");
+		}else if(keyName == "keyData"){			
+			tableStr += toCommonTable(urlhead, values, "keyData", "keyDataID");
 		}else if(keyName == "entities"){
 			
 			tableStr += toEntityTable(urlhead, values, "entity", "Roles", "Handle");
@@ -65,10 +69,6 @@ function toTable(JsonObject){
 			tableStr += toIPAddresses(values, keyName, "v4", "v6");
 		}else if(keyName == "publicIds"){
 			tableStr += toPublicIds(values, keyName);
-		}else if(keyName == "dsData"){
-			tableStr += toDsData(values, keyName);
-		}else if(keyName == "keyData"){
-			tableStr += toKeyData(values, keyName);
 		}else if(keyName != "rdapConformance" && keyName != '0'){			
 			tableStr += "<tr><td width='20%'>"+keyName+"</td><td>"+values+"&nbsp;</td></tr>";
 		}
@@ -86,20 +86,6 @@ function toPublicIds(values, keyName){
 }
 function toIPAddresses(values, keyName, keyV4, keyV6){
 	var realValue = "v4: " + values["v4"] + "<br/> v6: " + values["v6"];
-	tableStr = "<tr><td width='20%'>" + keyName + "</td><td>" + realValue + "</td></tr>";
-	return tableStr;
-}
-
-function toDsData(values, keyName){
-	var realValue = "keyTag: " + values["keyTag"] + "<br/> algorithm: " + values["algorithm"]
-		+ "<br/> digest: " + values["digest"] + "<br/> algorithm: " + values["algorithm"];
-	tableStr = "<tr><td width='20%'>" + keyName + "</td><td>" + realValue + "</td></tr>";
-	return tableStr;
-}
-
-function toKeyData(values, keyName){
-	var realValue = "flags: " + values["flags"] + "<br/> protocol: " + values["protocol"]
-		+ "<br/> publicKey: " + values["publicKey"] + "<br/> digestType: " + values["digestType"];
 	tableStr = "<tr><td width='20%'>" + keyName + "</td><td>" + realValue + "</td></tr>";
 	return tableStr;
 }
