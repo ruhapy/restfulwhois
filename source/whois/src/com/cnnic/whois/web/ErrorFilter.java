@@ -129,7 +129,7 @@ public class ErrorFilter implements Filter {
 			Map<String, Object> map = new LinkedHashMap<String, Object>();
 			
 			try {
-				map = WhoisUtil.processError(WhoisUtil.ERRORCODE, role, format);
+				map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
 			} catch (QueryException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -143,7 +143,7 @@ public class ErrorFilter implements Filter {
 				}
 				else{
 					response.setHeader("Content-Type", "application/json");
-					response.setStatus(404);
+					response.setStatus(400);
 					out.print(DataFormat.getJsonObject(map));
 				}
 			}else if(format.equals("application/xml")){
@@ -152,7 +152,7 @@ public class ErrorFilter implements Filter {
 				}
 				else{
 					response.setHeader("Content-Type", "application/xml");
-					response.setStatus(404);
+					response.setStatus(400);
 					out.write(DataFormat.getXmlString(map));
 				}
 			}else{
@@ -161,7 +161,7 @@ public class ErrorFilter implements Filter {
 				}
 				else{
 					response.setHeader("Content-Type", "text/plain");
-					response.setStatus(404);
+					response.setStatus(400);
 					out.write(DataFormat.getPresentation(map));
 				}
 			}

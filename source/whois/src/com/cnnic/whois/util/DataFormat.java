@@ -21,6 +21,9 @@ public class DataFormat {
 		return JSONObject.fromObject(responMap);
 		//return JSONArray.fromObject(responMap);
 	}
+	public static JSONArray getJsonArray(Object responMap) {
+		return JSONArray.fromObject(responMap);
+	}
 
 	/**
 	 * XML converted to JSON object
@@ -32,34 +35,34 @@ public class DataFormat {
 		return getXMLFromMap(responMap, 0);
 	}
 
-	private static Map<String, Object> getRdapMessage(Map<String, Object> responMap) {
-		Set<String> key = responMap.keySet();
-		Iterator<String> iter = key.iterator();
-		
-		//the first most top conformance object
-		Object[] conform = new Object[1];
-		conform[0] = "rdap_level_0";
-		
-		while (iter.hasNext()) {
-			String iterkey = iter.next();
-			if (!iterkey.startsWith("$mul$")) {
-				responMap.put("rdapConformance", conform);
-				break;
-			} else {
-				Object[] mayArray = (Object[]) responMap.get(iterkey);
-				List<Map> list = new ArrayList<Map>();
-				for (Object map : mayArray) {
-					Map m = (Map) map;
-					m.put("rdapConformance", conform);
-					list.add(m);
-				}
-				responMap = new LinkedHashMap<String, Object>();
-				responMap.put(iterkey, list.toArray());
-				break;
-			}
-		}
-		return responMap;
-	}
+//	private static Map<String, Object> getRdapMessage(Map<String, Object> responMap) {
+//		Set<String> key = responMap.keySet();
+//		Iterator<String> iter = key.iterator();
+//		
+//		//the first most top conformance object
+//		Object[] conform = new Object[1];
+//		conform[0] = "rdap_level_0";
+//		
+//		while (iter.hasNext()) {
+//			String iterkey = iter.next();
+//			if (!iterkey.startsWith("$mul$")) {
+//				responMap.put("rdapConformance", conform);
+//				break;
+//			} else {
+//				Object[] mayArray = (Object[]) responMap.get(iterkey);
+//				List<Map> list = new ArrayList<Map>();
+//				for (Object map : mayArray) {
+//					Map m = (Map) map;
+//					m.put("rdapConformance", conform);
+//					list.add(m);
+//				}
+//				responMap = new LinkedHashMap<String, Object>();
+//				responMap.put(iterkey, list.toArray());
+//				break;
+//			}
+//		}
+//		return responMap;
+//	}
 
 	/**
 	 * Map to convert a collection of key: value string of the form

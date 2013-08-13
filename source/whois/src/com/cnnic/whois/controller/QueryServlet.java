@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.IDN;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
@@ -12,6 +13,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
@@ -147,13 +151,19 @@ public class QueryServlet extends HttpServlet {
         }
         String str = new String(b, "UTF-8"); 
 		String queryInfo = str.substring(request.getContextPath().length() + 1);
-		String queryType = queryInfo.substring(0, queryInfo.indexOf("/"));
-		String queryPara = queryInfo.substring(queryInfo.indexOf("/") + 1); //get the parameters from the request scope and parse
-		request.setAttribute("queryType", queryType);
-
-		String format = getFormatCookie(request);
+		String queryType = "";
+		String queryPara = "";
 		
+		String format = getFormatCookie(request);
 		String role = WhoisUtil.getUserRole(request);
+		
+		if(queryInfo.indexOf("/") != -1){
+			queryType = queryInfo.substring(0, queryInfo.indexOf("/"));
+			queryPara = queryInfo.substring(queryInfo.indexOf("/") + 1); //get the parameters from the request scope and parse
+		}else{
+			map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+		}
+		request.setAttribute("queryType", queryType);
 
 		try {
 			int typeIndex = Arrays
@@ -176,7 +186,6 @@ public class QueryServlet extends HttpServlet {
 			case 4:
 				map = processQueryEvents(queryPara, role, format);
 				break;
-
 			case 5:
 				map = processQueryIP(queryPara, role, format);
 				break;
@@ -213,15 +222,6 @@ public class QueryServlet extends HttpServlet {
 				map = WhoisUtil.processError(WhoisUtil.ERRORCODE, role, format);
 				break;
 			}
-			if(map.containsKey("errorCode") || map.containsKey("Error Code")){
-				String errorCode = null; 
-				if(map.containsKey("errorCode"))
-					errorCode = map.get("errorCode").toString();
-				if (map.containsKey("Error Code"))
-					errorCode = map.get("Error Code").toString();
-				if (errorCode.equals("404"))
-					response.setStatus(404);
-			}
 			request.setAttribute("queryPara", queryPara);
 		} catch (RedirectExecption re) {
 			String redirectUrl = re.getRedirectURL(); //to capture to exception of rediectionException and redirect
@@ -239,6 +239,17 @@ public class QueryServlet extends HttpServlet {
 			e.printStackTrace();
 			this.log(e.getMessage(), e);
 			map = WhoisUtil.processError(WhoisUtil.ERRORCODE, role, format);
+		}
+		if(map.containsKey("errorCode") || map.containsKey("Error Code")){
+			String errorCode = null; 
+			if(map.containsKey("errorCode"))
+				errorCode = map.get("errorCode").toString();
+			if (map.containsKey("Error Code"))
+				errorCode = map.get("Error Code").toString();
+			if (errorCode.equals(WhoisUtil.ERRORCODE))
+				response.setStatus(404);
+			if (errorCode.equals(WhoisUtil.COMMENDRRORCODE))
+				response.setStatus(400);
 		}
 		processRespone(request, response, map);
 	}
@@ -588,7 +599,20 @@ public class QueryServlet extends HttpServlet {
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		if (format.equals("application/json") || format.equals("application/rdap+json") || format.equals("application/rdap+json;application/json")) { // depending on the return type of the response corresponding data
 			response.setHeader("Content-Type", "application/json");
-			out.print(DataFormat.getJsonObject(map));		          
+			Iterator<String> iterr = map.keySet().iterator();
+			String multiKey = null;
+			while(iterr.hasNext()){
+				String key =  iterr.next();
+				if(key.startsWith("$mul$")){
+					multiKey = key;
+				}
+			}
+			if(multiKey != null){
+				Object jsonObj = map.get(multiKey);
+				out.print(DataFormat.getJsonArray(jsonObj));
+			}else{
+				out.print(DataFormat.getJsonObject(map));
+			}
 		} else if (format.equals("application/xml")) {
 			response.setHeader("Content-Type", "application/xml");
 			out.write(DataFormat.getXmlString(map));
