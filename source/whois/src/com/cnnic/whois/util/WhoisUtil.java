@@ -227,11 +227,11 @@ public class WhoisUtil {
 	
 	public static String[] publicIdsKeyFileds = { "type", "identifier"};
 	
-	public static String[] secureDNSKeyFileds = {"zoneSigned", "delegationSigned", "maxSigLife", "secureDNSID", JOINDSDATA, JOINKEYDATA};
+	public static String[] secureDNSKeyFileds = {"Zone_Signed", "Delegation_Signed", "Max_SigLife", "SecureDNSID", JOINDSDATA, JOINKEYDATA};
 	
-	public static String[] dsDataKeyFileds = { "keyTag", "algorithm", "digest", "digestType", "dsDataID", JOINEVENTS};
+	public static String[] dsDataKeyFileds = { "Key_Tag", "Algorithm", "Digest", "Digest_Type", "DsDataID", JOINEVENTS};
 	
-	public static String[] keyDataKeyFileds = { "flags", "protocol", "publicKey", "algorithm", "keyDataID", JOINEVENTS};
+	public static String[] keyDataKeyFileds = { "Flags", "Protocol", "Public_Key", "Algorithm", "KeyDataID", JOINEVENTS};
 
 	public static String[] remarksKeyFileds = { "Title",
 			ARRAYFILEDPRX + "Description", "remarksId", JOINLINKFILED };

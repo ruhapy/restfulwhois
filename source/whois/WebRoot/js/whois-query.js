@@ -49,11 +49,11 @@ function toTable(JsonObject){
 			
 			tableStr += toCommonTable(urlhead, values, "nameserver", "LdhName");
 		}else if(keyName == "secureDNS"){			
-			tableStr += toCommonTable(urlhead, values, "secureDNS", "secureDNSID");
+			tableStr += toCommonTable(urlhead, values, "secureDNS", "SecureDNSID");
 		}else if(keyName == "dsData"){			
-			tableStr += toCommonTable(urlhead, values, "dsData", "dsDataID");
+			tableStr += toCommonTable(urlhead, values, "dsData", "DsDataID");
 		}else if(keyName == "keyData"){			
-			tableStr += toCommonTable(urlhead, values, "keyData", "keyDataID");
+			tableStr += toCommonTable(urlhead, values, "keyData", "KeyDataID");
 		}else if(keyName == "entities"){
 			
 			tableStr += toEntityTable(urlhead, values, "entity", "Roles", "Handle");

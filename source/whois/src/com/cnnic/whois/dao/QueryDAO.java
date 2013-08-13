@@ -861,11 +861,11 @@ public class QueryDAO {
 						}else if (keyName.equals("$mul$errormessage")){
 							fliedName = "Error_Code";
 						}else if (keyName.equals(WhoisUtil.JOINSECUREDNS) || keyName.equals("$mul$secureDNS")){
-							fliedName = "secureDNSID";
+							fliedName = "SecureDNSID";
 						}else if (keyName.equals(WhoisUtil.JOINDSDATA) || keyName.equals("$mul$dsData")){
-							fliedName = "dsDataID";
+							fliedName = "DsDataID";
 						}else if (keyName.equals(WhoisUtil.JOINKEYDATA) || keyName.equals("$mul$keyData")){
-							fliedName = "keyDataID";
+							fliedName = "KeyDataID";
 						}else {
 							fliedName = WhoisUtil.HANDLE;
 						}
