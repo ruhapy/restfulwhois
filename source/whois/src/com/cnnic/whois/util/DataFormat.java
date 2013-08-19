@@ -19,7 +19,6 @@ public class DataFormat {
 	 */
 	public static JSONObject getJsonObject(Map<String, Object> responMap) {
 		return JSONObject.fromObject(responMap);
-		//return JSONArray.fromObject(responMap);
 	}
 	public static JSONArray getJsonArray(Object responMap) {
 		return JSONArray.fromObject(responMap);

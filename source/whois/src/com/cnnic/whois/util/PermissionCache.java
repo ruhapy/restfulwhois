@@ -35,6 +35,7 @@ public class PermissionCache {
 	private Map<String, List<String>> eventsMap = new HashMap<String, List<String>>();
 	private Map<String, List<String>> remarksMap = new HashMap<String, List<String>>();
 	private Map<String, List<String>> ErrorMessageMap = new HashMap<String, List<String>>();
+	private Map<String, List<String>> helpMap = new HashMap<String, List<String>>();
 	
 	private ColumnCache columnCache = ColumnCache.getColumnCache();
 
@@ -81,6 +82,8 @@ public class PermissionCache {
 				columnCache.getEventsKeyFileds());
 		ErrorMessageMap = getKeyMap(WhoisUtil.ERRORMESSAGE,
 				columnCache.getErrorMessageKeyFileds());
+		helpMap = getKeyMap(WhoisUtil.HELP,
+				columnCache.getHelpKeyFields());
 	}
 
 	/**
@@ -537,5 +540,14 @@ public class PermissionCache {
 			throw new IllegalStateException(e.getMessage());
 		}
 
+	}
+
+	public List<String> getHelpKeyFileds(String role) {
+		return helpMap.get(role);
+	}
+	
+	public void setHelpMap() {
+		this.helpMap = getKeyMap(WhoisUtil.HELP,
+				columnCache.getHelpKeyFields());
 	}
 }

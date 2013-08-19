@@ -34,7 +34,6 @@
 		<url-pattern>/domain/*</url-pattern>
 		<url-pattern>/entity/*</url-pattern>
 		<url-pattern>/autnum/*</url-pattern>
-		<url-pattern>/delegationKeys/*</url-pattern>
 		<url-pattern>/links/*</url-pattern>
 		<url-pattern>/phones/*</url-pattern>
 		<url-pattern>/nameserver/*</url-pattern>
@@ -43,7 +42,11 @@
 		<url-pattern>/registrar/*</url-pattern>
 		<url-pattern>/variants/*</url-pattern>
 		<url-pattern>/events/*</url-pattern>
-		<url-pattern>/remarks/*</url-pattern>		
+		<url-pattern>/remarks/*</url-pattern>
+		<url-pattern>/help/*</url-pattern>
+		<url-pattern>/secureDNS/*</url-pattern>
+		<url-pattern>/dsData/*</url-pattern>
+		<url-pattern>/keyData/*</url-pattern>		
 	</filter-mapping>
 	
 	<servlet>
@@ -57,7 +60,6 @@
 		<url-pattern>/domain/*</url-pattern>
 		<url-pattern>/entity/*</url-pattern>
 		<url-pattern>/autnum/*</url-pattern>
-		<url-pattern>/delegationKeys/*</url-pattern>
 		<url-pattern>/links/*</url-pattern>
 		<url-pattern>/phones/*</url-pattern>
 		<url-pattern>/nameserver/*</url-pattern>
@@ -134,7 +136,12 @@
 		<res-type>javax.sql.DataSource</res-type>
 		<res-auth>Container</res-auth>
 	</resource-ref>
-
+	
+	<error-page>
+		<error-code>400</error-code>
+		<location>/error/400.jsp</location>
+	</error-page>
+	
 	<error-page>
 		<error-code>401</error-code>
 		<location>/error/401.jsp</location>

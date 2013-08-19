@@ -806,7 +806,7 @@ public class QueryDAO {
 				}
 				
 				for (int i = 0; i < keyFlieds.size(); i++) {
-					String resultsInfo = "";
+					Object resultsInfo = null;
 					
 					if(keyName.equals(WhoisUtil.MULTIPRXIP) && keyFlieds.get(i).toString().equals("StartLowAddress")){
 						if((map.get("Start Address") == null && map.get("End Address") == null) || (map.get("startAddress") == null && map.get("endAddress") == null)){
@@ -845,7 +845,7 @@ public class QueryDAO {
 						resultsInfo = results.getString(key);
 						String[] values = null;
 						if (resultsInfo != null) {
-							values = resultsInfo.split(WhoisUtil.VALUEARRAYPRX);
+							values = resultsInfo.toString().split(WhoisUtil.VALUEARRAYPRX);
 						}
 						map.put(WhoisUtil.getDisplayKeyName(key, format), values);
 					} else if (keyFlieds.get(i).startsWith(WhoisUtil.EXTENDPRX)) {
@@ -876,7 +876,9 @@ public class QueryDAO {
 						if (value != null)
 							map.put(key, value);
 					} else {
-						resultsInfo = results.getString(keyFlieds.get(i)) == null ? "": results.getString(keyFlieds.get(i));
+						resultsInfo = results.getObject(keyFlieds.get(i)) == null ? "": results.getObject(keyFlieds.get(i));
+						
+						//resultsInfo = results.getObject(keyFlieds.get(i));
 						CharSequence id = "id";
 						if(!keyName.equals(WhoisUtil.JOINPUBLICIDS) && WhoisUtil.getDisplayKeyName(keyFlieds.get(i), format).substring(keyFlieds.get(i).length() - 2).equals(id) && !format.equals("application/html")){
 							continue;
@@ -886,7 +888,7 @@ public class QueryDAO {
 					}
 				}
 				
-				
+				//v4v6 addresses
 				if (keyName.equals("$mul$nameServer") || keyName.equals("$join$nameServer")){
 					Map<String, Object> map_IP = new LinkedHashMap<String, Object>();
 					Object IPAddressArray = map.get(WhoisUtil.getDisplayKeyName("IPV4_Addresses", format));
@@ -898,6 +900,7 @@ public class QueryDAO {
 					map.remove(WhoisUtil.getDisplayKeyName("IPV6_Addresses", format));
 				}
 				
+				//asevent
 				if (keyName.equals(WhoisUtil.JOINENTITESFILED)){
 					if (map.containsKey("events")){
 						Map<String, Object> map_Events = new LinkedHashMap<String, Object>();
@@ -924,6 +927,7 @@ public class QueryDAO {
 				return null;
 			
 			Map<String, Object> mapInfo = new LinkedHashMap<String, Object>();
+			
 			// link , remark and notice change to array
 			if(keyName.equals(WhoisUtil.JOINLINKFILED)|| 
 					keyName.equals(WhoisUtil.JOINNANOTICES) ||
@@ -1174,5 +1178,30 @@ public class QueryDAO {
 				}
 			}
 		}
+	}
+
+	public Map<String, Object> getHelp(String helpCode, String role,
+			String format) throws QueryException {
+		Connection connection = null;
+		Map<String, Object> helpMap = null;
+		try {
+			connection = ds.getConnection();
+
+			String selectSql = WhoisUtil.SELECT_HELP + "'" + helpCode + "'";
+			helpMap = query(connection, selectSql,
+					permissionCache.getHelpKeyFileds(role),
+					"$mul$notices", role, format);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new QueryException(e);
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException se) {
+				}
+			}
+		}
+		return helpMap;
 	}
 }
