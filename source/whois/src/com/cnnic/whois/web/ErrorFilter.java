@@ -65,9 +65,9 @@ public class ErrorFilter implements Filter {
 			if(format.contains(sqhtml))
 				format = "application/html";
 		}
-//		if(format == null || !(format.equals("application/html") || format.equals("application/json") || format.equals("application/xml"))){
-//			format = "application/html";
-//		}
+		if(format == null || !(format.equals("application/html") || format.equals("application/json") || format.equals("application/xml"))){
+			format = "application/html";
+		}
 		
 		String queryInfo = "";
 		String queryType = "";
@@ -84,6 +84,10 @@ public class ErrorFilter implements Filter {
 			}
 			if(queryInfo.indexOf("/") != -1){				
 				queryType = queryInfo.substring(0, queryInfo.indexOf("/"));
+			}else{
+				if(queryInfo.equals(WhoisUtil.HELP)){
+					queryType = queryInfo;
+				}
 			}
 		}
 		
@@ -97,21 +101,23 @@ public class ErrorFilter implements Filter {
 	}
 	
 	
-	private boolean isIllegalType(String queryType){
+	private boolean isLegalType(String queryType){
 		if(queryType.equals(WhoisUtil.IP) ||
 				queryType.equals(WhoisUtil.DMOAIN) ||
 				queryType.equals(WhoisUtil.ENTITY) ||
 				queryType.equals(WhoisUtil.AUTNUM) ||
 				queryType.equals(WhoisUtil.NAMESERVER) ||
-				queryType.equals("delegationKeys") ||
-				queryType.equals(WhoisUtil.LINKS) ||
-				queryType.equals(WhoisUtil.PHONES) ||
-				queryType.equals("postalAddress") ||
-				queryType.equals(WhoisUtil.NOTICES) ||
-				queryType.equals(WhoisUtil.REGISTRAR) ||
-				queryType.equals(WhoisUtil.VARIANTS) ||
-				queryType.equals(WhoisUtil.EVENTS) ||
-				queryType.equals(WhoisUtil.REMARKS)){
+				queryType.equals(WhoisUtil.HELP) 
+//				queryType.equals("delegationKeys") ||
+//				queryType.equals(WhoisUtil.LINKS) ||
+//				queryType.equals(WhoisUtil.PHONES) ||
+//				queryType.equals("postalAddress") ||
+//				queryType.equals(WhoisUtil.NOTICES) ||
+//				queryType.equals(WhoisUtil.REGISTRAR) ||
+//				queryType.equals(WhoisUtil.VARIANTS) ||
+//				queryType.equals(WhoisUtil.EVENTS) ||
+//				queryType.equals(WhoisUtil.REMARKS)
+				){
 			return true;
 		}
 		else{
@@ -138,28 +144,25 @@ public class ErrorFilter implements Filter {
 			request.setAttribute("queryFormat", format);
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(format.equals("application/json")){
-				if(isIllegalType(queryType)){
+				if(isLegalType(queryType)){
 					chain.doFilter(request, response);
-				}
-				else{
+				}else{
 					response.setHeader("Content-Type", "application/json");
 					response.setStatus(404);
 					out.print(DataFormat.getJsonObject(map));
 				}
 			}else if(format.equals("application/xml")){
-				if(isIllegalType(queryType)){
+				if(isLegalType(queryType)){
 					chain.doFilter(request, response);
-				}
-				else{
+				}else{
 					response.setHeader("Content-Type", "application/xml");
 					response.setStatus(404);
 					out.write(DataFormat.getXmlString(map));
 				}
 			}else{
-				if(isIllegalType(queryType)){
+				if(isLegalType(queryType)){
 					chain.doFilter(request, response);
-				}
-				else{
+				}else{
 					response.setHeader("Content-Type", "text/plain");
 					response.setStatus(404);
 					out.write(DataFormat.getPresentation(map));

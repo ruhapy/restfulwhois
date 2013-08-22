@@ -34,6 +34,7 @@ public class ColumnCache {
 	private List<String> remarksKeyFileds = new ArrayList<String>();
 	private List<String> eventsKeyFileds = new ArrayList<String>();
 	private List<String> ErrorMessageKeyFileds = new ArrayList<String>();
+	private List<String> helpKeyFileds = new ArrayList<String>();
 
 	/**
 	 * In the constructor to initialize the property value
@@ -60,6 +61,7 @@ public class ColumnCache {
 		remarksKeyFileds = getKeyList(WhoisUtil.REMARKS);
 		eventsKeyFileds = getKeyList(WhoisUtil.EVENTS);
 		ErrorMessageKeyFileds = getKeyList(WhoisUtil.ERRORMESSAGE);
+		helpKeyFileds = getKeyList(WhoisUtil.HELP);
 	}
 
 	/**
@@ -407,7 +409,21 @@ public class ColumnCache {
 	public void setEventsKeyFileds() {
 		this.noticesKeyFileds = getKeyList(WhoisUtil.EVENTS);
 	}
-
+	/**
+	 * Get HelpKeyFileds
+	 * 
+	 * @return List
+	 */
+	public List<String> getHelpKeyFields() {
+		return helpKeyFileds;
+	}
+	
+	/**
+	 * Set HelpKeyFileds
+	 */
+	public void setHelpKeyFileds() {
+		this.helpKeyFileds = getKeyList(WhoisUtil.HELP);
+	}
 	/**
 	 * Generate the corresponding field collection based on a different table
 	 * name
@@ -437,5 +453,4 @@ public class ColumnCache {
 		}
 
 	}
-
 }

@@ -45,6 +45,7 @@ public class WhoisUtil {
 	public static final String EVENTS = "events";
 	public static final String ENTITIES = "entities";
 	public static final String ERRORMESSAGE = "errormessage";
+	public static final String HELP = "help";
 
 	public static final String PRX = "/";
 	public static final String JNDI_NAME = "java:comp/env/jdbc/DataSource";
@@ -70,9 +71,9 @@ public class WhoisUtil {
 
 	public static final String SELECT_LIST_RIRENTITY = "select * from RIREntity where Handle=";
 	public static final String SELECT_LIST_DNRENTITY = "select * from DNREntity where Handle=";
-	public static final String SELECT_LIST_RIRDOMAIN = "select * from RIRDomain where LdhName=";
-	public static final String SELECT_LIST_DNRDOMAIN = "select * from DNRDomain where LdhName=";
-	public static final String SELECT_LIST_NAMESREVER = "select * from nameServer where LdhName=";
+	public static final String SELECT_LIST_RIRDOMAIN = "select * from RIRDomain where Ldh_Name=";
+	public static final String SELECT_LIST_DNRDOMAIN = "select * from DNRDomain where Ldh_Name=";
+	public static final String SELECT_LIST_NAMESREVER = "select * from nameServer where Ldh_Name=";
 	public static final String SELECT_LIST_ERRORMESSAGE = "select * from errormessage where Error_Code=";
 
 	public static final String SELECT_LIST_AS1 = "select * from autnum where Start_Autnum <=";
@@ -88,7 +89,7 @@ public class WhoisUtil {
 	public static final String SELECT_JOIN_LIST_REMARKS = "select * from remarks join m2m_remarks on m2m_remarks.remarksId=remarks.remarksId and  m2m_remarks.Handle=";
 	public static final String SELECT_JOIN_LIST_EVENTS = "select * from events join m2m_events on m2m_events.eventsId=events.eventsId and m2m_events.Handle=";
 	public static final String SELECT_JOIN_LIST_PUBLICIDS = "select * from publicIds join m2m_publicIds on m2m_publicIds.identifier=publicIds.identifier and  m2m_publicIds.Handle=";
-	public static final String SELECT_JOIN_LIST_SECUREDNS = "select * from secureDNS join m2m_secureDNS on m2m_secureDNS.secureDNSID=secureDNS.secureDNSID and  m2m_secureDNS.Handle=";
+	public static final String SELECT_JOIN_LIST_SECUREDNS = "select if(Zone_Signed=0,'false','true') as Zone_Signed, if(Delegation_Signed=0,'false','true') as Delegation_Signed, Max_SigLife, secureDNS.secureDNSID, Handle, m2m_secureDNS.SecureDNSID, type from secureDNS join m2m_secureDNS on m2m_secureDNS.secureDNSID=secureDNS.secureDNSID and  m2m_secureDNS.Handle=";
 	public static final String SELECT_JOIN_LIST_DSDATA = "select * from dsData join m2m_dsData on m2m_dsData.dsDataID=dsData.dsDataID and  m2m_dsData.Handle=";
 	public static final String SELECT_JOIN_LIST_KEYDATA = "select * from keyData join m2m_keyData on m2m_keyData.keyDataID=keyData.keyDataID and  m2m_keyData.Handle=";
 	
@@ -111,6 +112,7 @@ public class WhoisUtil {
 	
 	public static final String SELECT_LIST_REMARKS = "select * from remarks where remarksId=";
 	public static final String SELECT_LIST_EVENTS = "select * from events where eventsId=";
+	public static final String SELECT_HELP = "select * from notices where noticesId=";
 
 	public static final String ARRAYFILEDPRX = "$array$";
 	public static final String JOINFILEDPRX = "$join$";
@@ -135,8 +137,7 @@ public class WhoisUtil {
 	public static final String JOINENTITESFILED = JOINFILEDPRX + "entities";
 	public static final String JOINLINKFILED = JOINFILEDPRX + "links";
 	public static final String JOINPHONFILED = JOINFILEDPRX + "phones";
-	public static final String JOINPOSTATLADDRESSFILED = JOINFILEDPRX
-			+ "postalAddress";
+	public static final String JOINPOSTATLADDRESSFILED = JOINFILEDPRX + "postalAddress";
 	public static final String JOINVARIANTS = JOINFILEDPRX + "variants";
 	public static final String JOINNAMESERVER = JOINFILEDPRX + "nameServer";
 	public static final String JOINNAREGISTRAR = JOINFILEDPRX + "registrar";
@@ -147,8 +148,7 @@ public class WhoisUtil {
 	public static final String JOINSECUREDNS = JOINFILEDPRX + "secureDNS";
 	public static final String JOINDSDATA = JOINFILEDPRX + "dsData";
 	public static final String JOINKEYDATA = JOINFILEDPRX + "keyData";
-	public static final String JOINDALEGATIONKEYS = JOINFILEDPRX
-			+ "delegationKeys";
+	public static final String JOINDALEGATIONKEYS = JOINFILEDPRX + "delegationKeys";
 	public static final String VALUEARRAYPRX = "'~'";
 	public static final String HANDLE = "Handle";
 	public static final String LINEBREAK = "<br/>";
@@ -179,15 +179,15 @@ public class WhoisUtil {
 			JOINLINKFILED, JOINEVENTS, JOINPUBLICIDS, "Bday", "Anniversary", "Gender", "Kind",
 			"Language_Tag_1", "Pref1", "Language_Tag_2", "Pref2", "Org", "Title", "Role", "Geo", "Key", "Tz", "Url"};
 
-	public static String[] DNRDomainKeyFileds = { "Handle", "LdhName",
-			"UnicodeName", "Lang", JOINNANOTICES, JOINVARIANTS,
-			ARRAYFILEDPRX + "Status", JOINNAMESERVER, JOINDALEGATIONKEYS,
+	public static String[] DNRDomainKeyFileds = { "Handle", "Ldh_Name",
+			"Unicode_Name", "Lang", JOINNANOTICES, JOINVARIANTS,
+			ARRAYFILEDPRX + "Status", JOINNAMESERVER, //JOINDALEGATIONKEYS,
 			"Port43", JOINEVENTS, JOINENTITESFILED, JOINNAREGISTRAR,
 			JOINLINKFILED, JOINREMARKS, JOINPUBLICIDS, JOINSECUREDNS};
 
-	public static String[] RIRDomainKeyFileds = { "Handle", "LdhName", "Lang",
-			JOINNANOTICES, JOINNAMESERVER, JOINDALEGATIONKEYS, JOINREMARKS,
-			JOINLINKFILED, JOINEVENTS, JOINENTITESFILED, JOINPUBLICIDS, JOINSECUREDNS};
+	public static String[] RIRDomainKeyFileds = { "Handle", "Ldh_Name", "Lang",
+			JOINNANOTICES, JOINNAMESERVER, //JOINDALEGATIONKEYS, 
+			JOINREMARKS, JOINLINKFILED, JOINEVENTS, JOINENTITESFILED, JOINPUBLICIDS, JOINSECUREDNS};
 
 	public static String[] ASKeyFileds = { "Handle", "Start_Autnum",
 			"End_Autnum", "Name", "Lang", JOINNANOTICES,
@@ -195,8 +195,8 @@ public class WhoisUtil {
 			"Type", ARRAYFILEDPRX + "Status", "Country", JOINREMARKS,
 			JOINLINKFILED, JOINEVENTS, JOINENTITESFILED };
 
-	public static String[] nameServerKeyFileds = { "Handle", "LdhName",
-			"UnicodeName", "Lang", JOINNANOTICES, ARRAYFILEDPRX + "Status",
+	public static String[] nameServerKeyFileds = { "Handle", "Ldh_Name",
+			"Unicode_Name", "Lang", JOINNANOTICES, ARRAYFILEDPRX + "Status",
 			ARRAYFILEDPRX + "IPV4_Addresses", ARRAYFILEDPRX + "IPV6_Addresses",
 			"Port43", JOINREMARKS, JOINLINKFILED, JOINEVENTS, JOINENTITESFILED,
 			JOINNAREGISTRAR };
@@ -238,20 +238,22 @@ public class WhoisUtil {
 	public static String[] remarksKeyFileds = { "Title",
 			ARRAYFILEDPRX + "Description", "remarksId", JOINLINKFILED };
 
-	public static String[] eventsKeyFileds = { "EventAction", "EventActor",
-			"EventDate", "eventsId" };
+	public static String[] eventsKeyFileds = { "Event_Action", "Event_Actor",
+			"Event_Date", "eventsId" };
+	
+	public static String[] helpKeyFileds = { JOINNANOTICES };
 
-	public static String[] queryTypes = { "autnum", "delegationKeys", "domain", "dsData",
+	public static String[] queryTypes = { "autnum", "domain", "dsData",
 			"entity", "events", "help", "ip", "keyData", "links", "nameserver", "notices",
 			"phones", "postalAddress", "registrar", "remarks", "secureDNS", "variants" };
 
-	public static String[] extendColumnTableTypes = { "autnum",
-			"delegationkeys", "dnrdomain", "dnrentity", "dsData", "errormessage", "events", "ip", "keyData", "link",
+	public static String[] extendColumnTableTypes = { "autnum", "delegationkeys", "dnrdomain", 
+		"dnrentity", "dsData", "errormessage", "events", "help", "ip", "keyData", "link",
 			"nameserver", "notices", "phones", "postaladdress", "publicIds", "registrar",
 			"remarks", "rirdomain", "rirentity", "secureDNS", "variants"};
 
 	public static String[][] keyFiledsSet = { ASKeyFileds, delegationKeyFileds,
-			DNRDomainKeyFileds, DNREntityKeyFileds, dsDataKeyFileds, ErrorMessageKeyFileds, eventsKeyFileds,
+			DNRDomainKeyFileds, DNREntityKeyFileds, dsDataKeyFileds, ErrorMessageKeyFileds, eventsKeyFileds, helpKeyFileds,
 			IPKeyFileds, keyDataKeyFileds, linkKeyFileds, nameServerKeyFileds, noticesKeyFileds,
 			phonesKeyFileds, postalAddressKeyFileds, publicIdsKeyFileds, registrarKeyFileds,
 			remarksKeyFileds, RIRDomainKeyFileds, RIREntityKeyFileds, secureDNSKeyFileds,

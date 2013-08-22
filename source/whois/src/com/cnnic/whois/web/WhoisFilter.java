@@ -58,10 +58,7 @@ public class WhoisFilter implements Filter {
 		long currentTime = new Long(System.currentTimeMillis());
 
 		long accessTime = currentTime;
-		
-		boolean isQueryOverTime = queryControl(request.getRemoteAddr(),
-				accessTime, role);
-		
+		boolean isQueryOverTime = queryControl(request.getRemoteAddr(), accessTime, role);
 		
 		String userAgent = "";
 		try{
@@ -91,9 +88,9 @@ public class WhoisFilter implements Filter {
 			if(format.contains(sqhtml))
 				format = "application/html";
 		}
-//		if(format == null || !(format.equals("application/html") || format.equals("application/json") || format.equals("application/xml"))){
-//			format = "application/html";
-//		}
+		if(format == null || !(format.equals("application/html") || format.equals("application/json") || format.equals("application/xml"))){
+			format = "application/html";
+		}
 		String queryInfo = "";
 		String queryType = "";
 		
@@ -130,10 +127,10 @@ public class WhoisFilter implements Filter {
 			PrintWriter out = response.getWriter();
 			request.setAttribute("queryFormat", format);
 			response.setHeader("Access-Control-Allow-Origin", "*");
-			response.sendError(429);
+			response.setStatus(429);
 			
 			if(format.equals("application/html")){
-				
+				response.sendError(429);
 			}else if(format.equals("application/json")){
 				response.setHeader("Content-Type", "application/json");
 				out.print(DataFormat.getJsonObject(map));

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.IDN;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
@@ -12,6 +13,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
@@ -148,88 +152,82 @@ public class QueryServlet extends HttpServlet {
         }
         String str = new String(b, "UTF-8"); 
 		String queryInfo = str.substring(request.getContextPath().length() + 1);
-		String queryType = queryInfo.substring(0, queryInfo.indexOf("/"));
-		String queryPara = queryInfo.substring(queryInfo.indexOf("/") + 1); //get the parameters from the request scope and parse
+		String queryType = "";
+		String queryPara = "";
+		
+		String format = getFormatCookie(request);
+		String role = WhoisUtil.getUserRole(request);
+		
+		if(queryInfo.indexOf("/") != -1){
+			queryType = queryInfo.substring(0, queryInfo.indexOf("/"));
+			queryPara = queryInfo.substring(queryInfo.indexOf("/") + 1); //get the parameters from the request scope and parse
+		}else{
+			queryType = queryInfo;
+			//map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+		}
 		request.setAttribute("queryType", queryType);
 
-		String format = getFormatCookie(request);
-		
-		String role = WhoisUtil.getUserRole(request);
-
 		try {
-			int typeIndex = Arrays
-					.binarySearch(WhoisUtil.queryTypes, queryType); //according to the type of the parameter type query
+			int typeIndex = Arrays.binarySearch(WhoisUtil.queryTypes, queryType); //according to the type of the parameter type query
 			switch (typeIndex) {
 			case 0:
 				map = processQueryAS(queryPara, role, format);
 				break;
 			case 1:
-				map = processQueryDelegationKeys(queryPara, role, format);
-				break;
-			case 2:
 				map = processQueryDomain(
 						IDN.toASCII(WhoisUtil.toChineseUrl(queryPara)), role, format);
 				queryPara = IDN.toUnicode(IDN.toASCII(WhoisUtil.toChineseUrl(queryPara)));
 				break;
-			case 3:
+			case 2:
 				map = processQueryDsData(queryPara, role, format);
 				break;
-			case 4:
+			case 3:
 				map = processQueryEntity(WhoisUtil.toChineseUrl(queryPara), role, format);
 				break;
-			case 5:
+			case 4:
 				map = processQueryEvents(queryPara, role, format);
 				break;
-			case 6:
-				map = processQueryHelp();
+			case 5:
+				map = processQueryHelp(role, format);
 				break;
-			case 7:
+			case 6:
 				map = processQueryIP(queryPara, role, format);
 				break;
-			case 8:
+			case 7:
 				map = processQueryKeyData(queryPara, role, format);
 				break;
-			case 9:
+			case 8:
 				map = processQueryLinks(queryPara, role, format);
 				break;
-			case 10:
+			case 9:
 				map = processQueryNameServer(
 						IDN.toASCII(WhoisUtil.toChineseUrl(queryPara)), role, format);
 				queryPara = IDN.toUnicode(IDN.toASCII(WhoisUtil.toChineseUrl(queryPara)));
 				break;
-			case 11:
+			case 10:
 				map = processQueryNotices(queryPara, role, format);
 				break;
-			case 12:
+			case 11:
 				map = processQueryPhones(queryPara, role, format);
 				break;
-			case 13:
+			case 12:
 				map = processQueryPostalAddress(queryPara, role, format);
 				break;
-			case 14:
+			case 13:
 				map = processQueryRegistrar(queryPara, role, format);
 				break;
-			case 15:
+			case 14:
 				map = processQueryRemarks(queryPara, role, format);
 				break;			
-			case 16:
+			case 15:
 				map = processQuerySecureDNS(queryPara, role, format);
 				break;
-			case 17:
+			case 16:
 				map = processQueryVariants(queryPara, role, format);
 				break;
 			default:
 				map = WhoisUtil.processError(WhoisUtil.ERRORCODE, role, format);
 				break;
-			}
-			if(map.containsKey("errorCode") || map.containsKey("Error Code")){
-				String errorCode = null; 
-				if(map.containsKey("errorCode"))
-					errorCode = map.get("errorCode").toString();
-				if (map.containsKey("Error Code"))
-					errorCode = map.get("Error Code").toString();
-				if (errorCode.equals("404"))
-					response.setStatus(404);
 			}
 			request.setAttribute("queryPara", queryPara);
 		} catch (RedirectExecption re) {
@@ -249,12 +247,13 @@ public class QueryServlet extends HttpServlet {
 			this.log(e.getMessage(), e);
 			map = WhoisUtil.processError(WhoisUtil.ERRORCODE, role, format);
 		}
+		
 		processRespone(request, response, map);
 	}
 	
-	private Map<String, Object> processQueryHelp() {
-		// TODO Auto-generated method stub
-		return null;
+	private Map<String, Object> processQueryHelp(String role, String format) throws QueryException {
+		QueryService queryService = QueryService.getQueryService();
+		return queryService.queryHelp("helpID", role, format);
 	}
 
 	
@@ -275,13 +274,14 @@ public class QueryServlet extends HttpServlet {
 
 		if (queryPara.indexOf(WhoisUtil.PRX) >= 0) {
 			String[] infoArray = queryPara.split(WhoisUtil.PRX);
-			strInfo = infoArray[0];
-			ipLength = infoArray[1];
-
+			if(infoArray.length > 1){
+				strInfo = infoArray[0];
+				ipLength = infoArray[1];
+			}
 		}
 
 		if (!verifyIP(strInfo, ipLength)) {
-			return WhoisUtil.processError(WhoisUtil.ERRORCODE, role, format);
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
 		}
 
 		QueryService queryService = QueryService.getQueryService();
@@ -326,7 +326,11 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryDomain(String queryPara, String role, String format)
 			throws QueryException, RedirectExecption {
 		if (!isBlankStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.ERRORCODE, role, format);
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+		if(!queryPara.startsWith("xn--")){
+			if(!verifyNameServer(queryPara))
+				return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+		}
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryDoamin(queryPara, role, format);
@@ -344,10 +348,10 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryAS(String queryPara, String role, String format)
 			throws QueryException, RedirectExecption {
 		if (!isBlankStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.ERRORCODE, role, format);
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
 
 		if (!queryPara.matches("^[0-9]*$"))
-			return WhoisUtil.processError(WhoisUtil.ERRORCODE, role, format);
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
 
 		try {
 			int queryInfo = Integer.parseInt(queryPara);
@@ -371,8 +375,8 @@ public class QueryServlet extends HttpServlet {
 	 */
 	private Map<String, Object> processQueryEntity(String queryPara, String role, String format)
 			throws QueryException {
-//		if (!isBlankStr(queryPara))
-//			return processError(WhoisUtil.COMMENDRRORCODE, role);
+		if (!isBlankStr(queryPara))
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryEntity(queryPara, role, format);
@@ -389,7 +393,7 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryNameServer(String queryPara,
 			String role, String format) throws QueryException {
 		if (!verifyNameServer(queryPara))
-			return WhoisUtil.processError(WhoisUtil.ERRORCODE, role, format);
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryNameServer(queryPara, role, format);
@@ -421,7 +425,7 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryLinks(String queryPara, String role, String format)
 			throws QueryException {
 		if (!isBlankStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.ERRORCODE, role, format);
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryLinks(queryPara, role, format);
@@ -438,7 +442,7 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryPhones(String queryPara, String role, String format)
 			throws QueryException {
 		if (!isBlankStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.ERRORCODE, role, format);
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryPhones(queryPara, role, format);
@@ -455,27 +459,10 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryPostalAddress(String queryPara,
 			String role, String format) throws QueryException {
 		if (!isBlankStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.ERRORCODE, role, format);
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryPostalAddress(queryPara, role, format);
-	}
-
-	/**
-	 * Query delegationKey type
-	 * 
-	 * @param queryPara
-	 * @param role
-	 * @return map collection
-	 * @throws QueryException
-	 */
-	private Map<String, Object> processQueryDelegationKeys(String queryPara,
-			String role, String format) throws QueryException {
-		if (!isBlankStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.ERRORCODE, role, format);
-
-		QueryService queryService = QueryService.getQueryService();
-		return queryService.queryDelegationKeys(queryPara, role, format);
 	}
 
 	/**
@@ -489,7 +476,7 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryVariants(String queryPara,
 			String role, String format) throws QueryException {
 		if (!isBlankStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.ERRORCODE, role, format);
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryVariants(queryPara, role, format);
@@ -557,7 +544,7 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryNotices(String queryPara,
 			String role, String format) throws QueryException {
 		if (!isBlankStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.ERRORCODE, role, format);
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryNotices(queryPara, role, format);
@@ -587,7 +574,7 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryRemarks(String queryPara,
 			String role, String format) throws QueryException {
 		if (!isBlankStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.ERRORCODE, role, format);
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryRemarks(queryPara, role, format);
@@ -604,7 +591,7 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryEvents(String queryPara,
 			String role, String format) throws QueryException {
 		if (!isBlankStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.ERRORCODE, role, format);
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryEvents(queryPara, role, format);
@@ -644,19 +631,51 @@ public class QueryServlet extends HttpServlet {
 		String format = getFormatCookie(request);
 		
 		PrintWriter out = response.getWriter();
+		String errorCode = "200"; 
+		
 		request.setAttribute("queryFormat", format);
 		response.setHeader("Access-Control-Allow-Origin", "*");
+		
+		if(map.containsKey("errorCode") || map.containsKey("Error Code")){
+			if(map.containsKey("errorCode"))
+				errorCode = map.get("errorCode").toString();
+			if (map.containsKey("Error Code"))
+				errorCode = map.get("Error Code").toString();
+			if (errorCode.equals(WhoisUtil.ERRORCODE)){
+				response.setStatus(404);
+			}
+			if (errorCode.equals(WhoisUtil.COMMENDRRORCODE)){
+				response.setStatus(400);
+			}
+		}
 		if (format.equals("application/json") || format.equals("application/rdap+json") || format.equals("application/rdap+json;application/json")) { // depending on the return type of the response corresponding data
 			response.setHeader("Content-Type", "application/json");
-			out.print(DataFormat.getJsonObject(map));		          
+			Iterator<String> iterr = map.keySet().iterator();
+			String multiKey = null;
+			while(iterr.hasNext()){
+				String key =  iterr.next();
+				if(key.startsWith("$mul$")){
+					multiKey = key;
+				}
+			}
+			if(multiKey != null){
+				Object jsonObj = map.get(multiKey);
+				out.print(DataFormat.getJsonArray(jsonObj));
+			}else{
+				out.print(DataFormat.getJsonObject(map));
+			}
 		} else if (format.equals("application/xml")) {
 			response.setHeader("Content-Type", "application/xml");
 			out.write(DataFormat.getXmlString(map));
 		} else if (format.equals("application/html")) {
-			request.setAttribute("JsonObject", DataFormat.getJsonObject(map));
-			RequestDispatcher rdsp = request.getRequestDispatcher("/index.jsp");
-			response.setContentType("application/html");
-			rdsp.forward(request, response);
+			if(!errorCode.equals(WhoisUtil.ERRORCODE) && !errorCode.equals(WhoisUtil.COMMENDRRORCODE)){
+				request.setAttribute("JsonObject", DataFormat.getJsonObject(map));
+				RequestDispatcher rdsp = request.getRequestDispatcher("/index.jsp");
+				response.setContentType("application/html");
+				rdsp.forward(request, response);
+			}else{
+				response.sendError(Integer.parseInt(errorCode));
+			}
 		} else {
 			response.setHeader("Content-Type", "text/plain");
 			out.write(DataFormat.getPresentation(map));
@@ -684,6 +703,10 @@ public class QueryServlet extends HttpServlet {
 		
 		if (format == null)
 			format = request.getHeader("Accept"); // determine what kind of return type
+
+		CharSequence sqhtml = "html";			
+		if(format.contains(sqhtml))
+			format = "application/html";
 
 		if (format == null)
 			format = "application/json";

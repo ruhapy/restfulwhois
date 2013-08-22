@@ -451,6 +451,19 @@ public class QueryService {
 		ErrorMessageMap = queryDAO.getErrorMessage(errorCode, role, format);
 		return ErrorMessageMap;
 	}
+	
+	/**
+	 * The processing Help
+	 * 
+	 * @return help map collection
+	 * @throws QueryException 
+	 */
+	public Map<String, Object> queryHelp(String helpCode, String role, String format) throws QueryException {
+		Map<String, Object>helpMap = null;
+		QueryDAO queryDAO = QueryDAO.getQueryDAO();
+		helpMap = queryDAO.getHelp(helpCode, role, format);
+		return helpMap;
+	}
 
 	/**
 	 * Redirect the forwarding address

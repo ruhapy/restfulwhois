@@ -107,45 +107,48 @@ public class AccessControlService {
 			permissionCache.setEventsMap();
 			break;
 		case 7:
-			permissionCache.setIPMap();
+			permissionCache.setHelpMap();
 			break;
 		case 8:
-			permissionCache.setKeyDataMap();
+			permissionCache.setIPMap();
 			break;
 		case 9:
+			permissionCache.setKeyDataMap();
+			break;
+		case 10:
 			permissionCache.setLinkMap();
 			break;		
-		case 10:
+		case 11:
 			permissionCache.setNameServerMap();
 			break;
-		case 11:
+		case 12:
 			permissionCache.setNoticesMap();
 			break;
-		case 12:
+		case 13:
 			permissionCache.setPhonesMap();
 			break;
-		case 13:
+		case 14:
 			permissionCache.setPostalAddressMap();
 			break;
-		case 14:
+		case 15:
 			permissionCache.setPublicIdsMap();
 			break;
-		case 15:
+		case 16:
 			permissionCache.setRegistrarMap();
 			break;
-		case 16:
+		case 17:
 			permissionCache.setRemarksMap();
 			break;
-		case 17:
+		case 18:
 			permissionCache.setRIRDomainMap();
 			break;
-		case 18:
+		case 19:
 			permissionCache.setRIREntityMap();
 			break;
-		case 19:
+		case 20:
 			permissionCache.setSecureDNSMap();
 			break;
-		case 20:
+		case 21:
 			permissionCache.setVariantsMap();
 			break;
 		}

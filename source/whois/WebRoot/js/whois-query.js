@@ -98,13 +98,13 @@ function toCommonTable(urlhead, values, keyName, attrName) {
 			var displayValues = values[keychild][attrName];
 			if(displayValues == undefined){
 				displayValues =  values[attrName];
-				var realValue = "Event Action: " + values["EventAction"] + "<br/> Event Actor: " + values["EventActor"] 
-					+ "<br/> Event Date: " + values["EventDate"];
+				var realValue = "Event Action: " + values["Event Action"] + "<br/> Event Actor: " + values["Event Actor"] 
+					+ "<br/> Event Date: " + values["Event Date"];
 				tableStr = "<tr><td width='20%'>" + keyName + "</td><td>" + realValue + "</td></tr>";
 				break;
 			}else{
-				var realValue = "Event Action: " + values[keychild]["EventAction"] + "<br/> Event Actor: " + values[keychild]["EventActor"] 
-				+ "<br/> Event Date: " + values[keychild]["EventDate"];
+				var realValue = "Event Action: " + values[keychild]["Event Action"] + "<br/> Event Actor: " + values[keychild]["Event Actor"] 
+				+ "<br/> Event Date: " + values[keychild]["Event Date"];
 				tableStr += "<tr><td width='20%'>" + keyName + "</td><td>" + realValue + "&nbsp;</td></tr>";
 			}
 		}
