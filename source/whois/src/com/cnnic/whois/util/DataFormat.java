@@ -223,7 +223,35 @@ public class DataFormat {
 							for(int i = 0; i < iMode; i++){
 								sb.append(WhoisUtil.BLANKSPACE);
 							}
-							sb.append(obj + "\n");
+							if (key.equals("vcardArray")){
+								if (!(obj instanceof ArrayList)){
+									sb.append(WhoisUtil.BLANKSPACE);
+									sb.append(obj + "\n");
+								}else{									
+									List<List<Object>> listVcard = new ArrayList<List<Object>>();
+									listVcard = (ArrayList<List<Object>>)obj;
+									for (int m = 0; m < listVcard.size(); m++){
+										List<Object> listElement;
+										listElement = listVcard.get(m);
+										if (listElement.get(0).equals("adr")){
+											List<List<Object>> listAdr = new ArrayList<List<Object>>();
+											listAdr = (ArrayList<List<Object>>)listElement.get(3);
+											sb.append(WhoisUtil.BLANKSPACE + WhoisUtil.BLANKSPACE);
+											sb.append("adr:"+listAdr.get(0));
+											for (int n = 1; n < listAdr.size(); n++){
+												sb.append("," + listAdr.get(n));
+											}
+											sb.append("\n");
+											continue;
+										}
+										sb.append(WhoisUtil.BLANKSPACE + WhoisUtil.BLANKSPACE);
+										sb.append(listElement.get(0) + ":" + listElement.get(3) +"\n");
+									}
+								}								
+							} else {
+								sb.append(obj + "\n");
+							}
+							
 						}
 					}
 				}
