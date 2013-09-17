@@ -935,11 +935,11 @@ public class QueryDAO {
 					if (map.containsKey("events")){
 						Map<String, Object> map_Events = new LinkedHashMap<String, Object>();
 						map_Events = (Map<String, Object>)map.get("events");
-						if (map_Events.containsKey("eventactor")){
-							String eventactor = (String)map_Events.get("eventactor");
+						if (map_Events.containsKey("eventActor")){
+							String eventactor = (String)map_Events.get("eventActor");
 							if (entityHandle.equals(eventactor))
 							{
-								map_Events.remove("eventactor");
+								map_Events.remove("eventActor");
 								List<Map<String, Object>> listEvents = new ArrayList<Map<String, Object>>();
 								listEvents.add(map_Events);
 								map.put("asEventActor", listEvents.toArray());

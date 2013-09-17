@@ -178,14 +178,15 @@ function toVcardTable(values) {
 		else if(keyName == "email"){
 			keyName = "Email";
 		}else if(keyName == "tel"){
-			if(element[1].indexOf("work") != -1){
-				keyName = "Office";
-			}else if(element[1].indexOf("fax") != -1){
-				keyName = "Fax";
-			}else if(element[1].indexOf("cell") != -1){
-				keyName = "Moblie";
-			}else{
+			var typeName = element[1]["type"];
+			if (typeof(typeName) == "undefined"){
 				keyName = "phonesId";
+			}else if(typeName.indexOf("work") != -1){
+				keyName = "Office";
+			}else if(typeName.indexOf("fax") != -1){
+				keyName = "Fax";
+			}else if(typeName.indexOf("cell") != -1){
+				keyName = "Moblie";
 			}
 		}else{
 			continue;
