@@ -46,6 +46,8 @@ public class WhoisUtil {
 	public static final String ENTITIES = "entities";
 	public static final String ERRORMESSAGE = "errormessage";
 	public static final String HELP = "help";
+	public static final String RDAPCONFORMANCEKEY = "rdapConformance";
+	public static final String RDAPCONFORMANCE = "rdap_level_0";
 
 	public static final String PRX = "/";
 	public static final String JNDI_NAME = "java:comp/env/jdbc/DataSource";
@@ -157,6 +159,8 @@ public class WhoisUtil {
 	public static final String IPPREFIX = "ipAddresses";
 	public static final String IPV4PREFIX = "v4";
 	public static final String IPV6PREFIX = "v6";
+	
+	public static final String SEARCHDOMAIN = "domains";
 
 	public static String[] IPKeyFileds = { JOINNANOTICES, "Handle", "StartHighAddress",
 			"StartLowAddress", "EndLowAddress", "EndHighAddress", "Lang",
@@ -216,8 +220,6 @@ public class WhoisUtil {
 	public static String[] postalAddressKeyFileds = { "Street", "Street1",
 			"Street2", "City", "SP", "Postal_Code", "Country",
 			"postalAddressId" };
-	public static String[] delegationKeyFileds = { "Algorithm", "Digest",
-			"Disgest_Type", "Key_Tag", "delegationKeysId" };
 
 	public static String[] registrarKeyFileds = { "Handle",
 			"Entity_Names", ARRAYFILEDPRX + "Status", "Roles",
@@ -245,15 +247,15 @@ public class WhoisUtil {
 
 	public static String[] queryTypes = { "autnum", "domain", "dsData",
 			"entity", "events", "help", "ip", "keyData", "links", "nameserver", "notices",
-			"phones", "postalAddress", "registrar", "remarks", "secureDNS", "variants" };
+			"phones", "postalAddress", "registrar", "remarks", "secureDNS", "variants",  };
 
-	public static String[] extendColumnTableTypes = { "autnum", "delegationkeys", "dnrdomain", 
+	public static String[] extendColumnTableTypes = { "autnum", "dnrdomain", 
 		"dnrentity", "dsData", "errormessage", "events", "help", "ip", "keyData", "link",
 			"nameserver", "notices", "phones", "postaladdress", "publicIds", "registrar",
 			"remarks", "rirdomain", "rirentity", "secureDNS", "variants"};
 
-	public static String[][] keyFiledsSet = { ASKeyFileds, delegationKeyFileds,
-			DNRDomainKeyFileds, DNREntityKeyFileds, dsDataKeyFileds, ErrorMessageKeyFileds, eventsKeyFileds, helpKeyFileds,
+	public static String[][] keyFiledsSet = { ASKeyFileds, DNRDomainKeyFileds, DNREntityKeyFileds, 
+		dsDataKeyFileds, ErrorMessageKeyFileds, eventsKeyFileds, helpKeyFileds,
 			IPKeyFileds, keyDataKeyFileds, linkKeyFileds, nameServerKeyFileds, noticesKeyFileds,
 			phonesKeyFileds, postalAddressKeyFileds, publicIdsKeyFileds, registrarKeyFileds,
 			remarksKeyFileds, RIRDomainKeyFileds, RIREntityKeyFileds, secureDNSKeyFileds,
@@ -1232,6 +1234,9 @@ public class WhoisUtil {
 	}
 	
 	public static String getDisplayKeyName(String name, String format) {
+		if (format.equals("application/html")) {
+			return name.replaceAll("_", " ");
+		} else {
 		if (name.contains("postal") && name.contains("Address")){
 			return (String)"postalAddress";
 		}
@@ -1243,9 +1248,9 @@ public class WhoisUtil {
 				name += names[i];
 			}
 			return name;
-		} else {
-			return name.replaceAll("_", " ");
 		}
+		}
+		return name;
 	}
 	
 	public static String getFormatCookie(HttpServletRequest request) {
