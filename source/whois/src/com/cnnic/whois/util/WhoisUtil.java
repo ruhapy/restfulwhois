@@ -1234,21 +1234,19 @@ public class WhoisUtil {
 	}
 	
 	public static String getDisplayKeyName(String name, String format) {
-<<<<<<< HEAD
-		if (format.equals("application/html")) {
-			return name.replaceAll("_", " ");
-		} else {
-=======
+
 		if (name.contains("postal") && name.contains("Address")){
 			return (String)"postalAddress";
 		}
-		if (format.equals("application/json")
-				|| format.equals("application/xml")) {
->>>>>>> dengguangqing-master
-			String[] names = name.split("_");
-			name = names[0].toLowerCase();
-			for (int i = 1; i < names.length; i++) {
-				name += names[i];
+		if (format.equals("application/html")) {
+			return name.replaceAll("_", " ");
+		} else {
+			if (format.equals("application/json") || format.equals("application/xml")) {
+				String[] names = name.split("_");
+				name = names[0].toLowerCase();
+				for (int i = 1; i < names.length; i++) {
+					name += names[i];
+				}
 			}
 			return name;
 		}
