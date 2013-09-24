@@ -789,8 +789,7 @@ public class WhoisUtil {
 		Object Org = map.get(getDisplayKeyName("Org", format));
 		Object Title = map.get(getDisplayKeyName("Title", format));
 		Object Role = map.get(getDisplayKeyName("Role", format));
-		String KeyPostalAdress = getDisplayKeyName("postal_Address", format);
-		Object postalAddress = map.get(KeyPostalAdress);
+		Object postalAddress = map.get("postalAddress");
 		Object emails = map.get(getDisplayKeyName("Emails", format));
 		Object phones = map.get(getDisplayKeyName("phones", format));
 		Object Geo = map.get(getDisplayKeyName("Geo", format));
@@ -1009,7 +1008,7 @@ public class WhoisUtil {
 				AddressList.add(Element);
 				nameList.add(AddressList);
 				list.add(nameList);	
-				map.remove(getDisplayKeyName("postal_Address", format));
+				map.remove("postalAddress");
 			} else if (postalAddress instanceof Object[]) {
 				for (Object postalAddressObject : ((Object[]) postalAddress)) {
 					List<Object> nameList = new ArrayList<Object>();
@@ -1181,7 +1180,7 @@ public class WhoisUtil {
 				KeyList.add(Key.toString());
 				list.add(KeyList);
 			}
-			map.remove(getDisplayKeyName("Geo", format));
+			map.remove(getDisplayKeyName("Key", format));
 		}
 		
 		if (Tz != null) {
@@ -1237,18 +1236,14 @@ public class WhoisUtil {
 		if (format.equals("application/html")) {
 			return name.replaceAll("_", " ");
 		} else {
-		if (name.contains("postal") && name.contains("Address")){
-			return (String)"postalAddress";
-		}
-		if (format.equals("application/json")
-				|| format.equals("application/xml")) {
-			String[] names = name.split("_");
-			name = names[0].toLowerCase();
-			for (int i = 1; i < names.length; i++) {
-				name += names[i];
+			if (format.equals("application/json") || format.equals("application/xml")) {
+				String[] names = name.split("_");
+				name = names[0].toLowerCase();
+				for (int i = 1; i < names.length; i++) {
+					name += names[i];
+				}
+				return name;
 			}
-			return name;
-		}
 		}
 		return name;
 	}
