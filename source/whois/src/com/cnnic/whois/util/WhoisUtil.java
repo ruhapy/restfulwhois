@@ -1236,28 +1236,15 @@ public class WhoisUtil {
 		if (format.equals("application/html")) {
 			return name.replaceAll("_", " ");
 		} else {
-<<<<<<< HEAD
-			if (name.contains("postal") && name.contains("Address")){
-				name = (String)"postalAddress";
-			}
-=======
->>>>>>> dengguangqing-master
 			if (format.equals("application/json") || format.equals("application/xml")) {
 				String[] names = name.split("_");
 				name = names[0].toLowerCase();
 				for (int i = 1; i < names.length; i++) {
 					name += names[i];
 				}
-<<<<<<< HEAD
 			}
 			return name;
 		}
-=======
-				return name;
-			}
-		}
-		return name;
->>>>>>> dengguangqing-master
 	}
 	
 	public static String getFormatCookie(HttpServletRequest request) {
