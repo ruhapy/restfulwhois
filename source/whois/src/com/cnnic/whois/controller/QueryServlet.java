@@ -326,15 +326,30 @@ public class QueryServlet extends HttpServlet {
 	 */
 	private Map<String, Object> processQueryDomain(String queryPara, String role, String format)
 			throws QueryException, RedirectExecption {
-		if (!isBlankStr(queryPara))
+		if(!validateDomainName(queryPara)){
 			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
-		if(!queryPara.startsWith("xn--")){
-			if(!verifyNameServer(queryPara))
-				return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
 		}
-
 		QueryService queryService = QueryService.getQueryService();
+		if(isFuzzyQuery(queryPara)){
+			return queryService.fuzzyQueryDomain(queryPara, role, format);
+		}
 		return queryService.queryDoamin(queryPara, role, format);
+	}
+	
+	private boolean isFuzzyQuery(String domainName){
+		if(domainName.contains("*")){
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean validateDomainName(String domainName){
+		if (!isBlankStr(domainName))
+			return false;
+		if(!domainName.startsWith("xn--") && !verifyNameServer(domainName)){
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -409,12 +424,12 @@ public class QueryServlet extends HttpServlet {
 	private boolean verifyNameServer(String queryPara) {
 		if (!isBlankStr(queryPara))
 			return false;
-		String streg = "^(?!-.)(?!.*?-$)([0-9a-zA-Z][0-9a-zA-Z-]{0,62}\\.)+([0-9a-zA-Z][0-9a-zA-Z-]{0,62})?$";
-		if (queryPara.matches(streg))
+		String fuzzyReg = "^(?!-.)(?!.*?-$)((\\*)?[0-9a-zA-Z][0-9a-zA-Z-]{0,62}(\\*)?\\.)+([0-9a-zA-Z][0-9a-zA-Z-]{0,62})?$";
+		if (queryPara.matches(fuzzyReg))
 			return true;
 		return false;
 	}
-
+	
 	/**
 	 * Query link type
 	 * 
@@ -605,7 +620,7 @@ public class QueryServlet extends HttpServlet {
 	 * @return The correct parity returns true, failure to return false
 	 */
 	private boolean isBlankStr(String parm) {
-		String strReg = "^[a-zA-z\\d]{1}([\\w\\-\\.\\_]*)$";
+		String strReg = "^[a-zA-z\\d\\*]{1}([\\w\\-\\.\\_\\*]*)$";
 
 		if (parm.equals("") || parm == null)
 			return false;

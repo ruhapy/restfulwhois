@@ -10,6 +10,7 @@ public class WhoisProperties {
 	private static final String AUTHENTICATED_EXPIRE_TIME = "authenticated_expire_time";
 	private static final String ROOT_EXPIRE_TIME = "root_expire_time";
 	private static final String EXPIRE_TIME = "expire_time";
+	private static final String MAX_SIZE_FUZZY_QUERY = "maxsize.fuzzyquery";
 	/**
 	 * Load the resource file
 	 */
@@ -59,4 +60,13 @@ public class WhoisProperties {
 	public static long getExpireTime() {
 		return Long.parseLong(resource.getProperty(EXPIRE_TIME));
 	}
+	
+	public static String getSolrUrl() {
+		return resource.getProperty("solr.url");
+	}
+	
+	public static int getMaxSizeFuzzyQuery() {
+		return Integer.parseInt(resource.getProperty(MAX_SIZE_FUZZY_QUERY));
+	}
+	
 }
