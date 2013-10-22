@@ -47,7 +47,7 @@ function toTable(JsonObject){
 			tableStr += toCommonTable(urlhead, values, keyName, keyName + "Id");
 		} else if(keyName == "nameServer"){
 			
-			tableStr += toCommonTable(urlhead, values, "nameserver", "LdhName");
+			tableStr += toCommonTable(urlhead, values, "nameserver", "Ldh Name");
 		}else if(keyName == "secureDNS"){			
 			tableStr += toCommonTable(urlhead, values, "secureDNS", "SecureDNSID");
 		}else if(keyName == "dsData"){			
@@ -282,11 +282,37 @@ function toStandaloneTable() {
 	return tableStr;
 }
 
+function isFuzzyQuery(){
+	var queryInfo = $("#queryInfo").val();
+	var queryType = $('input:radio[name="optionType"]:checked').val();
+	var formatType = $('input:radio[name="showType"]:checked').val();
+	var matchStr =  "*";
+	if(queryInfo.indexOf(matchStr) != -1){
+		console.log("contains");
+		return true;
+	}
+	return false;
+}
+
+function getFuzzyQueryPath(){
+	var queryType = $('input:radio[name="optionType"]:checked').val();
+	var result = "?name=";
+	if(queryType == "domain"){
+		return "domains" + result;
+	}
+	if(queryType == "nameserver"){
+		return "nameservers" + result;
+	}
+	if(queryType == "entity"){
+		return "entities" + result;
+	}
+}
+
 function processQuery() {
 	var queryInfo = $("#queryInfo").val();
 	var queryType = $('input:radio[name="optionType"]:checked').val();
 	var formatType = $('input:radio[name="showType"]:checked').val();
-	var matchStr =  /^(\w+)|([\u0391-\uFFE5]+)([\w\-\.]*)$/g;
+	var matchStr =  /^(\*)?(\w+)|([\u0391-\uFFE5]+)([\w\-\.]*)$/g;
 	
 	if (queryInfo == "") {
 		alert("Please enter a query data");
@@ -322,7 +348,10 @@ function processQuery() {
 	document.cookie="Format=application/"+formatType+";path=/"; 
 	var urlContextPath = $("#pathUrl").val() + "/"; 
 	var url  = urlContextPath + queryType + "/" + queryInfo;
-	
+	if(isFuzzyQuery()){
+		var fuzzyQueryType = getFuzzyQueryPath();
+		url  = urlContextPath + fuzzyQueryType + queryInfo;
+	}
 //	alert(formatType);
 //	if(formatType == 'json'){
 //		$.ajax({
