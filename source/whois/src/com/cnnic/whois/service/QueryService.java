@@ -7,14 +7,17 @@ import java.util.Map;
 import com.cnnic.whois.dao.QueryDAO;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
+import com.cnnic.whois.util.WhoisProperties;
 import com.cnnic.whois.util.WhoisUtil;
+
 import java.util.LinkedHashMap;
 
 public class QueryService {
 
 	private static QueryService queryService = new QueryService();
 	private QueryDAO queryDAO = QueryDAO.getQueryDAO();
-
+	public static int MAX_SIZE_FUZZY_QUERY = WhoisProperties.getMaxSizeFuzzyQuery();
+	
 	private QueryService() {
 	}
 
@@ -144,6 +147,21 @@ public class QueryService {
 		return map;
 	}
 
+	public Map<String, Object> fuzzyQueryDomain(String domain, String role, String format)
+			throws QueryException, RedirectExecption {
+		Map<String, Object> dnrMap = queryDAO.fuzzyQueryDoamin(domain, role, format);
+		if (dnrMap == null) {
+			String queryType = WhoisUtil.DNRDOMAIN;
+			getRedirectionURL(queryType, domain);
+			return queryError(WhoisUtil.ERRORCODE, role, format);
+		}
+		Map<String, Object> wholeMap = new LinkedHashMap<String, Object>();
+		if (dnrMap != null) {
+			wholeMap.putAll(dnrMap);
+		}
+		return wholeMap;
+	}
+	
 	/**
 	 * Query doamin type
 	 * 
