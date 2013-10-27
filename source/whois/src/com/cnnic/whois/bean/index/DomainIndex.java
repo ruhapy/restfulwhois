@@ -9,8 +9,10 @@ import org.apache.solr.client.solrj.beans.Field;
 
 import com.cnnic.whois.bean.Domain;
 
-public class DomainIndex implements Index{
+public class DomainIndex implements Index {
 
+	private static String DNRDOMAIN_TYPE = "dnrDomain";
+	private static String RIRDOMAIN_TYPE = "rirDomain";
 	@Field("id")
 	private String id;
 	@Field("docType")
@@ -27,13 +29,18 @@ public class DomainIndex implements Index{
 	private String lang;
 	@Field("unicodeName")
 	private String unicodeName;
-	private Map<String,String> propValueMap = new HashMap<String,String>();
+	private Map<String, String> propValueMap = new HashMap<String, String>();
 
 	private Domain domain;
 
-	public String getPropValue(String key){
+	public boolean isDnrDomain() {
+		return DNRDOMAIN_TYPE.equals(this.docType);
+	}
+
+	public String getPropValue(String key) {
 		return propValueMap.get(key);
 	}
+
 	public DomainIndex(Domain domain) {
 		this.domain = domain;
 		try {
@@ -58,23 +65,18 @@ public class DomainIndex implements Index{
 		propValueMap.put("Port43", this.port43);
 		propValueMap.put("Status", this.status);
 	}
+
 	public Domain getDomainBean() {
 		if (domain == null) {
 			domain = new Domain();
 			domain.setId(id);
 			domain.setDocType(docType);
-			domain
-					.setHandle(handle);
-			domain
-					.setLang(lang);
-			domain
-					.setLdhName(ldhName);
-			domain
-					.setPort43(port43);
-			domain
-					.setStatus(status);
-			domain
-					.setUnicodeName(unicodeName);
+			domain.setHandle(handle);
+			domain.setLang(lang);
+			domain.setLdhName(ldhName);
+			domain.setPort43(port43);
+			domain.setStatus(status);
+			domain.setUnicodeName(unicodeName);
 			propValueMap.put("Handle", this.handle);
 			propValueMap.put("Ldh_Name", this.ldhName);
 			propValueMap.put("Unicode_Name", this.unicodeName);
