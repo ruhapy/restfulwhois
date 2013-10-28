@@ -8,6 +8,7 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 
+import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.index.EntityIndex;
 import com.cnnic.whois.bean.index.SearchCondition;
 import com.cnnic.whois.service.index.SearchResult;
@@ -45,7 +46,7 @@ public class EntityIndexService {
 	}
 
 	public SearchResult<EntityIndex> fuzzyQueryEntitiesByHandleAndName(
-			String fuzzyQueryParamName, String handleOrName) {
+			String fuzzyQueryParamName, String handleOrName, PageBean page) {
 		handleOrName = handleOrName.replace(" ", "\\ ").replace(":", "\\:");
 		String kVSplit = ":";
 		String entityNamesQ = fuzzyQueryParamName + kVSplit + handleOrName;
@@ -54,8 +55,14 @@ public class EntityIndexService {
 		String queryStr = entityNamesQ + " OR " + entityNamesQP;
 		queryStr = queryStr.replace("~", "\\~");
 		SearchCondition searchCondition = new SearchCondition(queryStr);
-		searchCondition.setRow(QueryService.MAX_SIZE_FUZZY_QUERY);
-		return queryEntities(searchCondition);
+		int startPage = page.getCurrentPage() - 1;
+		startPage = startPage >= 0 ? startPage : 0;
+		int start = startPage * page.getMaxRecords();
+		searchCondition.setStart(start);
+		searchCondition.setRow(page.getMaxRecords());
+		SearchResult<EntityIndex> result = queryEntities(searchCondition);
+		page.setRecordsCount(Long.valueOf(result.getTotalResults()).intValue());
+		return result;
 	}
 
 	public SearchResult<EntityIndex> queryEntities(

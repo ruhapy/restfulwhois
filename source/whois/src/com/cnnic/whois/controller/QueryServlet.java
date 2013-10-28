@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.service.QueryService;
@@ -179,6 +180,10 @@ public class QueryServlet extends HttpServlet {
 		}
 		request.setAttribute("queryType", queryType);
 		int typeIndex = Arrays.binarySearch(WhoisUtil.queryTypes, queryType); //according to the type of the parameter type query
+		PageBean page = getPageParam(request);
+		if(isFuzzyQueryType(typeIndex) && isFuzzyQuery(queryPara) && isJsonOrXmlFormat(request)){
+			page.setMaxRecords(QueryService.MAX_SIZE_FUZZY_QUERY);//json/xml set max size
+		}
 		try {
 			switch (typeIndex) {
 			case 0:
@@ -188,7 +193,7 @@ public class QueryServlet extends HttpServlet {
 				String queryParaDecode = WhoisUtil.toChineseUrl(queryPara);
 				queryParaDecode = StringUtils.trim(queryParaDecode);
 				String queryParaPuny = IDN.toASCII(queryParaDecode);
-				map = processQueryDomain(queryParaDecode,queryParaPuny, role, format);
+				map = processQueryDomain(queryParaDecode,queryParaPuny, role, format,page,request);
 				queryPara = IDN.toUnicode(IDN.toASCII(WhoisUtil.toChineseUrl(queryPara)));
 				break;
 			case 2:
@@ -196,7 +201,8 @@ public class QueryServlet extends HttpServlet {
 				break;
 			case 3:
 				String queryParaWithoutPrefix = removeFuzzyPrefixIfHas(queryPara);
-				map = processQueryEntity(WhoisUtil.toChineseUrl(queryParaWithoutPrefix), role, format,request);
+				map = processQueryEntity(WhoisUtil.toChineseUrl(queryParaWithoutPrefix), role,
+						format,request,page);
 				break;
 			case 4:
 				map = processQueryEvents(queryPara, role, format);
@@ -215,7 +221,7 @@ public class QueryServlet extends HttpServlet {
 				break;
 			case 9:
 				map = processQueryNameServer(
-						IDN.toASCII(WhoisUtil.toChineseUrl(queryPara)), role, format);
+						IDN.toASCII(WhoisUtil.toChineseUrl(queryPara)), role, format,page,request);
 				queryPara = IDN.toUnicode(IDN.toASCII(WhoisUtil.toChineseUrl(queryPara)));
 				break;
 			case 10:
@@ -268,6 +274,15 @@ public class QueryServlet extends HttpServlet {
 		}else{
 			processRespone(request, response, map);
 		}
+	}
+
+	private PageBean getPageParam(HttpServletRequest request) {
+		Object currentPageObj = request.getParameter("currentPage");
+		PageBean page = new PageBean();
+		if(null != currentPageObj){
+			page.setCurrentPage(Integer.valueOf(currentPageObj.toString()));
+		}
+		return page;
 	}
 
 	private String addPrefixBeforeParaIfEntityFuzzy(HttpServletRequest request,
@@ -484,20 +499,24 @@ public class QueryServlet extends HttpServlet {
 	 * 
 	 * @param queryPara
 	 * @param role
+	 * @param page 
+	 * @param request 
 	 * @return map collection
 	 * @throws QueryException
 	 * @throws RedirectExecption
 	 * @throws UnsupportedEncodingException 
 	 */
 	private Map<String, Object> processQueryDomain(String queryPara, String queryParaPuny,
-			String role, String format)
+			String role, String format, PageBean page, HttpServletRequest request)
 			throws QueryException, RedirectExecption, UnsupportedEncodingException {
 		if(!validateDomainName(queryParaPuny)){
 			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
 		}
 		QueryService queryService = QueryService.getQueryService();
 		if(isFuzzyQuery(queryPara)){
-			return queryService.fuzzyQueryDomain(queryPara,queryParaPuny, role, format);
+			request.setAttribute("pageBean", page);
+			request.setAttribute("queryPath", "domains");
+			return queryService.fuzzyQueryDomain(queryPara,queryParaPuny, role, format,page);
 		}
 		return queryService.queryDomain(queryParaPuny, role, format);
 	}
@@ -553,11 +572,13 @@ public class QueryServlet extends HttpServlet {
 	 * @param queryParaValue
 	 * @param role
 	 * @param request 
+	 * @param page 
 	 * @return map collection
 	 * @throws QueryException
 	 * @throws SQLException 
 	 */
-	private Map<String, Object> processQueryEntity(String queryParaValue, String role, String format, HttpServletRequest request)
+	private Map<String, Object> processQueryEntity(String queryParaValue, String role, String format, 
+			HttpServletRequest request, PageBean page)
 			throws QueryException, SQLException {
 		if (!isInvalidEntityStr(queryParaValue))
 			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
@@ -566,7 +587,11 @@ public class QueryServlet extends HttpServlet {
 		if(isFuzzyQuery(queryParaValue)){
 			String fuzzyQueryParamName = getEntityFuzzyQueryParamName(request);
 			String fuzzyQuerySolrPropName = convertEntityFuzzyQueryParamNameToSolrPropName(fuzzyQueryParamName);
-			return queryService.fuzzyQueryEntity(fuzzyQuerySolrPropName,queryParaValue, role, format);
+			Map<String, Object> result = queryService.fuzzyQueryEntity(fuzzyQuerySolrPropName,
+					queryParaValue, role, format,page);
+			request.setAttribute("pageBean", page);
+			request.setAttribute("queryPath", "entities");
+			return result;
 		}
 		return queryService.queryEntity(queryParaValue, role, format);
 	}
@@ -584,18 +609,22 @@ public class QueryServlet extends HttpServlet {
 	 * 
 	 * @param queryPara
 	 * @param role
+	 * @param page 
+	 * @param request 
 	 * @return map collection
 	 * @throws QueryException
 	 * @throws RedirectExecption 
 	 */
 	private Map<String, Object> processQueryNameServer(String queryPara,
-			String role, String format) throws QueryException, RedirectExecption {
+			String role, String format, PageBean page, HttpServletRequest request) throws QueryException, RedirectExecption {
 		if (!verifyNameServer(queryPara))
 			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
 
 		QueryService queryService = QueryService.getQueryService();
 		if(isFuzzyQuery(queryPara)){
-			return queryService.fuzzyQueryNameServer(queryPara, role, format);
+			request.setAttribute("pageBean", page);
+			request.setAttribute("queryPath", "nameservers");
+			return queryService.fuzzyQueryNameServer(queryPara, role, format,page);
 		}
 		return queryService.queryNameServer(queryPara, role, format);
 	}

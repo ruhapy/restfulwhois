@@ -12,6 +12,7 @@ import java.util.Map;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
+import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.index.DomainIndex;
 import com.cnnic.whois.bean.index.EntityIndex;
 import com.cnnic.whois.bean.index.Index;
@@ -152,10 +153,10 @@ public class QueryDAO {
 	}
 	
 	public Map<String, Object> fuzzyQueryEntity(String fuzzyQueryParamName,String queryPara,
-			String role, String format)
+			String role, String format, PageBean page)
 			throws QueryException, SQLException {
 		SearchResult<EntityIndex> result = entityIndexService
-				.fuzzyQueryEntitiesByHandleAndName(fuzzyQueryParamName,queryPara);
+				.fuzzyQueryEntitiesByHandleAndName(fuzzyQueryParamName,queryPara,page);
 		String selectSql = WhoisUtil.SELECT_LIST_RIRENTITY;
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -165,6 +166,7 @@ public class QueryDAO {
 			if(entityMap != null){
 				map = rdapConformance(map);
 				map.putAll(entityMap);
+				addTruncatedParamToMap(map, result);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -180,13 +182,19 @@ public class QueryDAO {
 		return map;
 	}
 	
-	public Map<String, Object> fuzzyQueryNameServer(String queryInfo, String role, String format)
+	public Map<String, Object> fuzzyQueryNameServer(String queryInfo, String role, 
+			String format, PageBean page)
 			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 		SearchCondition searchCondition = new SearchCondition(queryInfo);
-		searchCondition.setRow(QueryService.MAX_SIZE_FUZZY_QUERY);
+		int startPage = page.getCurrentPage() - 1;
+		startPage = startPage >= 0 ? startPage : 0;
+		int start = startPage * page.getMaxRecords();
+		searchCondition.setStart(start);
+		searchCondition.setRow(page.getMaxRecords());
 		SearchResult<NameServerIndex> result = nameServerIndexService.queryNameServers(searchCondition);
+		page.setRecordsCount(Long.valueOf(result.getTotalResults()).intValue());
 		try {
 			connection = ds.getConnection();
 			String selectSql = WhoisUtil.SELECT_LIST_NAMESREVER + "'"
@@ -212,13 +220,19 @@ public class QueryDAO {
 		return map;
 	}
 
-	public Map<String, Object> fuzzyQueryDoamin(String domain, String domainPuny, String role, String format)
+	public Map<String, Object> fuzzyQueryDoamin(String domain, String domainPuny, String role, 
+			String format, PageBean page)
 			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 		SearchCondition searchCondition = new SearchCondition("ldhName:"+domainPuny + " OR unicodeName:"+domain);
-		searchCondition.setRow(QueryService.MAX_SIZE_FUZZY_QUERY);
+		int startPage = page.getCurrentPage() - 1;
+		startPage = startPage >= 0 ? startPage : 0;
+		int start = startPage * page.getMaxRecords();
+		searchCondition.setStart(start);
+		searchCondition.setRow(page.getMaxRecords());
 		SearchResult<DomainIndex> result = domainIndexService.queryDomains(searchCondition);
+		page.setRecordsCount(Long.valueOf(result.getTotalResults()).intValue());
 		if(result.getResultList().size()==0){
 			return map;
 		}
