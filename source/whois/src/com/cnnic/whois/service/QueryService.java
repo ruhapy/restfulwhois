@@ -1,5 +1,6 @@
 package com.cnnic.whois.service;
 
+import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.dao.QueryDAO;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
@@ -103,10 +104,10 @@ public class QueryService {
 	}
 
 	public Map<String, Object> fuzzyQueryNameServer(String nameServer,
-			String role, String format) throws QueryException,
+			String role, String format, PageBean page) throws QueryException,
 			RedirectExecption {
 		Map dnrMap = this.queryDAO.fuzzyQueryNameServer(nameServer, role,
-				format);
+				format,page);
 		if (dnrMap == null) {
 			String queryType = "dnrdomain";
 			getRedirectionURL(queryType, nameServer);
@@ -120,10 +121,10 @@ public class QueryService {
 	}
 
 	public Map<String, Object> fuzzyQueryDomain(String domain,
-			String domainPuny, String role, String format)
+			String domainPuny, String role, String format, PageBean page)
 			throws QueryException, RedirectExecption {
 		Map dnrMap = this.queryDAO.fuzzyQueryDoamin(domain, domainPuny, role,
-				format);
+				format,page);
 		if (dnrMap == null) {
 			String queryType = "dnrdomain";
 			getRedirectionURL(queryType, domain);
@@ -172,10 +173,10 @@ public class QueryService {
 	}
 
 	public Map<String, Object> fuzzyQueryEntity(String fuzzyQueryParamName,
-			String queryPara, String role, String format)
+			String queryPara, String role, String format, PageBean page)
 			throws QueryException, SQLException {
 		Map map = this.queryDAO.fuzzyQueryEntity(fuzzyQueryParamName,
-				queryPara, role, format);
+				queryPara, role, format,page);
 		if (map == null) {
 			return queryError("404", role, format);
 		}
