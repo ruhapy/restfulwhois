@@ -27,7 +27,7 @@ class Response:
         self.status = status
         self.data = data
 def send(testData):
-    conn = httplib.HTTPConnection("218.241.111.44:8080")
+    conn = httplib.HTTPConnection("218.241.108.82:8080")
     #218.241.108.82:8080
     params = urllib.urlencode(testData.paramsMap)
     path = testData.path
@@ -65,4 +65,4 @@ def sendAll(filePath):
         else:
             print "    no mark."
 # sendAll("data.csv")
-sendAll("data-search.csv")
+sendAll("data-query.csv")
