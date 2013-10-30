@@ -1240,7 +1240,9 @@ public class WhoisUtil {
 		if (format.equals("application/html")) {
 			return name.replaceAll("_", " ");
 		} else {
-			if (format.equals("application/json") || format.equals("application/xml")) {
+			if (format.equals("application/json") || format.equals("application/xml")
+					|| format.equals("application/rdap+json")
+					|| format.equals("application/rdap+json;application/json")) {
 				String[] names = name.split("_");
 				name = names[0].toLowerCase();
 				for (int i = 1; i < names.length; i++) {
