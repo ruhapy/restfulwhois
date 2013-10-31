@@ -79,6 +79,9 @@
 		<url-pattern>/domains</url-pattern>
 		<url-pattern>/nameservers</url-pattern>
 		<url-pattern>/entities</url-pattern>
+		<url-pattern>/domains/*</url-pattern>
+		<url-pattern>/nameservers/*</url-pattern>
+		<url-pattern>/entities/*</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>AuthOpenIDServlet</servlet-name>

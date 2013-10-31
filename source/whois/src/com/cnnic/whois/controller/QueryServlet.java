@@ -168,6 +168,11 @@ public class QueryServlet extends HttpServlet {
 		String role = WhoisUtil.getUserRole(request);
 		
 		if(queryInfo.indexOf("/") != -1){
+			if(StringUtils.isNotBlank(queryPara)){// domains/xxx?name=z*.cn
+				map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+				processRespone(request, response, map);
+				return;
+			}
 			queryType = queryInfo.substring(0, queryInfo.indexOf("/"));
 			queryPara = queryInfo.substring(queryInfo.indexOf("/") + 1); //get the parameters from the request scope and parse
 		}else{
@@ -182,7 +187,7 @@ public class QueryServlet extends HttpServlet {
 		request.setAttribute("queryType", queryType);
 		int typeIndex = Arrays.binarySearch(WhoisUtil.queryTypes, queryType); //according to the type of the parameter type query
 		PageBean page = getPageParam(request);
-		if(isFuzzyQueryType(typeIndex) && isJsonOrXmlFormat(request)){
+		if(isFuzzyQuery && isJsonOrXmlFormat(request)){
 			page.setMaxRecords(QueryService.MAX_SIZE_FUZZY_QUERY);//json/xml set max size
 		}
 		try {
@@ -271,7 +276,7 @@ public class QueryServlet extends HttpServlet {
 			this.log(e.getMessage(), e);
 			map = WhoisUtil.processError(WhoisUtil.ERRORCODE, role, format);
 		}
-		if(isFuzzyQueryType(typeIndex) && isJsonOrXmlFormat(request)){
+		if(isFuzzyQuery && isJsonOrXmlFormat(request)){
 			processFuzzyQueryJsonOrXmlRespone(request, response, map, typeIndex);
 		}else{
 			processRespone(request, response, map);

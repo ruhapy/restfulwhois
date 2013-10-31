@@ -38,7 +38,7 @@ public class EntityIndexService {
 		String entityNamesQFull = entityNamesQ + " OR " + entityNamesQP
 				+ " OR " + entityNamesQS + " OR " + entityNamesQPS;
 		String queryStr = "(roles:registrar AND (" + entityNamesQFull + ")) "
-				+ "OR (NOT roles:registrar AND handle:" + handleOrName + ")";
+				+ "OR (handle:" + handleOrName + ")";
 		queryStr = queryStr.replace("~", "\\~");
 		SearchCondition searchCondition = new SearchCondition(queryStr);
 		searchCondition.setRow(QueryService.MAX_SIZE_FUZZY_QUERY);
