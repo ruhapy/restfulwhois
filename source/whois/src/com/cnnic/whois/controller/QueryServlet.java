@@ -168,6 +168,11 @@ public class QueryServlet extends HttpServlet {
 		String role = WhoisUtil.getUserRole(request);
 		
 		if(queryInfo.indexOf("/") != -1){
+			if(StringUtils.isNotBlank(queryPara)){// domains/xxx?name=z*.cn
+				map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+				processRespone(request, response, map);
+				return;
+			}
 			queryType = queryInfo.substring(0, queryInfo.indexOf("/"));
 			queryPara = queryInfo.substring(queryInfo.indexOf("/") + 1); //get the parameters from the request scope and parse
 		}else{
