@@ -957,12 +957,12 @@ public class QueryServlet extends HttpServlet {
 			}
 		}
 		
-		if (format == null)
-			format = request.getHeader("Accept"); // determine what kind of return type
-
-		CharSequence sqhtml = "html";			
-		if(format.contains(sqhtml))
-			format = "application/html";
+//		if (format == null)
+//			format = request.getHeader("Accept"); // determine what kind of return type
+//
+//		CharSequence sqhtml = "html";			
+//		if(format.contains(sqhtml))
+//			format = "application/html";
 
 		if (format == null)
 			format = "application/json";
