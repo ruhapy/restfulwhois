@@ -138,6 +138,7 @@ public class QueryDAO {
 		try {
 			connection = ds.getConnection();
 			map = queryDAO.fuzzyQuery(connection, result,selectSql,"$mul$entity", role, format);
+			map = rdapConformance(map);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -317,8 +318,15 @@ public class QueryDAO {
 					list.add(map);
 				}
 			}
+			if (list.size() == 0){
+				return null;
+			}
 			Map<String, Object> mapInfo = new LinkedHashMap<String, Object>();
-			mapInfo.put(keyName, list.toArray());
+			if (list.size() > 1) {
+				mapInfo.put(keyName, list.toArray());
+			} else {
+				mapInfo = list.get(0);
+			}
 			return mapInfo;
 	}
 	

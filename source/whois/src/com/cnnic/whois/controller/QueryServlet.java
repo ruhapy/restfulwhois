@@ -187,7 +187,7 @@ public class QueryServlet extends HttpServlet {
 		request.setAttribute("queryType", queryType);
 		int typeIndex = Arrays.binarySearch(WhoisUtil.queryTypes, queryType); //according to the type of the parameter type query
 		PageBean page = getPageParam(request);
-		if(isFuzzyQueryType(typeIndex) && isJsonOrXmlFormat(request)){
+		if(isFuzzyQuery && isJsonOrXmlFormat(request)){
 			page.setMaxRecords(QueryService.MAX_SIZE_FUZZY_QUERY);//json/xml set max size
 		}
 		try {
@@ -276,7 +276,7 @@ public class QueryServlet extends HttpServlet {
 			this.log(e.getMessage(), e);
 			map = WhoisUtil.processError(WhoisUtil.ERRORCODE, role, format);
 		}
-		if(isFuzzyQueryType(typeIndex) && isJsonOrXmlFormat(request)){
+		if(isFuzzyQuery && isJsonOrXmlFormat(request)){
 			processFuzzyQueryJsonOrXmlRespone(request, response, map, typeIndex);
 		}else{
 			processRespone(request, response, map);
@@ -957,12 +957,12 @@ public class QueryServlet extends HttpServlet {
 			}
 		}
 		
-		if (format == null)
-			format = request.getHeader("Accept"); // determine what kind of return type
-
-		CharSequence sqhtml = "html";			
-		if(format.contains(sqhtml))
-			format = "application/html";
+//		if (format == null)
+//			format = request.getHeader("Accept"); // determine what kind of return type
+//
+//		CharSequence sqhtml = "html";			
+//		if(format.contains(sqhtml))
+//			format = "application/html";
 
 		if (format == null)
 			format = "application/json";
