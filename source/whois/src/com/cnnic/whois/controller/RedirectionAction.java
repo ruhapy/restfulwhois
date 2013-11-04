@@ -12,6 +12,7 @@ import com.cnnic.whois.util.WhoisUtil;
 import com.opensymphony.xwork2.ActionSupport;
 
 public class RedirectionAction extends ActionSupport {
+
 	private String tableType;
 
 	public RedirectionAction() {
