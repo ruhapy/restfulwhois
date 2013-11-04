@@ -1182,7 +1182,7 @@ public class QueryDAO {
 					keyName.equals(WhoisUtil.JOINNANOTICES) ||
 					keyName.equals(WhoisUtil.JOINREMARKS) ||
 					keyName.equals(WhoisUtil.MULTIPRXLINK ) ||
-					keyName.equals(WhoisUtil.MULTIPRXNOTICES )||
+//					keyName.equals(WhoisUtil.MULTIPRXNOTICES )||
 					keyName.equals(WhoisUtil.MULTIPRXREMARKS) ||
 					keyName.equals(WhoisUtil.JOINPUBLICIDS) ||
 					keyName.equals(WhoisUtil.JOINDSDATA)||
