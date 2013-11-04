@@ -197,8 +197,15 @@ public class QueryServlet extends HttpServlet {
 				break;
 			case 1:
 				String queryParaDecode = WhoisUtil.toChineseUrl(queryPara);
-				queryParaDecode = StringUtils.trim(queryParaDecode);
-				String queryParaPuny = IDN.toASCII(queryParaDecode);
+				String queryParaPuny = "";
+				try{
+					queryParaDecode = StringUtils.trim(queryParaDecode);
+					queryParaPuny = IDN.toASCII(queryParaDecode);//long lable exception
+				}catch(Exception e){
+					map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+					processRespone(request, response, map);
+					return;
+				}
 				map = processQueryDomain(isFuzzyQuery,queryParaDecode,queryParaPuny,
 						role, format,page,request);
 				queryPara = IDN.toUnicode(IDN.toASCII(WhoisUtil.toChineseUrl(queryPara)));
@@ -470,6 +477,9 @@ public class QueryServlet extends HttpServlet {
 
 		if (queryPara.indexOf(WhoisUtil.PRX) >= 0) {
 			String[] infoArray = queryPara.split(WhoisUtil.PRX);
+			if(infoArray.length > 2){//1.1.1.1//32
+				return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+			}
 			if(infoArray.length > 1){
 				strInfo = infoArray[0];
 				ipLength = infoArray[1];
