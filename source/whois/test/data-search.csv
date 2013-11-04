@@ -18,6 +18,7 @@ path,Accept,param,status,mark
 /domains?name=t*,application/json,,400,BAD REQUEST
 /domains?name=*cn,application/json,,400,BAD REQUEST
 /domains?name=*.cn,application/json,,400,BAD REQUEST
+/domains?name=nonexist*.nonexist,application/rdap+json,,404,NOT FOUND
 #
 /entities,application/rdap+json,,400,BAD REQUEST
 /entities/,application/rdap+json,,400,BAD REQUEST
@@ -32,9 +33,8 @@ path,Accept,param,status,mark
 #
 /entities?handle=*,application/json,,200,entitySearchResults
 /entities?handle=*,application/json,,200,searchResultsTruncated
-/entities?handle=*.cn,application/json,,200,entitySearchResults
-/entities?handle=*.cn,application/json,,200,entitySearchResults
-/entities?handle=s*.cn,application/json,,200,entitySearchResults
+/entities?handle=s*,application/json,,200,entitySearchResults
+/entities?fn=nonexist*.nonexist,application/json,,404,NOT FOUND
 #
 /nameservers,application/rdap+json,,400,BAD REQUEST
 /nameservers/,application/rdap+json,,400,BAD REQUEST
@@ -46,3 +46,4 @@ path,Accept,param,status,mark
 /nameservers?name=*,application/rdap+json,,400,BAD REQUEST
 /nameservers?name=n*,application/rdap+json,,400,BAD REQUEST
 /nameservers?name=*n,application/rdap+json,,400,BAD REQUEST
+/nameservers?name=nonexist*.nonexist,application/rdap+json,,404,NOT FOUND
