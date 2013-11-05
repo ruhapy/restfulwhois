@@ -64,5 +64,5 @@ def sendAll(filePath):
                 print "    invalid data:"+str(res.data)
         else:
             print "    no mark."
-sendAll("data-search.csv")
-# sendAll("data-query.csv")
+# sendAll("data-search.csv")
+sendAll("data-query.csv")
