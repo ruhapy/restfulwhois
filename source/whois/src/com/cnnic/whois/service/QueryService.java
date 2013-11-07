@@ -1,11 +1,13 @@
 package com.cnnic.whois.service;
 
 import com.cnnic.whois.bean.PageBean;
+import com.cnnic.whois.dao.CacheQueryDAO;
 import com.cnnic.whois.dao.QueryDAO;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.util.WhoisProperties;
 import com.cnnic.whois.util.WhoisUtil;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -15,6 +17,7 @@ import java.util.Map;
 public class QueryService {
 	private static QueryService queryService = new QueryService();
 	private QueryDAO queryDAO = QueryDAO.getQueryDAO();
+	private CacheQueryDAO cache = CacheQueryDAO.getQueryDAO();
 	public static int MAX_SIZE_FUZZY_QUERY = WhoisProperties
 			.getMaxSizeFuzzyQuery();
 
@@ -139,7 +142,8 @@ public class QueryService {
 
 	public Map<String, Object> queryDomain(String ipInfo, String role,
 			String format) throws QueryException, RedirectExecption {
-		Map rirMap = this.queryDAO.queryRIRDoamin(ipInfo, role, format);
+		Map rirMap = cache.queryDoamin("", role, format);
+//				this.queryDAO.queryRIRDoamin(ipInfo, role, format);
 		Map dnrMap = this.queryDAO.queryDNRDoamin(ipInfo, role, format);
 
 		if ((rirMap == null) && (dnrMap == null)) {
