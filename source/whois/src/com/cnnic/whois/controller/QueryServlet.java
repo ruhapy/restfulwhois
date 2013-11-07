@@ -29,7 +29,9 @@ import com.cnnic.whois.util.WhoisUtil;
 
 
 public class QueryServlet extends HttpServlet {
-
+	private static Long MIN_AS_NUM = 0L;
+	private static Long MAX_AS_NUM = 4294967295L;
+	
 	/**
 	 * Called by the server (via the service method) to allow a servlet to
 	 * handle a POST request. The HTTP POST method allows the client to send
@@ -437,7 +439,7 @@ public class QueryServlet extends HttpServlet {
 			}
 		}
 		if (format.equals("application/json") || format.equals("application/rdap+json") || format.equals("application/rdap+json;application/json")) { // depending on the return type of the response corresponding data
-			response.setHeader("Content-Type", "application/json");
+			response.setHeader("Content-Type", format);
 			out.print(DataFormat.getJsonObject(map));
 		} else if (format.equals("application/xml")) {
 			response.setHeader("Content-Type", "application/xml");
@@ -569,10 +571,13 @@ public class QueryServlet extends HttpServlet {
 			throws QueryException, RedirectExecption {
 		if (!isCommonInvalidStr(queryPara))
 			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
-
-		if (!queryPara.matches("^[0-9]*$"))
+		if (!queryPara.matches("^[1-9][0-9]{0,9}$"))
 			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
-
+		Long longValue = Long.valueOf(queryPara);
+		if(longValue<=MIN_AS_NUM || longValue>=MAX_AS_NUM){
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+		}
+		
 		try {
 			int queryInfo = Integer.parseInt(queryPara);
 			QueryService queryService = QueryService.getQueryService();
@@ -924,7 +929,7 @@ public class QueryServlet extends HttpServlet {
 		}
 		
 		if (format.equals("application/json") || format.equals("application/rdap+json") || format.equals("application/rdap+json;application/json")) { // depending on the return type of the response corresponding data
-			response.setHeader("Content-Type", "application/json");
+			response.setHeader("Content-Type", format);
 			out.print(DataFormat.getJsonObject(map));
 		} else if (format.equals("application/xml")) {
 			response.setHeader("Content-Type", "application/xml");
