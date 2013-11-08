@@ -1041,8 +1041,6 @@ public class QueryDAO {
 			List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 			
 			while (results.next()) {
-				//Iteration results, according to the parameters in the collection can get to the data in the query results, 
-				//according to the order of the data in the collection will be added to the map collection from the return
 				Map<String, Object> map = new LinkedHashMap<String, Object>();
 				for (int i = 0; i < keyFlieds.size(); i++) {
 					Object resultsInfo = null;
@@ -1122,7 +1120,6 @@ public class QueryDAO {
 					} else {
 						resultsInfo = results.getObject(keyFlieds.get(i)) == null ? "": results.getObject(keyFlieds.get(i));
 						
-						//resultsInfo = results.getObject(keyFlieds.get(i));
 						CharSequence id = "id";
 						if(!keyName.equals(WhoisUtil.JOINPUBLICIDS) && WhoisUtil.getDisplayKeyName(keyFlieds.get(i), format).substring(keyFlieds.get(i).length() - 2).equals(id) && !format.equals("application/html")){
 							continue;
