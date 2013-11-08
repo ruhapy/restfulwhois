@@ -1121,7 +1121,8 @@ public class QueryDAO {
 						resultsInfo = results.getObject(keyFlieds.get(i)) == null ? "": results.getObject(keyFlieds.get(i));
 						
 						CharSequence id = "id";
-						if(!keyName.equals(WhoisUtil.JOINPUBLICIDS) && WhoisUtil.getDisplayKeyName(keyFlieds.get(i), format).substring(keyFlieds.get(i).length() - 2).equals(id) && !format.equals("application/html")){
+						boolean fieldEndwithId = WhoisUtil.getDisplayKeyName(keyFlieds.get(i), format).substring(keyFlieds.get(i).length() - 2).equals(id);
+						if(fieldEndwithId && !format.equals("application/html")){
 							continue;
 						}else{
 							map.put(WhoisUtil.getDisplayKeyName(keyFlieds.get(i), format), resultsInfo);//a different format have different name;
