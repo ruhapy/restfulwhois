@@ -142,8 +142,8 @@ public class QueryService {
 
 	public Map<String, Object> queryDomain(String ipInfo, String role,
 			String format) throws QueryException, RedirectExecption {
-		Map rirMap = cache.queryDoamin("", role, format);
-//				this.queryDAO.queryRIRDoamin(ipInfo, role, format);
+		Map rirMap = this.queryDAO.queryRIRDoamin(ipInfo, role, format);
+		//cache.queryDoamin("", role, format);
 		Map dnrMap = this.queryDAO.queryDNRDoamin(ipInfo, role, format);
 
 		if ((rirMap == null) && (dnrMap == null)) {
