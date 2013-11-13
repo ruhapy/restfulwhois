@@ -11,17 +11,20 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class DomainQueryDAO extends DbQueryDAO {
+	private static final String QUERY_KEY = "$mul$domains";
 	protected DataSource ds;
 	protected PermissionCache permissionCache = PermissionCache
 			.getPermissionCache();
 
-	public Map<String, Object> query(String q, String role, String format) {
+	public Map<String, Object> query(String q, String role, String format,
+			PageBean... page) {
 		PreparedStatement stmt = null;
 		ResultSet results = null;
 		Connection connection = null;
@@ -30,7 +33,6 @@ public class DomainQueryDAO extends DbQueryDAO {
 			String selectSql = WhoisUtil.SELECT_LIST_DNRDOMAIN + "'" + q + "'";
 			List<String> keyFlieds = permissionCache
 					.getDNRDomainKeyFileds(role);
-			String keyName = "$mul$domains";
 			stmt = connection.prepareStatement(selectSql);
 			results = stmt.executeQuery();
 			List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
@@ -38,15 +40,16 @@ public class DomainQueryDAO extends DbQueryDAO {
 				Map<String, Object> map = new LinkedHashMap<String, Object>();
 				for (int i = 0; i < keyFlieds.size(); i++) {
 					String field = keyFlieds.get(i);
-					handleField(keyName, role, format, results, map, field);
+					handleField(role, format, results, map, field);
 				}
 				list.add(map);
 			}
-			if (list.size() == 0)
+			if (list.size() == 0) {
 				return null;
+			}
 			Map<String, Object> mapInfo = new LinkedHashMap<String, Object>();
 			if (list.size() > 1) {
-				mapInfo.put(keyName, list.toArray());
+				mapInfo.put(QUERY_KEY, list.toArray());
 			} else {
 				mapInfo = list.get(0);
 			}
@@ -86,18 +89,30 @@ public class DomainQueryDAO extends DbQueryDAO {
 	}
 
 	@Override
-	public boolean supportJoinType(QueryJoinType queryJoinType) {
-		return false;
-	}
-
-	@Override
 	public String getJoinFieldIdColumnName() {
-		throw new UnsupportedOperationException();//TODO: superClass
+		throw new UnsupportedOperationException();// TODO: superClass
 	}
 
 	@Override
 	public Map<String, Object> queryJoins(String handle, String role,
 			String format) {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public QueryType getQueryType() {
+		return QueryType.DOMAIN;
+	}
+
+	@Override
+	public boolean supportJoinType(QueryType queryType,
+			QueryJoinType queryJoinType) {
+		return false;
+	}
+
+	@Override
+	protected Map<String, Object> postHandleFuzzyField(Map<String, Object> map,
+			String format) {
+		return map;
 	}
 }
