@@ -1032,7 +1032,6 @@ public class QueryDAO {
 			throws SQLException {
 		PreparedStatement stmt = null; 
 		ResultSet results = null;
-		String entityHandle = null;
 
 		try {
 			stmt = connection.prepareStatement(sql);
@@ -1045,7 +1044,8 @@ public class QueryDAO {
 				for (int i = 0; i < keyFlieds.size(); i++) {
 					Object resultsInfo = null;
 					
-					if(keyName.equals(WhoisUtil.MULTIPRXIP) && keyFlieds.get(i).toString().equals("StartLowAddress")){
+					String field = keyFlieds.get(i);
+					if(keyName.equals(WhoisUtil.MULTIPRXIP) && field.equals("StartLowAddress")){
 						if((map.get("Start Address") == null && map.get("End Address") == null) || (map.get("startAddress") == null && map.get("endAddress") == null)){
 							String ipVersion = results.getString("IP_Version");
 							
@@ -1077,19 +1077,18 @@ public class QueryDAO {
 						}
 					}
 					
-					if (keyFlieds.get(i).startsWith(WhoisUtil.ARRAYFILEDPRX)) {
-						String key = keyFlieds.get(i).substring(WhoisUtil.ARRAYFILEDPRX.length());
+					if (field.startsWith(WhoisUtil.ARRAYFILEDPRX)) {
+						String key = field.substring(WhoisUtil.ARRAYFILEDPRX.length());
 						resultsInfo = results.getString(key);
 						String[] values = null;
 						if (resultsInfo != null) {
 							values = resultsInfo.toString().split(WhoisUtil.VALUEARRAYPRX);
 						}
 						map.put(WhoisUtil.getDisplayKeyName(key, format), values);
-					} else if (keyFlieds.get(i).startsWith(WhoisUtil.EXTENDPRX)) {
-						resultsInfo = results.getString(keyFlieds.get(i));
-						map.put(keyFlieds.get(i).substring(WhoisUtil.EXTENDPRX.length()), resultsInfo);
-					} else if (keyFlieds.get(i).startsWith(WhoisUtil.JOINFILEDPRX)) {
-						String key = keyFlieds.get(i).substring(WhoisUtil.JOINFILEDPRX.length());
+					} else if (field.startsWith(WhoisUtil.EXTENDPRX)) {
+						resultsInfo = results.getString(field);
+						map.put(field.substring(WhoisUtil.EXTENDPRX.length()), resultsInfo);
+					} else if (field.startsWith(WhoisUtil.JOINFILEDPRX)) {
 						String fliedName = "";
 						if (keyName.equals(WhoisUtil.MULTIPRXNOTICES) || keyName.equals(WhoisUtil.MULTIPRXREMARKS)) {
 							fliedName = keyName.substring(WhoisUtil.MULTIPRX.length()) + "Id";
@@ -1107,25 +1106,22 @@ public class QueryDAO {
 							fliedName = WhoisUtil.HANDLE;
 						}
 						
-						if (keyName.equals(WhoisUtil.JOINENTITESFILED))
-						{
-							entityHandle = results.getString(fliedName);
-						}
 
-						Object value = queryJoinTable(keyFlieds.get(i),
+						String key = field.substring(WhoisUtil.JOINFILEDPRX.length());
+						Object value = queryJoinTable(field,
 								results.getString(fliedName), sql, role,
 								connection, format);
 						if (value != null)
 							map.put(key, value);
 					} else {
-						resultsInfo = results.getObject(keyFlieds.get(i)) == null ? "": results.getObject(keyFlieds.get(i));
+						resultsInfo = results.getObject(field) == null ? "": results.getObject(field);
 						
 						CharSequence id = "id";
-						boolean fieldEndwithId = WhoisUtil.getDisplayKeyName(keyFlieds.get(i), format).substring(keyFlieds.get(i).length() - 2).equals(id);
+						boolean fieldEndwithId = WhoisUtil.getDisplayKeyName(field, format).substring(field.length() - 2).equals(id);
 						if(fieldEndwithId && !format.equals("application/html")){
 							continue;
 						}else{
-							map.put(WhoisUtil.getDisplayKeyName(keyFlieds.get(i), format), resultsInfo);//a different format have different name;
+							map.put(WhoisUtil.getDisplayKeyName(field, format), resultsInfo);//a different format have different name;
 						}
 					}
 				}
@@ -1144,6 +1140,7 @@ public class QueryDAO {
 				
 				//asevent
 				if (keyName.equals(WhoisUtil.JOINENTITESFILED)){
+					String entityHandle = results.getString(WhoisUtil.HANDLE);
 					if (map.containsKey("events")){
 						Map<String, Object> map_Events = new LinkedHashMap<String, Object>();
 						map_Events = (Map<String, Object>)map.get("events");
