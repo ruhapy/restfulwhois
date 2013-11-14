@@ -9,7 +9,7 @@ import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.util.PermissionCache;
 
-public class IpQueryDAO extends DbQueryDAO {
+public class IpQueryDAO extends AbstractDbQueryDAO {
 	protected DataSource ds;
 	protected PermissionCache permissionCache = PermissionCache
 			.getPermissionCache();
@@ -53,10 +53,4 @@ public class IpQueryDAO extends DbQueryDAO {
 		return false;
 	}
 
-	@Override
-	protected Map<String, Object> postHandleFuzzyField(Map<String, Object> map,
-			String format) {
-		// TODO Auto-generated method stub
-		return map;
-	}
 }

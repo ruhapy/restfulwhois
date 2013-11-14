@@ -9,31 +9,20 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
-import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryType;
-import com.cnnic.whois.util.PermissionCache;
-import com.cnnic.whois.util.WhoisUtil;
 
-public class DomainQueryDAO extends DbQueryDAO {
+public abstract class AbstractDomainQueryDAO extends AbstractDbQueryDAO {
 	private static final String QUERY_KEY = "$mul$domains";
-	protected DataSource ds;
-	protected PermissionCache permissionCache = PermissionCache
-			.getPermissionCache();
 
-	public Map<String, Object> query(String q, String role, String format,
-			PageBean... page) {
+	protected Map<String, Object> doQquery(List<String> keyFlieds, String sql,
+			String role, String format) {
 		PreparedStatement stmt = null;
 		ResultSet results = null;
 		Connection connection = null;
 		try {
 			connection = ds.getConnection();
-			String selectSql = WhoisUtil.SELECT_LIST_DNRDOMAIN + "'" + q + "'";
-			List<String> keyFlieds = permissionCache
-					.getDNRDomainKeyFileds(role);
-			stmt = connection.prepareStatement(selectSql);
+			stmt = connection.prepareStatement(sql);
 			results = stmt.executeQuery();
 			List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 			while (results.next()) {
@@ -73,16 +62,6 @@ public class DomainQueryDAO extends DbQueryDAO {
 		}
 	}
 
-	protected Map<String, Object> rdapConformance(Map<String, Object> map) {
-		if (map == null) {
-			map = new LinkedHashMap<String, Object>();
-		}
-		Object[] conform = new Object[1];
-		conform[0] = WhoisUtil.RDAPCONFORMANCE;
-		map.put(WhoisUtil.RDAPCONFORMANCEKEY, conform);
-		return map;
-	}
-
 	@Override
 	public boolean supportType(QueryType queryType) {
 		return QueryType.DOMAIN.equals(queryType);
@@ -108,11 +87,5 @@ public class DomainQueryDAO extends DbQueryDAO {
 	public boolean supportJoinType(QueryType queryType,
 			QueryJoinType queryJoinType) {
 		return false;
-	}
-
-	@Override
-	protected Map<String, Object> postHandleFuzzyField(Map<String, Object> map,
-			String format) {
-		return map;
 	}
 }
