@@ -21,6 +21,7 @@ import com.cnnic.whois.util.WhoisUtil;
 
 public abstract class DbQueryDAO implements QueryDao {
 	protected DataSource ds;
+	
 	List<QueryDao> queryDaos;
 	protected PermissionCache permissionCache = PermissionCache
 			.getPermissionCache();
