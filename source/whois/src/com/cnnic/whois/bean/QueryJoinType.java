@@ -18,10 +18,6 @@ public enum QueryJoinType {
 		return null;
 	}
 
-	public static void main(String[] args) {
-		System.err.println(QueryJoinType.valueOf("nameserver"));
-	}
-
 	private QueryJoinType(String name) {
 		this.setName(name);
 	}

@@ -18,7 +18,8 @@ import com.cnnic.whois.service.EntityIndexService;
 import com.cnnic.whois.service.index.SearchResult;
 import com.cnnic.whois.util.WhoisUtil;
 
-public abstract class EntityQueryDAO extends DbQueryDAO {
+public abstract class EntityQueryDAO extends AbstractDbQueryDAO {
+	private AbstractSearchQueryDAO searchQueryDAO;
 	protected EntityIndexService entityIndexService = EntityIndexService
 			.getIndexService();
 
@@ -28,14 +29,9 @@ public abstract class EntityQueryDAO extends DbQueryDAO {
 		SearchResult<EntityIndex> result = entityIndexService
 				.preciseQueryEntitiesByHandleOrName(q);
 		Map<String, Object> map = null;
-		map = fuzzyQuery(result, "$mul$entity", role, format);
+		map = searchQueryDAO.fuzzyQuery(result, "$mul$entity", role, format);
 		map = rdapConformance(map);
 		return map;
-	}
-
-	@Override
-	protected Map<String, Object> postHandleFuzzyField(Map<String, Object> map, String format) {
-		return WhoisUtil.toVCard(map, format);
 	}
 
 	@Override

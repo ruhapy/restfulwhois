@@ -1,22 +1,50 @@
 package com.cnnic.whois.dao.query;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.cnnic.whois.bean.PageBean;
-import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.bean.index.Index;
-import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.DomainIndexService;
-import com.cnnic.whois.service.NameServerIndexService;
+import com.cnnic.whois.service.index.SearchResult;
+import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
 
-public class FuzzyQueryDAO extends DbQueryDAO {
+public abstract class AbstractSearchQueryDAO implements QueryDao {
+	protected PermissionCache permissionCache = PermissionCache
+			.getPermissionCache();
 	protected DomainIndexService domainIndexService = DomainIndexService
 			.getIndexService();
-	protected NameServerIndexService nameServerIndexService = NameServerIndexService
-			.getIndexService();
+	private AbstractDbQueryDAO dbQueryDAO;
+
+	abstract protected Map<String, Object> postHandleField(
+			Map<String, Object> map, String format);
+
+	protected Map<String, Object> fuzzyQuery(
+			SearchResult<? extends Index> indexs, String keyName, String role,
+			String format) {
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		for (Index index : indexs.getResultList()) {
+			index.initPropValueMap();
+			List<String> keyFlieds = permissionCache.getKeyFiledsByClass(index,
+					role);
+			Map<String, Object> map = new LinkedHashMap<String, Object>();
+			handleFieldsFuzzy(keyName, role, format, index, keyFlieds, map);
+			map = postHandleField(map, format);
+			list.add(map);
+		}
+		if (list.size() == 0) {
+			return null;
+		}
+		Map<String, Object> mapInfo = new LinkedHashMap<String, Object>();
+		if (list.size() > 1) {
+			mapInfo.put(keyName, list.toArray());
+		} else {
+			mapInfo = list.get(0);
+		}
+		return mapInfo;
+	}
 
 	protected void handleFieldsFuzzy(String keyName, String role,
 			String format, Index index, List<String> keyFlieds,
@@ -39,8 +67,8 @@ public class FuzzyQueryDAO extends DbQueryDAO {
 						resultsInfo);
 			} else if (field.startsWith(WhoisUtil.JOINFILEDPRX)) {
 				QueryType queryType = getQueryType();
-				queryJoinEntity(queryType, index.getHandle(), role, format,
-						map, field);
+				dbQueryDAO.queryJoinEntity(queryType, index.getHandle(), role,
+						format, map, field);
 			} else {
 				resultsInfo = index.getPropValue(field);
 				resultsInfo = resultsInfo == null ? "" : resultsInfo;
@@ -56,50 +84,5 @@ public class FuzzyQueryDAO extends DbQueryDAO {
 				}
 			}
 		}
-	}
-
-	@Override
-	public QueryType getQueryType() {
-		return null;
-	}
-
-	@Override
-	public boolean supportType(QueryType queryType) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean supportJoinType(QueryType queryType,
-			QueryJoinType queryJoinType) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public Map<String, Object> query(String q, String role, String format,
-			PageBean... page) throws QueryException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Map<String, Object> queryJoins(String handle, String role,
-			String format) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getJoinFieldIdColumnName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected Map<String, Object> postHandleFuzzyField(Map<String, Object> map,
-			String format) {
-		// TODO Auto-generated method stub
-		return map;
 	}
 }
