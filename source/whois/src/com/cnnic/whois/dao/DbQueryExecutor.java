@@ -7,6 +7,7 @@ import java.util.Map;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.dao.query.DomainQueryDAO;
 import com.cnnic.whois.dao.query.QueryDao;
+import com.cnnic.whois.execption.QueryException;
 
 public class DbQueryExecutor {
 
@@ -21,7 +22,7 @@ public class DbQueryExecutor {
 	}
 
 	private Map<String, Object> query(QueryType queryType, String role,
-			String format) {
+			String format) throws QueryException {
 		for (QueryDao queryDao : queryDaos) {
 			if (queryDao.supportType(queryType)) {
 				queryDao.query("q",role, format);
