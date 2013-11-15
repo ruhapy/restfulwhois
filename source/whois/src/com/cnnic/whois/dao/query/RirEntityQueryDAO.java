@@ -1,10 +1,16 @@
 package com.cnnic.whois.dao.query;
 
+import java.util.List;
+
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class RirEntityQueryDAO extends EntityQueryDAO {
+	public RirEntityQueryDAO(List<AbstractDbQueryDAO> dbQueryDaos) {
+		super(dbQueryDaos);
+	}
+
 	@Override
 	public boolean supportType(QueryType queryType) {
 		return QueryType.RIRENTITY.equals(queryType);

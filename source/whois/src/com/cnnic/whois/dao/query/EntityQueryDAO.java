@@ -13,6 +13,7 @@ import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.bean.index.EntityIndex;
+import com.cnnic.whois.dao.DbQueryExecutor;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.EntityIndexService;
 import com.cnnic.whois.service.index.SearchResult;
@@ -22,6 +23,10 @@ public abstract class EntityQueryDAO extends AbstractDbQueryDAO {
 	private AbstractSearchQueryDAO searchQueryDAO;
 	protected EntityIndexService entityIndexService = EntityIndexService
 			.getIndexService();
+
+	public EntityQueryDAO(List<AbstractDbQueryDAO> dbQueryDaos) {
+		super(dbQueryDaos);
+	}
 
 	@Override
 	public Map<String, Object> query(String q, String role, String format,
@@ -44,8 +49,7 @@ public abstract class EntityQueryDAO extends AbstractDbQueryDAO {
 	}
 
 	@Override
-	public Map<String, Object> queryJoins(String handle, String role,
-			String format) {
+	public Object queryJoins(String handle, String role, String format) {
 		String sql = getJoinSql(handle);
 		PreparedStatement stmt = null;
 		ResultSet results = null;
@@ -63,19 +67,19 @@ public abstract class EntityQueryDAO extends AbstractDbQueryDAO {
 					String field = keyFlieds.get(i);
 					handleField(role, format, results, map, field);
 				}
+				String entityHandle = results.getString(WhoisUtil.HANDLE);
+				handleAsEventActor(map, entityHandle);
+				map = WhoisUtil.toVCard(map, format);
 				list.add(map);
 			}
 			if (list.size() == 0) {
 				return null;
 			}
-			Map<String, Object> mapInfo = new LinkedHashMap<String, Object>();
 			if (list.size() > 1) {
-				mapInfo.put(WhoisUtil.JOINFILEDPRX + QueryJoinType.ENTITIES,
-						list.toArray());
+				return list.toArray();
 			} else {
-				mapInfo = list.get(0);
+				return list.get(0);
 			}
-			return mapInfo;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
@@ -90,6 +94,23 @@ public abstract class EntityQueryDAO extends AbstractDbQueryDAO {
 				try {
 					stmt.close();
 				} catch (SQLException se) {
+				}
+			}
+		}
+	}
+
+	private void handleAsEventActor(Map<String, Object> map, String entityHandle) {
+		if (map.containsKey("events")) {
+			Map<String, Object> map_Events = new LinkedHashMap<String, Object>();
+			map_Events = (Map<String, Object>) map.get("events");
+			if (map_Events.containsKey("eventActor")) {
+				String eventactor = (String) map_Events.get("eventActor");
+				if (entityHandle.equals(eventactor)) {
+					map_Events.remove("eventActor");
+					List<Map<String, Object>> listEvents = new ArrayList<Map<String, Object>>();
+					listEvents.add(map_Events);
+					map.put("asEventActor", listEvents.toArray());
+					map.remove("events");
 				}
 			}
 		}

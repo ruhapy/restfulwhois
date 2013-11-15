@@ -10,6 +10,10 @@ import com.cnnic.whois.util.WhoisUtil;
 
 public class DnrDomainQueryDAO extends AbstractDomainQueryDAO {
 
+	public DnrDomainQueryDAO(List<AbstractDbQueryDAO> dbQueryDaos) {
+		super(dbQueryDaos);
+	}
+
 	public Map<String, Object> query(String q, String role, String format,
 			PageBean... page) {
 		String dnrSql = WhoisUtil.SELECT_LIST_DNRDOMAIN + "'" + q + "'";

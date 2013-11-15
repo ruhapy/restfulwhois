@@ -1,10 +1,16 @@
 package com.cnnic.whois.dao.query;
 
+import java.util.List;
+
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class EntityFuzzyQueryDAO extends EntityQueryDAO {
+	public EntityFuzzyQueryDAO(List<AbstractDbQueryDAO> dbQueryDaos) {
+		super(dbQueryDaos);
+		// TODO Auto-generated constructor stub
+	}
 	@Override
 	public QueryType getQueryType() {
 		return QueryType.ENTITYSEARCH;

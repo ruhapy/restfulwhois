@@ -10,10 +10,14 @@ import com.cnnic.whois.util.WhoisUtil;
 
 public class RirDomainQueryDAO extends AbstractDomainQueryDAO {
 
+	public RirDomainQueryDAO(List<AbstractDbQueryDAO> dbQueryDaos) {
+		super(dbQueryDaos);
+	}
+
 	public Map<String, Object> query(String q, String role, String format,
 			PageBean... page) {
 		String rirSql = WhoisUtil.SELECT_LIST_RIRDOMAIN + "'" + q + "'";
-		List<String> rirKeyFlieds = permissionCache.getDNRDomainKeyFileds(role);
+		List<String> rirKeyFlieds = permissionCache.getRIRDomainKeyFileds(role);
 		// cache.queryDoamin("", role, format);
 		return doQquery(rirKeyFlieds, rirSql, role, format);
 	}
