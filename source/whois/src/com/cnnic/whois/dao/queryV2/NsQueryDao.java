@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.cnnic.whois.bean.PageBean;
+import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.WhoisUtil;
@@ -83,5 +84,20 @@ public class NsQueryDao extends AbstractDbQueryDao {
 	@Override
 	public boolean supportType(QueryType queryType) {
 		return QueryType.NAMESERVER.equals(queryType);
+	}
+
+	@Override
+	protected boolean supportJoinType(QueryType queryType,
+			QueryJoinType queryJoinType) {
+		return QueryJoinType.NAMESERVER.equals(queryJoinType);
+	}
+
+	@Override
+	public Object querySpecificJoinTable(String key, String handle,
+			String role, Connection connection, String format)
+			throws SQLException {
+		return querySpecificJoinTable(key, handle,
+				WhoisUtil.SELECT_JOIN_LIST_JOINNAMESERVER, role,
+				connection, permissionCache.getNameServerKeyFileds(role), format);
 	}
 }

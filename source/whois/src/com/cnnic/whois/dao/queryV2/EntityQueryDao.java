@@ -8,18 +8,28 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.cnnic.whois.bean.PageBean;
+import com.cnnic.whois.bean.QueryJoinType;
+import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.bean.index.EntityIndex;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.EntityIndexService;
 import com.cnnic.whois.service.index.SearchResult;
 import com.cnnic.whois.util.WhoisUtil;
 
-public abstract class EntityQueryDao extends AbstractDbQueryDao {
+public class EntityQueryDao extends AbstractDbQueryDao {
 	protected EntityIndexService entityIndexService = EntityIndexService
 			.getIndexService();
 
 	public EntityQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
+	}
+	
+	@Override
+	public Map<String, Object> query(String q, String role, String format,
+			PageBean... page) throws QueryException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	public Map<String, Object> queryEntity(String queryPara, String role, String format)
@@ -149,5 +159,30 @@ public abstract class EntityQueryDao extends AbstractDbQueryDao {
 			map = WhoisUtil.toVCard(map, format);
 		}
 		return map;
+	}
+
+	@Override
+	public QueryType getQueryType() {
+		return QueryType.ENTITY;
+	}
+
+	@Override
+	public boolean supportType(QueryType queryType) {
+		return QueryType.ENTITY.equals(queryType);
+	}
+
+	@Override
+	protected boolean supportJoinType(QueryType queryType,
+			QueryJoinType queryJoinType) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Object querySpecificJoinTable(String key, String handle,
+			String role, Connection connection, String format)
+			throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

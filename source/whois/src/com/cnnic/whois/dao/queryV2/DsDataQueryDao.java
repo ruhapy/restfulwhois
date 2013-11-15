@@ -5,6 +5,9 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import com.cnnic.whois.bean.PageBean;
+import com.cnnic.whois.bean.QueryJoinType;
+import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.WhoisUtil;
 
@@ -45,4 +48,45 @@ public abstract class DsDataQueryDao extends AbstractDbQueryDao {
 		}
 		return map;
 	}
+	@Override
+	protected String getJoinFieldName(String keyName) {
+		String fliedName = "";
+		if (keyName.equals(WhoisUtil.JOINDSDATA) || keyName.equals("$mul$dsData")){
+			fliedName = "DsDataID";
+		}else {
+			fliedName = WhoisUtil.HANDLE;
+		}
+		return fliedName;
+	}
+	@Override
+	public QueryType getQueryType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public boolean supportType(QueryType queryType) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	@Override
+	public Map<String, Object> query(String q, String role, String format,
+			PageBean... page) throws QueryException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	protected boolean supportJoinType(QueryType queryType,
+			QueryJoinType queryJoinType) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	@Override
+	public Object querySpecificJoinTable(String key, String handle,
+			String role, Connection connection, String format)
+			throws SQLException {
+		return querySpecificJoinTable(key, handle,
+				WhoisUtil.SELECT_JOIN_LIST_DSDATA, role, connection,
+				permissionCache.getDsDataMapKeyFileds(role), format);
+	}
+	
 }
