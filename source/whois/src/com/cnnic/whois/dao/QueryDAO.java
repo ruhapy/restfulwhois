@@ -311,12 +311,12 @@ public class QueryDAO {
 						}
 					}
 				}
+				handleIpWhenQueryNs(keyName, format, map);
 				//vcard format
 				if(keyName.equals(WhoisUtil.MULTIPRXENTITY)){
-					list.add(WhoisUtil.toVCard(map, format));
-				}else{
-					list.add(map);
+					map = WhoisUtil.toVCard(map, format);
 				}
+				list.add(map);
 			}
 			if (list.size() == 0){
 				return null;
@@ -1032,7 +1032,6 @@ public class QueryDAO {
 			throws SQLException {
 		PreparedStatement stmt = null; 
 		ResultSet results = null;
-		String entityHandle = null;
 
 		try {
 			stmt = connection.prepareStatement(sql);
@@ -1041,13 +1040,12 @@ public class QueryDAO {
 			List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 			
 			while (results.next()) {
-				//Iteration results, according to the parameters in the collection can get to the data in the query results, 
-				//according to the order of the data in the collection will be added to the map collection from the return
 				Map<String, Object> map = new LinkedHashMap<String, Object>();
 				for (int i = 0; i < keyFlieds.size(); i++) {
 					Object resultsInfo = null;
 					
-					if(keyName.equals(WhoisUtil.MULTIPRXIP) && keyFlieds.get(i).toString().equals("StartLowAddress")){
+					String field = keyFlieds.get(i);
+					if(keyName.equals(WhoisUtil.MULTIPRXIP) && field.equals("StartLowAddress")){
 						if((map.get("Start Address") == null && map.get("End Address") == null) || (map.get("startAddress") == null && map.get("endAddress") == null)){
 							String ipVersion = results.getString("IP_Version");
 							
@@ -1079,19 +1077,18 @@ public class QueryDAO {
 						}
 					}
 					
-					if (keyFlieds.get(i).startsWith(WhoisUtil.ARRAYFILEDPRX)) {
-						String key = keyFlieds.get(i).substring(WhoisUtil.ARRAYFILEDPRX.length());
+					if (field.startsWith(WhoisUtil.ARRAYFILEDPRX)) {
+						String key = field.substring(WhoisUtil.ARRAYFILEDPRX.length());
 						resultsInfo = results.getString(key);
 						String[] values = null;
 						if (resultsInfo != null) {
 							values = resultsInfo.toString().split(WhoisUtil.VALUEARRAYPRX);
 						}
 						map.put(WhoisUtil.getDisplayKeyName(key, format), values);
-					} else if (keyFlieds.get(i).startsWith(WhoisUtil.EXTENDPRX)) {
-						resultsInfo = results.getString(keyFlieds.get(i));
-						map.put(keyFlieds.get(i).substring(WhoisUtil.EXTENDPRX.length()), resultsInfo);
-					} else if (keyFlieds.get(i).startsWith(WhoisUtil.JOINFILEDPRX)) {
-						String key = keyFlieds.get(i).substring(WhoisUtil.JOINFILEDPRX.length());
+					} else if (field.startsWith(WhoisUtil.EXTENDPRX)) {
+						resultsInfo = results.getString(field);
+						map.put(field.substring(WhoisUtil.EXTENDPRX.length()), resultsInfo);
+					} else if (field.startsWith(WhoisUtil.JOINFILEDPRX)) {
 						String fliedName = "";
 						if (keyName.equals(WhoisUtil.MULTIPRXNOTICES) || keyName.equals(WhoisUtil.MULTIPRXREMARKS)) {
 							fliedName = keyName.substring(WhoisUtil.MULTIPRX.length()) + "Id";
@@ -1109,43 +1106,32 @@ public class QueryDAO {
 							fliedName = WhoisUtil.HANDLE;
 						}
 						
-						if (keyName.equals(WhoisUtil.JOINENTITESFILED))
-						{
-							entityHandle = results.getString(fliedName);
-						}
 
-						Object value = queryJoinTable(keyFlieds.get(i),
+						String key = field.substring(WhoisUtil.JOINFILEDPRX.length());
+						Object value = queryJoinTable(field,
 								results.getString(fliedName), sql, role,
 								connection, format);
 						if (value != null)
 							map.put(key, value);
 					} else {
-						resultsInfo = results.getObject(keyFlieds.get(i)) == null ? "": results.getObject(keyFlieds.get(i));
+						resultsInfo = results.getObject(field) == null ? "": results.getObject(field);
 						
-						//resultsInfo = results.getObject(keyFlieds.get(i));
 						CharSequence id = "id";
-						if(!keyName.equals(WhoisUtil.JOINPUBLICIDS) && WhoisUtil.getDisplayKeyName(keyFlieds.get(i), format).substring(keyFlieds.get(i).length() - 2).equals(id) && !format.equals("application/html")){
+						boolean fieldEndwithId = WhoisUtil.getDisplayKeyName(field, format).substring(field.length() - 2).equals(id);
+						if(fieldEndwithId && !format.equals("application/html")){
 							continue;
 						}else{
-							map.put(WhoisUtil.getDisplayKeyName(keyFlieds.get(i), format), resultsInfo);//a different format have different name;
+							map.put(WhoisUtil.getDisplayKeyName(field, format), resultsInfo);//a different format have different name;
 						}
 					}
 				}
 				
 				//v4v6 addresses
-				if (keyName.equals("$mul$nameServer") || keyName.equals("$join$nameServer")){
-					Map<String, Object> map_IP = new LinkedHashMap<String, Object>();
-					Object IPAddressArray = map.get(WhoisUtil.getDisplayKeyName("IPV4_Addresses", format));
-					map_IP.put(WhoisUtil.IPV4PREFIX, IPAddressArray);
-					IPAddressArray = map.get(WhoisUtil.getDisplayKeyName("IPV6_Addresses", format));
-					map_IP.put(WhoisUtil.IPV6PREFIX, IPAddressArray);
-					map.put(WhoisUtil.IPPREFIX, map_IP);
-					map.remove(WhoisUtil.getDisplayKeyName("IPV4_Addresses", format));
-					map.remove(WhoisUtil.getDisplayKeyName("IPV6_Addresses", format));
-				}
+				handleIpWhenQueryNs(keyName, format, map);
 				
 				//asevent
 				if (keyName.equals(WhoisUtil.JOINENTITESFILED)){
+					String entityHandle = results.getString(WhoisUtil.HANDLE);
 					if (map.containsKey("events")){
 						Map<String, Object> map_Events = new LinkedHashMap<String, Object>();
 						map_Events = (Map<String, Object>)map.get("events");
@@ -1166,10 +1152,9 @@ public class QueryDAO {
 				
 				//vcard format
 				if(keyName.equals(WhoisUtil.JOINENTITESFILED) || keyName.equals(WhoisUtil.MULTIPRXENTITY)){
-					list.add(WhoisUtil.toVCard(map, format));
-				}else{
-					list.add(map);
+					map = WhoisUtil.toVCard(map, format);
 				}
+				list.add(map);
 			}
 
 			if (list.size() == 0)
@@ -1209,6 +1194,20 @@ public class QueryDAO {
 				} catch (SQLException se) {
 				}
 			}
+		}
+	}
+
+	private void handleIpWhenQueryNs(String keyName, String format,
+			Map<String, Object> map) {
+		if (keyName.equals("$mul$nameServer") || keyName.equals("$join$nameServer")){
+			Map<String, Object> map_IP = new LinkedHashMap<String, Object>();
+			Object IPAddressArray = map.get(WhoisUtil.getDisplayKeyName("IPV4_Addresses", format));
+			map_IP.put(WhoisUtil.IPV4PREFIX, IPAddressArray);
+			IPAddressArray = map.get(WhoisUtil.getDisplayKeyName("IPV6_Addresses", format));
+			map_IP.put(WhoisUtil.IPV6PREFIX, IPAddressArray);
+			map.put(WhoisUtil.IPPREFIX, map_IP);
+			map.remove(WhoisUtil.getDisplayKeyName("IPV4_Addresses", format));
+			map.remove(WhoisUtil.getDisplayKeyName("IPV6_Addresses", format));
 		}
 	}
 	

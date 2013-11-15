@@ -23,6 +23,9 @@ public class DataFormat {
 	public static JSONArray getJsonArray(Object responMap) {
 		return JSONArray.fromObject(responMap);
 	}
+	public static JSONObject fromObject(String json) {
+		return JSONObject.fromObject(json);
+	}
 
 	/**
 	 * XML converted to JSON object

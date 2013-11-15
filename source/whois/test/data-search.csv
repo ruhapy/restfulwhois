@@ -18,6 +18,7 @@ path,Accept,param,status,mark
 /domains?name=t*,application/json,,400,BAD REQUEST
 /domains?name=*cn,application/json,,400,BAD REQUEST
 /domains?name=*.cn,application/json,,400,BAD REQUEST
+/domains?name=binary\x03*,application/json,,400,BAD REQUEST
 /domains?name=nonexist*.nonexist,application/rdap+json,,404,NOT FOUND
 #
 /entities,application/rdap+json,,400,BAD REQUEST

@@ -77,4 +77,11 @@ public class WhoisProperties {
 		return Integer.parseInt(resource.getProperty(MAX_SIZE_FUZZY_QUERY));
 	}
 	
+	public static String getCacheIp() {
+		return resource.getProperty("cache.ip");
+	}
+	
+	public static String getCachePort() {
+		return resource.getProperty("cache.port");
+	}
 }
