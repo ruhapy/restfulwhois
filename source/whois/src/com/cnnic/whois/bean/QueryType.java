@@ -1,7 +1,7 @@
 package com.cnnic.whois.bean;
 
 public enum QueryType {
-	DOMAIN("domain"), ENTITY("entity"), NAMESERVER("nameserver"), AUTNUM(
+	NONE("none"),DOMAIN("domain"), ENTITY("entity"), NAMESERVER("nameserver"), AUTNUM(
 			"autnum"), DSDATA("dsData"), EVENTS("events"), HELP("help"), IP(
 			"ip"), KEYDATA("keyData"), LINKS("links"), NOTICES("notices"), PHONES(
 			"phones"), POSTALADDRESS("postalAddress"), REMARKS("remarks"), SECUREDNS(
