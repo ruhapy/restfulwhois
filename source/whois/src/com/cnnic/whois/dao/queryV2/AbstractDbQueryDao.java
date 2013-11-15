@@ -13,6 +13,8 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import com.cnnic.whois.bean.PageBean;
+import com.cnnic.whois.bean.QueryJoinType;
+import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.bean.index.DomainIndex;
 import com.cnnic.whois.bean.index.EntityIndex;
 import com.cnnic.whois.bean.index.Index;
@@ -36,7 +38,11 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 	protected NameServerIndexService nameServerIndexService = NameServerIndexService.getIndexService();
 	protected EntityIndexService entityIndexService = EntityIndexService.getIndexService();
 	protected List<AbstractDbQueryDao> dbQueryDaos;
-	
+	protected abstract boolean supportJoinType(QueryType queryType,
+			QueryJoinType queryJoinType);
+	public abstract Object querySpecificJoinTable(String key, String handle,
+			String role, Connection connection, String format)
+			throws SQLException ;
 	/**
 	 * Connect to the datasource in the constructor
 	 * 
@@ -242,51 +248,6 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 			return mapInfo;
 	}
 
-	
-
-	
-	/**
-	 * Generate an error map collection
-	 * 
-	 * @param errorCode
-	 * @param title
-	 * @param description
-	 * @return map
-	 */
-	public Map<String, Object> getErrorMessage(String errorCode, String role, String format)
-			throws QueryException {
-		Connection connection = null;
-		Map<String, Object> map = null;
-		try {
-			connection = ds.getConnection();
-
-			String selectSql = WhoisUtil.SELECT_LIST_ERRORMESSAGE + "'"
-					+ errorCode + "'";
-			Map<String, Object> errorMessageMap = query(connection, selectSql,
-					permissionCache.getErrorMessageKeyFileds(role),
-					"$mul$errormessage", role, format);
-			if(errorMessageMap != null){
-				map =  rdapConformance(map);
-				map.putAll(errorMessageMap);
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new QueryException(e);
-		} finally {
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException se) {
-				}
-			}
-		}
-		return map;
-	}
-	
-	
-
-
 	/**
 	 * According to the table field collections and SQL to obtain the
 	 * corresponding data information
@@ -329,24 +290,7 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 						resultsInfo = results.getString(field);
 						map.put(field.substring(WhoisUtil.EXTENDPRX.length()), resultsInfo);
 					} else if (field.startsWith(WhoisUtil.JOINFILEDPRX)) {
-						String fliedName = "";
-						if (keyName.equals(WhoisUtil.MULTIPRXNOTICES) || keyName.equals(WhoisUtil.MULTIPRXREMARKS)) {
-							fliedName = keyName.substring(WhoisUtil.MULTIPRX.length()) + "Id";
-						} else if(keyName.equals(WhoisUtil.JOINNANOTICES) || keyName.equals(WhoisUtil.JOINREMARKS)){
-							fliedName = keyName.substring(WhoisUtil.JOINFILEDPRX.length()) + "Id";
-						}else if (keyName.equals("$mul$errormessage")){
-							fliedName = "Error_Code";
-						}else if (keyName.equals(WhoisUtil.JOINSECUREDNS) || keyName.equals("$mul$secureDNS")){
-							fliedName = "SecureDNSID";
-						}else if (keyName.equals(WhoisUtil.JOINDSDATA) || keyName.equals("$mul$dsData")){
-							fliedName = "DsDataID";
-						}else if (keyName.equals(WhoisUtil.JOINKEYDATA) || keyName.equals("$mul$keyData")){
-							fliedName = "KeyDataID";
-						}else {
-							fliedName = WhoisUtil.HANDLE;
-						}
-						
-
+						String fliedName = getJoinFieldName(keyName);
 						String key = field.substring(WhoisUtil.JOINFILEDPRX.length());
 						Object value = queryJoinTable(field,
 								results.getString(fliedName), sql, role,
@@ -411,6 +355,10 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 		}
 	}
 
+	protected String getJoinFieldName(String keyName) {
+		return WhoisUtil.HANDLE;
+	}
+
 	protected Map<String, Object> postHandleFields(String keyName, String format,
 			ResultSet results, Map<String, Object> map) throws SQLException {
 		return map;
@@ -448,76 +396,15 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 	 */
 	public Object queryJoinTable(String key, String handle, String sql,
 			String role, Connection connection, String format) throws SQLException {
-		if (key.equals(WhoisUtil.JOINENTITESFILED)) {
-			String entitysql = WhoisUtil.SELECT_JOIN_LIST_JOINDNRENTITY;
-			if (sql.indexOf("ip") >= 0 || sql.indexOf("autnum") >= 0
-					|| sql.indexOf("RIRDomain") >= 0) {
-				entitysql = WhoisUtil.SELECT_JOIN_LIST_JOINRIRENTITY;
-				return querySpecificJoinTable(key, handle, entitysql, role,
-						connection, permissionCache.getRIREntityKeyFileds(role), format);
-			}else{
-				return querySpecificJoinTable(key, handle, entitysql, role,
-						connection, permissionCache.getDNREntityKeyFileds(role), format);
+		String keyWithoutJoinPrefix = key.substring(WhoisUtil.JOINFILEDPRX.length());
+		QueryJoinType joinType = QueryJoinType.getQueryJoinType(keyWithoutJoinPrefix);
+		QueryType queryType = getQueryType();
+		for (AbstractDbQueryDao dbQueryDao : dbQueryDaos) {
+			if (dbQueryDao.supportJoinType(queryType, joinType)) {
+				return querySpecificJoinTable(key, handle, role,
+						connection, format);
 			}
-			
-		} else if (key.equals(WhoisUtil.JOINLINKFILED)) {
-			return querySpecificJoinTable(key, handle,
-					WhoisUtil.SELECT_JOIN_LIST_LINK, role, connection,
-					permissionCache.getLinkKeyFileds(role), format);
-		} else if (key.equals(WhoisUtil.JOINPHONFILED)) {
-			return querySpecificJoinTable(key, handle,
-					WhoisUtil.SELECT_JOIN_LIST_PHONE, role, connection,
-					permissionCache.getPhonesKeyFileds(role), format);
-		} else if (key.equals(WhoisUtil.JOINPOSTATLADDRESSFILED)) {
-			return querySpecificJoinTable(key, handle,
-					WhoisUtil.SELECT_JOIN_LIST_POSTALADDRESS, role, connection,
-					permissionCache.getPostalAddressKeyFileds(role), format);
-		} else if (key.equals(WhoisUtil.JOINVARIANTS)) {
-			return querySpecificJoinTable(key, handle,
-					WhoisUtil.SELECT_JOIN_LIST_VARIANTS, role, connection,
-					permissionCache.getVariantsKeyFileds(role), format);
-		} else if (key.equals(WhoisUtil.JOINDALEGATIONKEYS)) {
-			return querySpecificJoinTable(key, handle,
-					WhoisUtil.SELECT_JOIN_LIST_DELEGATIONKEYS, role,
-					connection, permissionCache.getDelegationKeyFileds(role), format);
-		} else if (key.equals(WhoisUtil.JOINNAMESERVER)) {
-			return querySpecificJoinTable(key, handle,
-					WhoisUtil.SELECT_JOIN_LIST_JOINNAMESERVER, role,
-					connection, permissionCache.getNameServerKeyFileds(role), format);
-		} else if (key.equals(WhoisUtil.JOINNAREGISTRAR)) {
-			return querySpecificJoinTable(key, handle,
-					WhoisUtil.SELECT_JOIN_LIST_REGISTRAR, role, connection,
-					permissionCache.getRegistrarKeyFileds(role), format);
-		} else if (key.equals(WhoisUtil.JOINNANOTICES)) {
-			return querySpecificJoinTable(key, handle,
-					WhoisUtil.SELECT_JOIN_LIST_NOTICES, role, connection,
-					permissionCache.getNoticesKeyFileds(role), format);
-		} else if (key.equals(WhoisUtil.JOINEVENTS)) {
-			return querySpecificJoinTable(key, handle,
-					WhoisUtil.SELECT_JOIN_LIST_EVENTS, role, connection,
-					permissionCache.getEventsKeyFileds(role), format);
-		} else if (key.equals(WhoisUtil.JOINREMARKS)) {
-			return querySpecificJoinTable(key, handle,
-					WhoisUtil.SELECT_JOIN_LIST_REMARKS, role, connection,
-					permissionCache.getRemarksKeyFileds(role), format);
-		}else if (key.equals(WhoisUtil.JOINPUBLICIDS)) {
-			return querySpecificJoinTable(key, handle,
-					WhoisUtil.SELECT_JOIN_LIST_PUBLICIDS, role, connection,
-					permissionCache.getPublicIdsKeyFileds(role), format);
-		}else if (key.equals(WhoisUtil.JOINSECUREDNS)) {
-			return querySpecificJoinTable(key, handle,
-					WhoisUtil.SELECT_JOIN_LIST_SECUREDNS, role, connection,
-					permissionCache.getSecureDNSMapKeyFileds(role), format);
-		}else if (key.equals(WhoisUtil.JOINDSDATA)) {
-			return querySpecificJoinTable(key, handle,
-					WhoisUtil.SELECT_JOIN_LIST_DSDATA, role, connection,
-					permissionCache.getDsDataMapKeyFileds(role), format);
-		}else if (key.equals(WhoisUtil.JOINKEYDATA)) {
-			return querySpecificJoinTable(key, handle,
-					WhoisUtil.SELECT_JOIN_LIST_KEYDATA, role, connection,
-					permissionCache.getKeyDataMapKeyFileds(role), format);
 		}
-
 		return null;
 	}
 

@@ -5,6 +5,9 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import com.cnnic.whois.bean.PageBean;
+import com.cnnic.whois.bean.QueryJoinType;
+import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.WhoisUtil;
 
@@ -44,4 +47,32 @@ public abstract class LinksQueryDao extends AbstractDbQueryDao {
 		}
 		return map;
 	}
+	@Override
+	public QueryType getQueryType() {
+		return QueryType.LINKS;
+	}
+	@Override
+	public boolean supportType(QueryType queryType) {
+		return QueryType.LINKS.equals(queryType);
+	}
+	@Override
+	public Map<String, Object> query(String q, String role, String format,
+			PageBean... page) throws QueryException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	protected boolean supportJoinType(QueryType queryType,
+			QueryJoinType queryJoinType) {
+		return QueryJoinType.LINKS.equals(queryJoinType);
+	}
+	@Override
+	public Object querySpecificJoinTable(String key, String handle,
+			String role, Connection connection, String format)
+			throws SQLException {
+		return querySpecificJoinTable(key, handle,
+				WhoisUtil.SELECT_JOIN_LIST_LINK, role, connection,
+				permissionCache.getLinkKeyFileds(role), format);
+	}
+	
 }

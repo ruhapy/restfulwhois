@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import com.cnnic.whois.bean.QueryJoinType;
+import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.WhoisUtil;
 
@@ -81,30 +83,17 @@ public abstract class AbstractDomainQueryDao extends AbstractDbQueryDao {
 		return map;
 	}
 
-	// @Override
-	// public boolean supportType(QueryType queryType) {
-	// return QueryType.DOMAIN.equals(queryType);
-	// }
-	//
-	// @Override
-	// public String getJoinFieldIdColumnName() {
-	// return WhoisUtil.HANDLE;
-	// }
-	//
-	// @Override
-	// public Map<String, Object> queryJoins(String handle, String role,
-	// String format) {
-	// throw new UnsupportedOperationException();
-	// }
-	//
-	// @Override
-	// public QueryType getQueryType() {
-	// return QueryType.DOMAIN;
-	// }
-	//
-	// @Override
-	// public boolean supportJoinType(QueryType queryType,
-	// QueryJoinType queryJoinType) {
-	// return false;
-	// }
+	@Override
+	protected boolean supportJoinType(QueryType queryType,
+			QueryJoinType queryJoinType) {
+		return false;
+	}
+
+	@Override
+	public Object querySpecificJoinTable(String key, String handle,
+			String role, Connection connection, String format)
+			throws SQLException {
+		throw new UnsupportedOperationException();
+	}
+
 }
