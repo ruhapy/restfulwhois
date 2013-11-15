@@ -7,11 +7,12 @@ import java.util.Map;
 
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryJoinType;
+import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.WhoisUtil;
 
-public abstract class NoticesQueryDao extends AbstractDbQueryDao {
+public class NoticesQueryDao extends AbstractDbQueryDao {
 	public NoticesQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
@@ -77,7 +78,7 @@ public abstract class NoticesQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(String q, String role, String format,
+	public Map<String, Object> query(QueryParam param, String role, String format,
 			PageBean... page) throws QueryException {
 		// TODO Auto-generated method stub
 		return null;
@@ -97,6 +98,5 @@ public abstract class NoticesQueryDao extends AbstractDbQueryDao {
 		return querySpecificJoinTable(key, handle,
 				WhoisUtil.SELECT_JOIN_LIST_NOTICES, role, connection,
 				permissionCache.getNoticesKeyFileds(role), format);
-	}
-	
+	}	
 }

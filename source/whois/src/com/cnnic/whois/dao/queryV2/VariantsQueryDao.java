@@ -7,11 +7,12 @@ import java.util.Map;
 
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryJoinType;
+import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.WhoisUtil;
 
-public abstract class VariantsQueryDao extends AbstractDbQueryDao {
+public class VariantsQueryDao extends AbstractDbQueryDao {
 	public VariantsQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
@@ -66,7 +67,7 @@ public abstract class VariantsQueryDao extends AbstractDbQueryDao {
 		return false;
 	}
 	@Override
-	public Map<String, Object> query(String q, String role, String format,
+	public Map<String, Object> query(QueryParam param, String role, String format,
 			PageBean... page) throws QueryException {
 		// TODO Auto-generated method stub
 		return null;
@@ -85,5 +86,4 @@ public abstract class VariantsQueryDao extends AbstractDbQueryDao {
 				WhoisUtil.SELECT_JOIN_LIST_VARIANTS, role, connection,
 				permissionCache.getVariantsKeyFileds(role), format);
 	}
-
 }
