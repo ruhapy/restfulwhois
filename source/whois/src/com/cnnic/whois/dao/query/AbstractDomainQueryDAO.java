@@ -11,8 +11,13 @@ import java.util.Map;
 
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryType;
+import com.cnnic.whois.util.WhoisUtil;
 
 public abstract class AbstractDomainQueryDAO extends AbstractDbQueryDAO {
+	public AbstractDomainQueryDAO(List<AbstractDbQueryDAO> dbQueryDaos) {
+		super(dbQueryDaos);
+	}
+
 	private static final String QUERY_KEY = "$mul$domains";
 
 	protected Map<String, Object> doQquery(List<String> keyFlieds, String sql,
@@ -36,13 +41,18 @@ public abstract class AbstractDomainQueryDAO extends AbstractDbQueryDAO {
 			if (list.size() == 0) {
 				return null;
 			}
-			Map<String, Object> mapInfo = new LinkedHashMap<String, Object>();
+			Map<String, Object> domainMap = new LinkedHashMap<String, Object>();
 			if (list.size() > 1) {
-				mapInfo.put(QUERY_KEY, list.toArray());
+				domainMap.put(QUERY_KEY, list.toArray());
 			} else {
-				mapInfo = list.get(0);
+				domainMap = list.get(0);
 			}
-			return mapInfo;
+			Map<String, Object> resultMap = null;
+			if (domainMap != null) {
+				resultMap = rdapConformance(resultMap);
+				resultMap.putAll(domainMap);
+			}
+			return resultMap;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
@@ -69,7 +79,7 @@ public abstract class AbstractDomainQueryDAO extends AbstractDbQueryDAO {
 
 	@Override
 	public String getJoinFieldIdColumnName() {
-		throw new UnsupportedOperationException();// TODO: superClass
+		return WhoisUtil.HANDLE;
 	}
 
 	@Override

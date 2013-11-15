@@ -5,16 +5,25 @@ import java.util.List;
 import java.util.Map;
 
 import com.cnnic.whois.bean.QueryType;
-import com.cnnic.whois.dao.query.DnrDomainQueryDAO;
-import com.cnnic.whois.dao.query.QueryDao;
+import com.cnnic.whois.dao.queryV2.AbstractDbQueryDao;
+import com.cnnic.whois.dao.queryV2.DnrDomainQueryDao;
+import com.cnnic.whois.dao.queryV2.NsQueryDao;
+import com.cnnic.whois.dao.queryV2.RirDomainQueryDao;
 import com.cnnic.whois.execption.QueryException;
 
 public class DbQueryExecutor {
+	private static DbQueryExecutor executor = new DbQueryExecutor();
 
-	List<QueryDao> queryDaos = new ArrayList<QueryDao>();
+	public static DbQueryExecutor getExecutor() {
+		return executor;
+	}
+
+	List<AbstractDbQueryDao> dbQueryDaos = new ArrayList<AbstractDbQueryDao>();
 
 	private void init() {
-		queryDaos.add(new DnrDomainQueryDAO());
+		dbQueryDaos.add(new DnrDomainQueryDao(dbQueryDaos));
+		dbQueryDaos.add(new RirDomainQueryDao(dbQueryDaos));
+		dbQueryDaos.add(new NsQueryDao(dbQueryDaos));
 	}
 
 	public DbQueryExecutor() {
@@ -22,14 +31,21 @@ public class DbQueryExecutor {
 		init();
 	}
 
-	private Map<String, Object> query(QueryType queryType, String role,
-			String format) throws QueryException {
-		for (QueryDao queryDao : queryDaos) {
+	public Map<String, Object> query(QueryType queryType, String q,
+			String role, String format) throws QueryException {
+		for (AbstractDbQueryDao queryDao : dbQueryDaos) {
 			if (queryDao.supportType(queryType)) {
-				queryDao.query("q",role, format);
-				break;
+				return queryDao.query(q, role, format);
 			}
 		}
 		return null;
+	}
+
+	public List<AbstractDbQueryDao> getDbQueryDaos() {
+		return dbQueryDaos;
+	}
+
+	public void setDbQueryDaos(List<AbstractDbQueryDao> dbQueryDaos) {
+		this.dbQueryDaos = dbQueryDaos;
 	}
 }

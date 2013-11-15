@@ -1,5 +1,6 @@
 package com.cnnic.whois.dao.query;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
@@ -10,6 +11,11 @@ import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.util.PermissionCache;
 
 public class IpQueryDAO extends AbstractDbQueryDAO {
+	public IpQueryDAO(List<AbstractDbQueryDAO> dbQueryDaos) {
+		super(dbQueryDaos);
+		// TODO Auto-generated constructor stub
+	}
+
 	protected DataSource ds;
 	protected PermissionCache permissionCache = PermissionCache
 			.getPermissionCache();

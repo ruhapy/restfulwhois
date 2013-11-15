@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import com.cnnic.whois.bean.QueryJoinType;
@@ -16,23 +17,35 @@ import com.cnnic.whois.util.WhoisUtil;
 
 public abstract class AbstractDbQueryDAO implements QueryDao {
 	protected DataSource ds;
-	List<AbstractDbQueryDAO> queryDaos;
+	protected List<AbstractDbQueryDAO> dbQueryDaos;
 	protected PermissionCache permissionCache = PermissionCache
 			.getPermissionCache();
 	protected EntityIndexService entityIndexService = EntityIndexService
 			.getIndexService();
+
+	public AbstractDbQueryDAO(List<AbstractDbQueryDAO> dbQueryDaos) {
+		super();
+		this.dbQueryDaos = dbQueryDaos;
+		try {
+			InitialContext ctx = new InitialContext();
+			ds = (DataSource) ctx.lookup(WhoisUtil.JNDI_NAME);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new IllegalStateException(e.getMessage());
+		}
+	}
 
 	protected abstract boolean supportJoinType(QueryType queryType,
 			QueryJoinType queryJoinType);
 
 	protected abstract String getJoinFieldIdColumnName();
 
-	protected abstract Map<String, Object> queryJoins(String handle,
-			String role, String format);
+	protected abstract Object queryJoins(String handle, String role,
+			String format);
 
 	protected void handleField(String role, String format, ResultSet results,
 			Map<String, Object> map, String field) throws SQLException {
-		Object resultsInfo;
+		Object resultsInfo = null;
 		if (field.startsWith(WhoisUtil.ARRAYFILEDPRX)) {
 			String key = field.substring(WhoisUtil.ARRAYFILEDPRX.length());
 			resultsInfo = results.getString(key);
@@ -74,9 +87,9 @@ public abstract class AbstractDbQueryDAO implements QueryDao {
 			String role, String format, Map<String, Object> map, String field) {
 		String key = field.substring(WhoisUtil.JOINFILEDPRX.length());
 		QueryJoinType joinType = QueryJoinType.getQueryJoinType(key);
-		for (AbstractDbQueryDAO queryDao : queryDaos) {
-			if (queryDao.supportJoinType(queryType, joinType)) {
-				Object value = queryDao.queryJoins(handle, role, format);
+		for (AbstractDbQueryDAO dbQueryDao : dbQueryDaos) {
+			if (dbQueryDao.supportJoinType(queryType, joinType)) {
+				Object value = dbQueryDao.queryJoins(handle, role, format);
 				if (value != null) {
 					map.put(key, value);
 				}
