@@ -45,4 +45,14 @@ public abstract class KeyDataQueryDao extends AbstractDbQueryDao {
 		}
 		return map;
 	}
+	@Override
+	protected String getJoinFieldName(String keyName) {
+		String fliedName = "";
+		if (keyName.equals(WhoisUtil.JOINKEYDATA) || keyName.equals("$mul$keyData")){
+			fliedName = "KeyDataID";
+		}else {
+			fliedName = WhoisUtil.HANDLE;
+		}
+		return fliedName;
+	}
 }

@@ -45,4 +45,16 @@ public abstract class RemarksQueryDao extends AbstractDbQueryDao {
 		}
 		return map;
 	}
+	@Override
+	protected String getJoinFieldName(String keyName) {
+		String fliedName = "";
+		if (keyName.equals(WhoisUtil.MULTIPRXREMARKS)) {
+			fliedName = keyName.substring(WhoisUtil.MULTIPRX.length()) + "Id";
+		} else if(keyName.equals(WhoisUtil.JOINREMARKS)){
+			fliedName = keyName.substring(WhoisUtil.JOINFILEDPRX.length()) + "Id";
+		}else {
+			fliedName = WhoisUtil.HANDLE;
+		}
+		return fliedName;
+	}
 }

@@ -242,51 +242,6 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 			return mapInfo;
 	}
 
-	
-
-	
-	/**
-	 * Generate an error map collection
-	 * 
-	 * @param errorCode
-	 * @param title
-	 * @param description
-	 * @return map
-	 */
-	public Map<String, Object> getErrorMessage(String errorCode, String role, String format)
-			throws QueryException {
-		Connection connection = null;
-		Map<String, Object> map = null;
-		try {
-			connection = ds.getConnection();
-
-			String selectSql = WhoisUtil.SELECT_LIST_ERRORMESSAGE + "'"
-					+ errorCode + "'";
-			Map<String, Object> errorMessageMap = query(connection, selectSql,
-					permissionCache.getErrorMessageKeyFileds(role),
-					"$mul$errormessage", role, format);
-			if(errorMessageMap != null){
-				map =  rdapConformance(map);
-				map.putAll(errorMessageMap);
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new QueryException(e);
-		} finally {
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException se) {
-				}
-			}
-		}
-		return map;
-	}
-	
-	
-
-
 	/**
 	 * According to the table field collections and SQL to obtain the
 	 * corresponding data information
@@ -329,24 +284,7 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 						resultsInfo = results.getString(field);
 						map.put(field.substring(WhoisUtil.EXTENDPRX.length()), resultsInfo);
 					} else if (field.startsWith(WhoisUtil.JOINFILEDPRX)) {
-						String fliedName = "";
-						if (keyName.equals(WhoisUtil.MULTIPRXNOTICES) || keyName.equals(WhoisUtil.MULTIPRXREMARKS)) {
-							fliedName = keyName.substring(WhoisUtil.MULTIPRX.length()) + "Id";
-						} else if(keyName.equals(WhoisUtil.JOINNANOTICES) || keyName.equals(WhoisUtil.JOINREMARKS)){
-							fliedName = keyName.substring(WhoisUtil.JOINFILEDPRX.length()) + "Id";
-						}else if (keyName.equals("$mul$errormessage")){
-							fliedName = "Error_Code";
-						}else if (keyName.equals(WhoisUtil.JOINSECUREDNS) || keyName.equals("$mul$secureDNS")){
-							fliedName = "SecureDNSID";
-						}else if (keyName.equals(WhoisUtil.JOINDSDATA) || keyName.equals("$mul$dsData")){
-							fliedName = "DsDataID";
-						}else if (keyName.equals(WhoisUtil.JOINKEYDATA) || keyName.equals("$mul$keyData")){
-							fliedName = "KeyDataID";
-						}else {
-							fliedName = WhoisUtil.HANDLE;
-						}
-						
-
+						String fliedName = getJoinFieldName(keyName);
 						String key = field.substring(WhoisUtil.JOINFILEDPRX.length());
 						Object value = queryJoinTable(field,
 								results.getString(fliedName), sql, role,
@@ -409,6 +347,10 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 				}
 			}
 		}
+	}
+
+	protected String getJoinFieldName(String keyName) {
+		return WhoisUtil.HANDLE;
 	}
 
 	protected Map<String, Object> postHandleFields(String keyName, String format,

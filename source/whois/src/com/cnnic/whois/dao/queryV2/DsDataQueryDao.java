@@ -45,4 +45,14 @@ public abstract class DsDataQueryDao extends AbstractDbQueryDao {
 		}
 		return map;
 	}
+	@Override
+	protected String getJoinFieldName(String keyName) {
+		String fliedName = "";
+		if (keyName.equals(WhoisUtil.JOINDSDATA) || keyName.equals("$mul$dsData")){
+			fliedName = "DsDataID";
+		}else {
+			fliedName = WhoisUtil.HANDLE;
+		}
+		return fliedName;
+	}
 }

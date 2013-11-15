@@ -45,4 +45,14 @@ public abstract class SecureDnsQueryDao extends AbstractDbQueryDao {
 		}
 		return map;
 	}
+	@Override
+	protected String getJoinFieldName(String keyName) {
+		String fliedName = "";
+		if (keyName.equals(WhoisUtil.JOINSECUREDNS) || keyName.equals("$mul$secureDNS")){
+			fliedName = "SecureDNSID";
+		}else {
+			fliedName = WhoisUtil.HANDLE;
+		}
+		return fliedName;
+	}
 }

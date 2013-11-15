@@ -12,6 +12,7 @@ public abstract class NoticesQueryDao extends AbstractDbQueryDao {
 	public NoticesQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
+
 	/**
 	 * Connect to the database query notices information
 	 * 
@@ -20,8 +21,8 @@ public abstract class NoticesQueryDao extends AbstractDbQueryDao {
 	 * @return map collection
 	 * @throws QueryException
 	 */
-	public Map<String, Object> queryNotices(String queryInfo, String role, String format)
-			throws QueryException {
+	public Map<String, Object> queryNotices(String queryInfo, String role,
+			String format) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
@@ -44,5 +45,19 @@ public abstract class NoticesQueryDao extends AbstractDbQueryDao {
 			}
 		}
 		return map;
+	}
+
+	@Override
+	protected String getJoinFieldName(String keyName) {
+		String fliedName = "";
+		if (keyName.equals(WhoisUtil.MULTIPRXNOTICES)) {
+			fliedName = keyName.substring(WhoisUtil.MULTIPRX.length()) + "Id";
+		} else if (keyName.equals(WhoisUtil.JOINNANOTICES)) {
+			fliedName = keyName.substring(WhoisUtil.JOINFILEDPRX.length())
+					+ "Id";
+		} else {
+			fliedName = WhoisUtil.HANDLE;
+		}
+		return fliedName;
 	}
 }
