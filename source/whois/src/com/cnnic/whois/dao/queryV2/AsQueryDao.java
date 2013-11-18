@@ -5,34 +5,32 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import com.cnnic.whois.bean.PageBean;
+import com.cnnic.whois.bean.QueryJoinType;
+import com.cnnic.whois.bean.QueryParam;
+import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.WhoisUtil;
 
-public abstract class AsQueryDao extends AbstractDbQueryDao {
+public class AsQueryDao extends AbstractDbQueryDao {
 	public AsQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
-	/**
-	 * Connect to the database query AS information
-	 * 
-	 * @param queryInfo
-	 * @param role
-	 * @return map collection
-	 * @throws QueryException
-	 */
-	public Map<String, Object> queryAS(int queryInfo, String role, String format)
-			throws QueryException {
+
+	@Override
+	public Map<String, Object> query(QueryParam param, String role, String format,
+			PageBean... page) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
 		try {
 			connection = ds.getConnection();
-			String selectSql = WhoisUtil.SELECT_LIST_AS1 + queryInfo
-					+ WhoisUtil.SELECT_LIST_AS2 + queryInfo
-					+ WhoisUtil.SELECT_LIST_AS3;
+			String selectSql = WhoisUtil.SELECT_LIST_AS1 + param.getQ()
+					+ WhoisUtil.SELECT_LIST_AS2 + param.getQ() + WhoisUtil.SELECT_LIST_AS3;
 			Map<String, Object> asMap = query(connection, selectSql,
-					permissionCache.getASKeyFileds(role), "$mul$autnum", role, format);
-			if(asMap != null){
+					permissionCache.getASKeyFileds(role), "$mul$autnum", role,
+					format);
+			if (asMap != null) {
 				map = rdapConformance(map);
 				map.putAll(asMap);
 			}
@@ -50,4 +48,28 @@ public abstract class AsQueryDao extends AbstractDbQueryDao {
 		return map;
 	}
 
+	@Override
+	public QueryType getQueryType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean supportType(QueryType queryType) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	protected boolean supportJoinType(QueryType queryType,
+			QueryJoinType queryJoinType) {
+		return false;
+	}
+
+	@Override
+	public Object querySpecificJoinTable(String key, String handle,
+			String role, Connection connection, String format)
+			throws SQLException {
+		throw new UnsupportedOperationException();
+	}
 }

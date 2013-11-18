@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryJoinType;
+import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.WhoisUtil;
@@ -26,7 +27,7 @@ public class NsQueryDao extends AbstractDbQueryDao {
 	 * @return map collection
 	 * @throws QueryException
 	 */
-	public Map<String, Object> query(String queryInfo, String role,
+	public Map<String, Object> query(QueryParam param, String role,
 			String format, PageBean... page) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -35,7 +36,7 @@ public class NsQueryDao extends AbstractDbQueryDao {
 			connection = ds.getConnection();
 
 			String selectSql = WhoisUtil.SELECT_LIST_NAMESREVER + "'"
-					+ queryInfo + "'";
+					+ param.getQ() + "'";
 			Map<String, Object> nsMap = query(connection, selectSql,
 					permissionCache.getNameServerKeyFileds(role),
 					"$mul$nameServer", role, format);
@@ -97,7 +98,7 @@ public class NsQueryDao extends AbstractDbQueryDao {
 			String role, Connection connection, String format)
 			throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_JOINNAMESERVER, role,
-				connection, permissionCache.getNameServerKeyFileds(role), format);
+				WhoisUtil.SELECT_JOIN_LIST_JOINNAMESERVER, role, connection,
+				permissionCache.getNameServerKeyFileds(role), format);
 	}
 }

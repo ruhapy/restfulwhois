@@ -7,34 +7,29 @@ import java.util.Map;
 
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryJoinType;
+import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.WhoisUtil;
 
-public abstract class DsDataQueryDao extends AbstractDbQueryDao {
+public class DsDataQueryDao extends AbstractDbQueryDao {
 	public DsDataQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
-	/**
-	 * Connect to the database query DsData information
-	 * 
-	 * @param queryInfo
-	 * @param role
-	 * @return map collection
-	 * @throws QueryException
-	 */
-	public Map<String, Object> queryDsData(String queryInfo, String role, String format)
-			throws QueryException {
+
+	@Override
+	public Map<String, Object> query(QueryParam param, String role,
+			String format, PageBean... page) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
 		try {
 			connection = ds.getConnection();
-			String selectSql = WhoisUtil.SELECT_LIST_DSDATA + "'" + queryInfo
-					+ "'";
+			String selectSql = WhoisUtil.SELECT_LIST_DSDATA + "'"
+					+ param.getQ() + "'";
 			map = query(connection, selectSql,
-					permissionCache.getDsDataMapKeyFileds(role),
-					"$mul$dsData", role, format);
+					permissionCache.getDsDataMapKeyFileds(role), "$mul$dsData",
+					role, format);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -48,38 +43,35 @@ public abstract class DsDataQueryDao extends AbstractDbQueryDao {
 		}
 		return map;
 	}
+
 	@Override
 	protected String getJoinFieldName(String keyName) {
 		String fliedName = "";
-		if (keyName.equals(WhoisUtil.JOINDSDATA) || keyName.equals("$mul$dsData")){
+		if (keyName.equals(WhoisUtil.JOINDSDATA)
+				|| keyName.equals("$mul$dsData")) {
 			fliedName = "DsDataID";
-		}else {
+		} else {
 			fliedName = WhoisUtil.HANDLE;
 		}
 		return fliedName;
 	}
+
 	@Override
 	public QueryType getQueryType() {
-		// TODO Auto-generated method stub
-		return null;
+		return QueryType.DSDATA;
 	}
+
 	@Override
 	public boolean supportType(QueryType queryType) {
-		// TODO Auto-generated method stub
-		return false;
+		return QueryType.DSDATA.equals(queryType);
 	}
-	@Override
-	public Map<String, Object> query(String q, String role, String format,
-			PageBean... page) throws QueryException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 	@Override
 	protected boolean supportJoinType(QueryType queryType,
 			QueryJoinType queryJoinType) {
-		// TODO Auto-generated method stub
-		return false;
+		return QueryJoinType.DSDATA.equals(queryJoinType);
 	}
+
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
 			String role, Connection connection, String format)
@@ -88,5 +80,4 @@ public abstract class DsDataQueryDao extends AbstractDbQueryDao {
 				WhoisUtil.SELECT_JOIN_LIST_DSDATA, role, connection,
 				permissionCache.getDsDataMapKeyFileds(role), format);
 	}
-	
 }
