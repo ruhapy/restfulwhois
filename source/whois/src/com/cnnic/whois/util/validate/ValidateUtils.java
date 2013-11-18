@@ -1,5 +1,9 @@
 package com.cnnic.whois.util.validate;
 
+import java.util.Map;
+
+import com.cnnic.whois.util.WhoisUtil;
+
 public class ValidateUtils {
 
 	private boolean isFuzzyQueryType(int typeIndex){
@@ -133,6 +137,45 @@ public class ValidateUtils {
 			}
 		}
 		return result;
+	}
+	
+	/**
+	 * transform Long to IP address
+	 * @param map
+	 * @return
+	 */
+	public static Map<String, Object> longToIP(Map<String, Object> map) {
+		Object ipversion = map.get("IP Version");
+
+		String startHightAddress = map.get("StartHighAddress").toString();
+		String startLowAddress = map.get("StartLowAddress").toString();
+		String endHighAddress = map.get("EndHighAddress").toString();
+		String endLowAddress = map.get("EndLowAddress").toString();
+
+		map.remove("StartHighAddress");
+		map.remove("StartLowAddress");
+		map.remove("EndHighAddress");
+		map.remove("EndLowAddress");
+		String startAddress = "";
+		String endAddress = "";
+		if (ipversion != null) {
+			if (ipversion.toString().indexOf("v6") != -1) {
+				startAddress = WhoisUtil.ipV6ToString(
+						Long.parseLong(startHightAddress),
+						Long.parseLong(startLowAddress));
+				endAddress = WhoisUtil.ipV6ToString(
+						Long.parseLong(endHighAddress),
+						Long.parseLong(endLowAddress));
+			} else {
+				startAddress = WhoisUtil.longtoipV4(Long
+						.parseLong(startLowAddress));
+				endAddress = WhoisUtil
+						.longtoipV4(Long.parseLong(endLowAddress));
+			}
+			map.put("Start Address", startAddress);
+			map.put("End Address", endAddress);
+		}
+		return map;
 	}
 	
 }
