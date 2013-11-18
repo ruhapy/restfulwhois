@@ -1,3 +1,4 @@
+
 package com.cnnic.whois.bean;
 
 public class QueryParam {
