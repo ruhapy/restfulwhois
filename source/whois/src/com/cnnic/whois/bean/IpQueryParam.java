@@ -1,40 +1,49 @@
 package com.cnnic.whois.bean;
 
 public class IpQueryParam extends QueryParam {
-	private String startHighAddr;
-	private String endHighAddr;
-	private String startLowAddr;
-	private String endLowAddr;
+	private long startHighAddr;
+	private long endHighAddr;
+	private long startLowAddr;
+	private long endLowAddr;
 
-	public String getStartHighAddr() {
+	public IpQueryParam(String q, long startHighAddr, long endHighAddr,
+			long startLowAddr, long endLowAddr) {
+		super(q);
+		this.startHighAddr = startHighAddr;
+		this.endHighAddr = endHighAddr;
+		this.startLowAddr = startLowAddr;
+		this.endLowAddr = endLowAddr;
+	}
+
+	public long getStartHighAddr() {
 		return startHighAddr;
 	}
 
-	public void setStartHighAddr(String startHighAddr) {
+	public void setStartHighAddr(long startHighAddr) {
 		this.startHighAddr = startHighAddr;
 	}
 
-	public String getEndHighAddr() {
+	public long getEndHighAddr() {
 		return endHighAddr;
 	}
 
-	public void setEndHighAddr(String endHighAddr) {
+	public void setEndHighAddr(long endHighAddr) {
 		this.endHighAddr = endHighAddr;
 	}
 
-	public String getStartLowAddr() {
+	public long getStartLowAddr() {
 		return startLowAddr;
 	}
 
-	public void setStartLowAddr(String startLowAddr) {
+	public void setStartLowAddr(long startLowAddr) {
 		this.startLowAddr = startLowAddr;
 	}
 
-	public String getEndLowAddr() {
+	public long getEndLowAddr() {
 		return endLowAddr;
 	}
 
-	public void setEndLowAddr(String endLowAddr) {
+	public void setEndLowAddr(long endLowAddr) {
 		this.endLowAddr = endLowAddr;
 	}
 }

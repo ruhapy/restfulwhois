@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import com.cnnic.whois.bean.IpQueryParam;
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryParam;
@@ -18,20 +19,14 @@ public class IpQueryDao extends AbstractDbQueryDao {
 		super(dbQueryDaos);
 	}
 
-	/**
-	 * Connect to the database query ip information
-	 * 
-	 * @param startHighAddr
-	 * @param endHighAddr
-	 * @param startLowAddr
-	 * @param endLowAddr
-	 * @param role
-	 * @return map collection
-	 * @throws QueryException
-	 */
-	public Map<String, Object> queryIP(long startHighAddr, long endHighAddr,
-			long startLowAddr, long endLowAddr, String role, String format)
-			throws QueryException {
+	@Override
+	public Map<String, Object> query(QueryParam param, String role, String format,
+			PageBean... page) throws QueryException {
+		IpQueryParam ipParam = (IpQueryParam) param;
+		long startHighAddr = ipParam.getStartHighAddr();
+		long endHighAddr = ipParam.getEndHighAddr();
+		long startLowAddr = ipParam.getStartLowAddr();
+		long endLowAddr = ipParam.getEndLowAddr();
 		Connection connection = null;
 		Map<String, Object> map = null;
 		String selectSql = "";
@@ -145,13 +140,6 @@ public class IpQueryDao extends AbstractDbQueryDao {
 	@Override
 	public boolean supportType(QueryType queryType) {
 		return QueryType.IP.equals(queryType);
-	}
-
-	@Override
-	public Map<String, Object> query(QueryParam param, String role, String format,
-			PageBean... page) throws QueryException {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
