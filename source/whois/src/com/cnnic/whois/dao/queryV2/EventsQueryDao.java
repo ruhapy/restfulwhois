@@ -7,32 +7,26 @@ import java.util.Map;
 
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryJoinType;
+import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.WhoisUtil;
 
-public abstract class EventsQueryDao extends AbstractDbQueryDao {
+public class EventsQueryDao extends AbstractDbQueryDao {
 	public EventsQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
 
-	/**
-	 * Connect to the database query events information
-	 * 
-	 * @param queryInfo
-	 * @param role
-	 * @return map collection
-	 * @throws QueryException
-	 */
-	public Map<String, Object> queryEvents(String queryInfo, String role,
-			String format) throws QueryException {
+	@Override
+	public Map<String, Object> query(QueryParam param, String role,
+			String format, PageBean... page) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
 		try {
 			connection = ds.getConnection();
-			String selectSql = WhoisUtil.SELECT_LIST_EVENTS + "'" + queryInfo
-					+ "'";
+			String selectSql = WhoisUtil.SELECT_LIST_EVENTS + "'"
+					+ param.getQ() + "'";
 			map = query(connection, selectSql,
 					permissionCache.getEventsKeyFileds(role), "$mul$events",
 					role, format);
@@ -52,28 +46,18 @@ public abstract class EventsQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public QueryType getQueryType() {
-		// TODO Auto-generated method stub
-		return null;
+		return QueryType.EVENTS;
 	}
 
 	@Override
 	public boolean supportType(QueryType queryType) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public Map<String, Object> query(String q, String role, String format,
-			PageBean... page) throws QueryException {
-		// TODO Auto-generated method stub
-		return null;
+		return QueryType.EVENTS.equals(queryType);
 	}
 
 	@Override
 	protected boolean supportJoinType(QueryType queryType,
 			QueryJoinType queryJoinType) {
-		// TODO Auto-generated method stub
-		return false;
+		return QueryJoinType.EVENTS.equals(queryJoinType);
 	}
 
 	@Override
@@ -84,5 +68,4 @@ public abstract class EventsQueryDao extends AbstractDbQueryDao {
 				WhoisUtil.SELECT_JOIN_LIST_EVENTS, role, connection,
 				permissionCache.getEventsKeyFileds(role), format);
 	}
-
 }

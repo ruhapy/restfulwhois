@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.cnnic.whois.bean.PageBean;
+import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.WhoisUtil;
@@ -16,8 +17,8 @@ public class RirDomainQueryDao extends AbstractDomainQueryDao {
 		super(dbQueryDaos);
 	}
 
-	public Map<String, Object> query(String q, String role, String format,
-			PageBean... page) throws QueryException {
+	public Map<String, Object> query(QueryParam param, String role,
+			String format, PageBean... page) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
@@ -26,7 +27,8 @@ public class RirDomainQueryDao extends AbstractDomainQueryDao {
 			List<String> keyFields = permissionCache
 					.getRIRDomainKeyFileds(role);
 			Map<String, Object> domainMap = query(
-					WhoisUtil.SELECT_LIST_RIRDOMAIN, keyFields, q, role, format);
+					WhoisUtil.SELECT_LIST_RIRDOMAIN, keyFields, param.getQ(),
+					role, format);
 			if (domainMap != null) {
 				map = rdapConformance(map);
 				map.putAll(domainMap);
@@ -47,17 +49,11 @@ public class RirDomainQueryDao extends AbstractDomainQueryDao {
 
 	@Override
 	public boolean supportType(QueryType queryType) {
-		return QueryType.DNRDOMAIN.equals(queryType);
+		return QueryType.RIRDOMAIN.equals(queryType);
 	}
 
 	@Override
 	public QueryType getQueryType() {
-		return QueryType.DNRDOMAIN;
+		return QueryType.RIRDOMAIN;
 	}
-
-	// @Override
-	// public boolean supportJoinType(QueryType queryType,
-	// QueryJoinType queryJoinType) {
-	// return false;
-	// }
 }

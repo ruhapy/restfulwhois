@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.cnnic.whois.bean.PageBean;
+import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.WhoisUtil;
@@ -16,7 +17,7 @@ public class DnrDomainQueryDao extends AbstractDomainQueryDao {
 		super(dbQueryDaos);
 	}
 
-	public Map<String, Object> query(String q, String role, String format,
+	public Map<String, Object> query(QueryParam param, String role, String format,
 			PageBean... page) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -26,7 +27,7 @@ public class DnrDomainQueryDao extends AbstractDomainQueryDao {
 			List<String> keyFields = permissionCache
 					.getDNRDomainKeyFileds(role);
 			Map<String, Object> domainMap = query(
-					WhoisUtil.SELECT_LIST_DNRDOMAIN, keyFields, q, role, format);
+					WhoisUtil.SELECT_LIST_DNRDOMAIN, keyFields, param.getQ(), role, format);
 			if (domainMap != null) {
 				map = rdapConformance(map);
 				map.putAll(domainMap);
@@ -53,10 +54,4 @@ public class DnrDomainQueryDao extends AbstractDomainQueryDao {
 	 public QueryType getQueryType() {
 	 return QueryType.DNRDOMAIN;
 	 }
-	//
-	// @Override
-	// public boolean supportJoinType(QueryType queryType,
-	// QueryJoinType queryJoinType) {
-	// return false;
-	// }
 }

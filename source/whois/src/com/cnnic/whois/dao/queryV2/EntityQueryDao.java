@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.cnnic.whois.bean.PageBean;
-import com.cnnic.whois.bean.QueryJoinType;
+import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.bean.index.EntityIndex;
 import com.cnnic.whois.execption.QueryException;
@@ -17,30 +17,26 @@ import com.cnnic.whois.service.EntityIndexService;
 import com.cnnic.whois.service.index.SearchResult;
 import com.cnnic.whois.util.WhoisUtil;
 
-public class EntityQueryDao extends AbstractDbQueryDao {
+public class EntityQueryDao extends AbstractSearchQueryDao {
 	protected EntityIndexService entityIndexService = EntityIndexService
 			.getIndexService();
 
 	public EntityQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
-	
+
 	@Override
-	public Map<String, Object> query(String q, String role, String format,
-			PageBean... page) throws QueryException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	public Map<String, Object> queryEntity(String queryPara, String role, String format)
-			throws QueryException, SQLException {
-		SearchResult<EntityIndex> result = entityIndexService.preciseQueryEntitiesByHandleOrName(queryPara);
+	public Map<String, Object> query(QueryParam param, String role,
+			String format, PageBean... page) throws QueryException {
+		SearchResult<EntityIndex> result = entityIndexService
+				.preciseQueryEntitiesByHandleOrName(param.getQ());
 		String selectSql = WhoisUtil.SELECT_LIST_RIRENTITY;
 		Connection connection = null;
 		Map<String, Object> map = null;
 		try {
 			connection = ds.getConnection();
-			map = fuzzyQuery(connection, result,selectSql,"$mul$entity", role, format);
+			map = fuzzyQuery(connection, result, selectSql, "$mul$entity",
+					role, format);
 			map = rdapConformance(map);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -55,17 +51,10 @@ public class EntityQueryDao extends AbstractDbQueryDao {
 		}
 		return map;
 	}
-	
-	/**
-	 * Connect to the database query DNREntity information
-	 * 
-	 * @param queryInfo
-	 * @param role
-	 * @return map collection
-	 * @throws QueryException
-	 */
-	public Map<String, Object> queryDNREntity(String queryInfo, String role, String format)
-			throws QueryException {
+
+	@SuppressWarnings("unused")
+	private Map<String, Object> queryDNREntity(String queryInfo, String role,
+			String format) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
@@ -76,7 +65,7 @@ public class EntityQueryDao extends AbstractDbQueryDao {
 			Map<String, Object> entityMap = query(connection, selectSql,
 					permissionCache.getDNREntityKeyFileds(role), "$mul$entity",
 					role, format);
-			if(entityMap != null){
+			if (entityMap != null) {
 				map = rdapConformance(map);
 				map.putAll(entityMap);
 			}
@@ -94,16 +83,9 @@ public class EntityQueryDao extends AbstractDbQueryDao {
 		return map;
 	}
 
-	/**
-	 * Connect to the database query RIREntity information
-	 * 
-	 * @param queryInfo
-	 * @param role
-	 * @return map collection
-	 * @throws QueryException
-	 */
-	public Map<String, Object> queryRIREntity(String queryInfo, String role, String format)
-			throws QueryException {
+	@SuppressWarnings("unused")
+	private Map<String, Object> queryRIREntity(String queryInfo, String role,
+			String format) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
@@ -114,7 +96,7 @@ public class EntityQueryDao extends AbstractDbQueryDao {
 			Map<String, Object> entityMap = query(connection, selectSql,
 					permissionCache.getRIREntityKeyFileds(role), "$mul$entity",
 					role, format);
-			if(entityMap != null){
+			if (entityMap != null) {
 				map = rdapConformance(map);
 				map.putAll(entityMap);
 			}
@@ -131,31 +113,31 @@ public class EntityQueryDao extends AbstractDbQueryDao {
 		}
 		return map;
 	}
-	protected Map<String, Object> postHandleFields(String keyName, String format,
-			ResultSet results, Map<String, Object> map) throws SQLException {
-		//asevent
-		if (keyName.equals(WhoisUtil.JOINENTITESFILED)){
+
+	protected Map<String, Object> postHandleFields(String keyName,
+			String format, ResultSet results, Map<String, Object> map)
+			throws SQLException {
+		// asevent
+		if (keyName.equals(WhoisUtil.JOINENTITESFILED)) {
 			String entityHandle = results.getString(WhoisUtil.HANDLE);
-			if (map.containsKey("events")){
+			if (map.containsKey("events")) {
 				Map<String, Object> map_Events = new LinkedHashMap<String, Object>();
-				map_Events = (Map<String, Object>)map.get("events");
-				if (map_Events.containsKey("eventActor")){
-					String eventactor = (String)map_Events.get("eventActor");
-					if (entityHandle.equals(eventactor))
-					{
+				map_Events = (Map<String, Object>) map.get("events");
+				if (map_Events.containsKey("eventActor")) {
+					String eventactor = (String) map_Events.get("eventActor");
+					if (entityHandle.equals(eventactor)) {
 						map_Events.remove("eventActor");
 						List<Map<String, Object>> listEvents = new ArrayList<Map<String, Object>>();
 						listEvents.add(map_Events);
 						map.put("asEventActor", listEvents.toArray());
 						map.remove("events");
-					}														
+					}
 				}
-				
 			}
 		}
-		
-		//vcard format
-		if(keyName.equals(WhoisUtil.JOINENTITESFILED) || keyName.equals(WhoisUtil.MULTIPRXENTITY)){
+		// vcard format
+		if (keyName.equals(WhoisUtil.JOINENTITESFILED)
+				|| keyName.equals(WhoisUtil.MULTIPRXENTITY)) {
 			map = WhoisUtil.toVCard(map, format);
 		}
 		return map;
@@ -169,20 +151,5 @@ public class EntityQueryDao extends AbstractDbQueryDao {
 	@Override
 	public boolean supportType(QueryType queryType) {
 		return QueryType.ENTITY.equals(queryType);
-	}
-
-	@Override
-	protected boolean supportJoinType(QueryType queryType,
-			QueryJoinType queryJoinType) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection, String format)
-			throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

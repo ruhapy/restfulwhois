@@ -7,7 +7,9 @@ public enum QueryType {
 			"phones"), POSTALADDRESS("postalAddress"), REMARKS("remarks"), SECUREDNS(
 			"secureDNS"), VARIANTS("variants"), DNRDOMAIN("dnrDomain"), RIRDOMAIN(
 			"rirDomain"), DNRENTITY("dnrEntity"), RIRENTITY("rirEntity"), ENTITYSEARCH(
-			"entitySearch");
+			"entitySearch"),DELETATIONKEY("delegationKey"),ERRORMSG("errorMsg"),
+			FUZZYDOMAIN("fuzzyDomain"),FUZZYENTITY("fuzzyEntity"),FUZZYNS("fuzzyNs")
+			,IPREDIRECTION("ipRedirection");
 	private String name;
 
 	private QueryType(String name) {

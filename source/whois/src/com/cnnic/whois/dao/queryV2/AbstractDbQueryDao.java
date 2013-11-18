@@ -12,20 +12,11 @@ import java.util.Map;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
-import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryType;
-import com.cnnic.whois.bean.index.DomainIndex;
-import com.cnnic.whois.bean.index.EntityIndex;
-import com.cnnic.whois.bean.index.Index;
-import com.cnnic.whois.bean.index.NameServerIndex;
-import com.cnnic.whois.bean.index.SearchCondition;
-import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.DomainIndexService;
 import com.cnnic.whois.service.EntityIndexService;
 import com.cnnic.whois.service.NameServerIndexService;
-import com.cnnic.whois.service.QueryService;
-import com.cnnic.whois.service.index.SearchResult;
 import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
 
@@ -68,186 +59,7 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 //	public static AbstractDbQueryDao getQueryDAO() {
 //		return queryDAO;
 //	}
-
 	
-	
-	public Map<String, Object> fuzzyQueryEntity(String fuzzyQueryParamName,String queryPara,
-			String role, String format, PageBean page)
-			throws QueryException, SQLException {
-		SearchResult<EntityIndex> result = entityIndexService
-				.fuzzyQueryEntitiesByHandleAndName(fuzzyQueryParamName,queryPara,page);
-		String selectSql = WhoisUtil.SELECT_LIST_RIRENTITY;
-		Connection connection = null;
-		Map<String, Object> map = null;
-		try {
-			connection = ds.getConnection();
-			Map<String, Object> entityMap = fuzzyQuery(connection, result,selectSql,"$mul$entity", role, format);
-			if(entityMap != null){
-				map = rdapConformance(map);
-				map.putAll(entityMap);
-				addTruncatedParamToMap(map, result);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new QueryException(e);
-		} finally {
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException se) {
-				}
-			}
-		}
-		return map;
-	}
-	
-	public Map<String, Object> fuzzyQueryNameServer(String queryInfo, String role, 
-			String format, PageBean page)
-			throws QueryException {
-		Connection connection = null;
-		Map<String, Object> map = null;
-		SearchCondition searchCondition = new SearchCondition(queryInfo);
-		int startPage = page.getCurrentPage() - 1;
-		startPage = startPage >= 0 ? startPage : 0;
-		int start = startPage * page.getMaxRecords();
-		searchCondition.setStart(start);
-		searchCondition.setRow(page.getMaxRecords());
-		SearchResult<NameServerIndex> result = nameServerIndexService.queryNameServers(searchCondition);
-		page.setRecordsCount(Long.valueOf(result.getTotalResults()).intValue());
-		try {
-			connection = ds.getConnection();
-			String selectSql = WhoisUtil.SELECT_LIST_NAMESREVER + "'"
-					+ queryInfo + "'";
-			Map<String, Object> nsMap = fuzzyQuery(connection, result,selectSql,
-					"$mul$nameServer", role, format);
-			if(nsMap != null){
-				map = rdapConformance(map);
-				map.putAll(nsMap);
-				addTruncatedParamToMap(map, result);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new QueryException(e);
-		} finally {
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException se) {
-				}
-			}
-		}
-		return map;
-	}
-
-	public Map<String, Object> fuzzyQueryDoamin(String domain, String domainPuny, String role, 
-			String format, PageBean page)
-			throws QueryException {
-		Connection connection = null;
-		Map<String, Object> map = null;
-		SearchCondition searchCondition = new SearchCondition("ldhName:"+domainPuny + " OR unicodeName:"+domain);
-		int startPage = page.getCurrentPage() - 1;
-		startPage = startPage >= 0 ? startPage : 0;
-		int start = startPage * page.getMaxRecords();
-		searchCondition.setStart(start);
-		searchCondition.setRow(page.getMaxRecords());
-		SearchResult<DomainIndex> result = domainIndexService.queryDomains(searchCondition);
-		page.setRecordsCount(Long.valueOf(result.getTotalResults()).intValue());
-		if(result.getResultList().size()==0){
-			return map;
-		}
-		try {
-			connection = ds.getConnection();
-			String sql = WhoisUtil.SELECT_LIST_DNRDOMAIN;
-			DomainIndex domainIndex = result.getResultList().get(0);
-			if("rirDomain".equals(domainIndex.getDocType())){
-				sql = WhoisUtil.SELECT_LIST_RIRDOMAIN;
-			}
-			Map<String, Object> domainMap = this.fuzzyQuery(connection, result,sql,"$mul$domains",
-					role, format);
-			if(domainMap != null){
-				map =  rdapConformance(map);
-				map.putAll(domainMap);
-				addTruncatedParamToMap(map, result);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new QueryException(e);
-		} finally {
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException se) {
-				}
-			}
-		}
-		return map;
-	}
-
-	private void addTruncatedParamToMap(Map<String, Object> map,
-			SearchResult<? extends Index> result) {
-		if(result.getTotalResults()>QueryService.MAX_SIZE_FUZZY_QUERY){
-			map.put(WhoisUtil.SEARCH_RESULTS_TRUNCATED_EKEY, true);
-		}
-	}
-	
-	protected Map<String, Object> fuzzyQuery(Connection connection, SearchResult<? extends Index> domains,
-			String selectSql,String keyName, String role, String format)
-			throws SQLException {
-			List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-			for(Index index:domains.getResultList()){
-				index.initPropValueMap();
-				List<String> keyFlieds = permissionCache.getKeyFiledsByClass(index, role);
-				Map<String, Object> map = new LinkedHashMap<String, Object>();
-				for (int i = 0; i < keyFlieds.size(); i++) {
-					Object resultsInfo = null;
-					if (keyFlieds.get(i).startsWith(WhoisUtil.ARRAYFILEDPRX)) {
-						String key = keyFlieds.get(i).substring(WhoisUtil.ARRAYFILEDPRX.length());
-						resultsInfo = index.getPropValue(key);
-						String[] values = null;
-						if (resultsInfo != null) {
-							values = resultsInfo.toString().split(WhoisUtil.VALUEARRAYPRX);
-						}
-						map.put(WhoisUtil.getDisplayKeyName(key, format), values);
-					} else if (keyFlieds.get(i).startsWith(WhoisUtil.EXTENDPRX)) {
-						resultsInfo = index.getPropValue(keyFlieds.get(i));
-						map.put(keyFlieds.get(i).substring(WhoisUtil.EXTENDPRX.length()), resultsInfo);
-					} else if (keyFlieds.get(i).startsWith(WhoisUtil.JOINFILEDPRX)) {
-						String key = keyFlieds.get(i).substring(WhoisUtil.JOINFILEDPRX.length());
-						Object value = queryJoinTable(keyFlieds.get(i),
-								index.getHandle(), selectSql, role,
-								connection, format);
-						if (value != null)
-							map.put(key, value);
-					} else {
-						resultsInfo = index.getPropValue(keyFlieds.get(i));
-						resultsInfo = resultsInfo==null?"":resultsInfo;
-						CharSequence id = "id";
-						if(!keyName.equals(WhoisUtil.JOINPUBLICIDS) && WhoisUtil.getDisplayKeyName(keyFlieds.get(i), format).substring(keyFlieds.get(i).length() - 2).equals(id) && !format.equals("application/html")){
-							continue;
-						}else{
-							map.put(WhoisUtil.getDisplayKeyName(keyFlieds.get(i), format), resultsInfo);//a different format have different name;
-						}
-					}
-				}
-				handleIpWhenQueryNs(keyName, format, map);
-				//vcard format
-				if(keyName.equals(WhoisUtil.MULTIPRXENTITY)){
-					map = WhoisUtil.toVCard(map, format);
-				}
-				list.add(map);
-			}
-			if (list.size() == 0){
-				return null;
-			}
-			Map<String, Object> mapInfo = new LinkedHashMap<String, Object>();
-			if (list.size() > 1) {
-				mapInfo.put(keyName, list.toArray());
-			} else {
-				mapInfo = list.get(0);
-			}
-			return mapInfo;
-	}
-
 	/**
 	 * According to the table field collections and SQL to obtain the
 	 * corresponding data information
@@ -265,18 +77,14 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 			throws SQLException {
 		PreparedStatement stmt = null; 
 		ResultSet results = null;
-
 		try {
 			stmt = connection.prepareStatement(sql);
 			results = stmt.executeQuery();
-
 			List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-			
 			while (results.next()) {
 				Map<String, Object> map = new LinkedHashMap<String, Object>();
 				for (int i = 0; i < keyFlieds.size(); i++) {
 					Object resultsInfo = null;
-					
 					String field = keyFlieds.get(i);
 					if (field.startsWith(WhoisUtil.ARRAYFILEDPRX)) {
 						String key = field.substring(WhoisUtil.ARRAYFILEDPRX.length());
@@ -300,7 +108,6 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 					} else {
 						preHandleNormalField(keyName, format, results, map, field);
 						resultsInfo = results.getObject(field) == null ? "": results.getObject(field);
-						
 						CharSequence id = "id";
 						boolean fieldEndwithId = WhoisUtil.getDisplayKeyName(field, format).substring(field.length() - 2).equals(id);
 						if(fieldEndwithId && !format.equals("application/html")){
@@ -310,16 +117,13 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 						}
 					}
 				}
-				
 				map = postHandleFields(keyName, format, results, map);
 				list.add(map);
 			}
-
-			if (list.size() == 0)
+			if (list.size() == 0){
 				return null;
-			
+			}
 			Map<String, Object> mapInfo = new LinkedHashMap<String, Object>();
-			
 			// link , remark and notice change to array
 			if(keyName.equals(WhoisUtil.JOINLINKFILED)|| 
 					keyName.equals(WhoisUtil.JOINNANOTICES) ||
@@ -368,20 +172,6 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 			ResultSet results, Map<String, Object> map, String field)
 			throws SQLException {}
 
-	private void handleIpWhenQueryNs(String keyName, String format,
-			Map<String, Object> map) {
-		if (keyName.equals("$mul$nameServer") || keyName.equals("$join$nameServer")){
-			Map<String, Object> map_IP = new LinkedHashMap<String, Object>();
-			Object IPAddressArray = map.get(WhoisUtil.getDisplayKeyName("IPV4_Addresses", format));
-			map_IP.put(WhoisUtil.IPV4PREFIX, IPAddressArray);
-			IPAddressArray = map.get(WhoisUtil.getDisplayKeyName("IPV6_Addresses", format));
-			map_IP.put(WhoisUtil.IPV6PREFIX, IPAddressArray);
-			map.put(WhoisUtil.IPPREFIX, map_IP);
-			map.remove(WhoisUtil.getDisplayKeyName("IPV4_Addresses", format));
-			map.remove(WhoisUtil.getDisplayKeyName("IPV6_Addresses", format));
-		}
-	}
-	
 	/**
 	 * Determine the different types of schedule and query information according
 	 * to the parameters
