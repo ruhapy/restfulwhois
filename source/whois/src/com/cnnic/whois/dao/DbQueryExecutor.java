@@ -3,7 +3,6 @@ package com.cnnic.whois.dao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.dao.query.AbstractDbQueryDao;
@@ -35,8 +34,9 @@ import com.cnnic.whois.dao.query.RirEntityQueryDao;
 import com.cnnic.whois.dao.query.SecureDnsQueryDao;
 import com.cnnic.whois.dao.query.VariantsQueryDao;
 import com.cnnic.whois.execption.QueryException;
+import com.cnnic.whois.execption.RedirectExecption;
 
-public class DbQueryExecutor {
+public class DbQueryExecutor implements QueryExecutor {
 	private static DbQueryExecutor executor = new DbQueryExecutor();
 
 	public static DbQueryExecutor getExecutor() {
@@ -80,8 +80,10 @@ public class DbQueryExecutor {
 		init();
 	}
 
+	@Override
 	public Map<String, Object> query(QueryType queryType, QueryParam param,
-			String role, String format) throws QueryException {
+			String role, String format) throws QueryException,
+			RedirectExecption {
 		for (AbstractDbQueryDao queryDao : dbQueryDaos) {
 			if (queryDao.supportType(queryType)) {
 				return queryDao.query(param, role, format);

@@ -17,23 +17,16 @@ public class PostalAddressQueryDao extends AbstractDbQueryDao {
 		super(dbQueryDaos);
 	}
 
-	/**
-	 * Connect to the database query postalAddress information
-	 * 
-	 * @param queryInfo
-	 * @param role
-	 * @return map collection
-	 * @throws QueryException
-	 */
-	public Map<String, Object> queryPostalAddress(String queryInfo,
-			String role, String format) throws QueryException {
+	@Override
+	public Map<String, Object> query(QueryParam param, String role,
+			String format, PageBean... page) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
 		try {
 			connection = ds.getConnection();
 			String selectSql = WhoisUtil.SELECT_LIST_POSTALADDRESS + "'"
-					+ queryInfo + "'";
+					+ param.getQ() + "'";
 			map = query(connection, selectSql,
 					permissionCache.getPostalAddressKeyFileds(role),
 					"$mul$postalAddress", role, format);
@@ -53,28 +46,19 @@ public class PostalAddressQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public QueryType getQueryType() {
-		// TODO Auto-generated method stub
-		return null;
+		return QueryType.POSTALADDRESS;
 	}
 
 	@Override
 	public boolean supportType(QueryType queryType) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public Map<String, Object> query(QueryParam param, String role, String format,
-			PageBean... page) throws QueryException {
-		// TODO Auto-generated method stub
-		return null;
+		return QueryType.POSTALADDRESS.equals(queryType);
 	}
 
 	@Override
 	protected boolean supportJoinType(QueryType queryType,
 			QueryJoinType queryJoinType) {
 		// TODO Auto-generated method stub
-		return false;
+		return QueryJoinType.POSTALADDRESS.equals(queryJoinType);
 	}
 
 	@Override

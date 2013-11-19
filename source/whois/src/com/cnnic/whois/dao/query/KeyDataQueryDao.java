@@ -16,22 +16,16 @@ public class KeyDataQueryDao extends AbstractDbQueryDao {
 	public KeyDataQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
-	/**
-	 * Connect to the database query SecureDNS information
-	 * 
-	 * @param queryInfo
-	 * @param role
-	 * @return map collection
-	 * @throws QueryException
-	 */
-	public Map<String, Object> queryKeyData(String queryInfo, String role, String format)
-			throws QueryException {
+
+	@Override
+	public Map<String, Object> query(QueryParam param, String role,
+			String format, PageBean... page) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
 		try {
 			connection = ds.getConnection();
-			String selectSql = WhoisUtil.SELECT_LIST_KEYDATA + "'" + queryInfo
+			String selectSql = WhoisUtil.SELECT_LIST_KEYDATA + "'" + param.getQ()
 					+ "'";
 			map = query(connection, selectSql,
 					permissionCache.getKeyDataMapKeyFileds(role),
@@ -49,38 +43,35 @@ public class KeyDataQueryDao extends AbstractDbQueryDao {
 		}
 		return map;
 	}
+
 	@Override
 	protected String getJoinFieldName(String keyName) {
 		String fliedName = "";
-		if (keyName.equals(WhoisUtil.JOINKEYDATA) || keyName.equals("$mul$keyData")){
+		if (keyName.equals(WhoisUtil.JOINKEYDATA)
+				|| keyName.equals("$mul$keyData")) {
 			fliedName = "KeyDataID";
-		}else {
+		} else {
 			fliedName = WhoisUtil.HANDLE;
 		}
 		return fliedName;
 	}
+
 	@Override
 	public QueryType getQueryType() {
-		// TODO Auto-generated method stub
-		return null;
+		return QueryType.KEYDATA;
 	}
+
 	@Override
 	public boolean supportType(QueryType queryType) {
-		// TODO Auto-generated method stub
-		return false;
+		return QueryType.KEYDATA.equals(queryType);
 	}
-	@Override
-	public Map<String, Object> query(QueryParam param, String role, String format,
-			PageBean... page) throws QueryException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 	@Override
 	protected boolean supportJoinType(QueryType queryType,
 			QueryJoinType queryJoinType) {
-		// TODO Auto-generated method stub
-		return false;
+		return QueryJoinType.KEYDATA.equals(queryJoinType);
 	}
+
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
 			String role, Connection connection, String format)
