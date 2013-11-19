@@ -191,7 +191,7 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 		QueryType queryType = getQueryType();
 		for (AbstractDbQueryDao dbQueryDao : dbQueryDaos) {
 			if (dbQueryDao.supportJoinType(queryType, joinType)) {
-				return querySpecificJoinTable(key, handle, role,
+				return dbQueryDao.querySpecificJoinTable(key, handle, role,
 						connection, format);
 			}
 		}

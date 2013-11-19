@@ -16,25 +16,20 @@ public class LinksQueryDao extends AbstractDbQueryDao {
 	public LinksQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
-	/**
-	 * Connect to the database query link information
-	 * 
-	 * @param queryPara
-	 * @param role
-	 * @return map collection
-	 * @throws QueryException
-	 */
-	public Map<String, Object> queryLinks(String queryPara, String role, String format)
-			throws QueryException {
+
+	@Override
+	public Map<String, Object> query(QueryParam param, String role,
+			String format, PageBean... page) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
 		try {
 			connection = ds.getConnection();
-			String selectSql = WhoisUtil.SELECT_LIST_LINK + "'" + queryPara
+			String selectSql = WhoisUtil.SELECT_LIST_LINK + "'" + param.getQ()
 					+ "'";
 			map = query(connection, selectSql,
-					permissionCache.getLinkKeyFileds(role), "$mul$link", role, format);
+					permissionCache.getLinkKeyFileds(role), "$mul$link", role,
+					format);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -48,25 +43,23 @@ public class LinksQueryDao extends AbstractDbQueryDao {
 		}
 		return map;
 	}
+
 	@Override
 	public QueryType getQueryType() {
 		return QueryType.LINKS;
 	}
+
 	@Override
 	public boolean supportType(QueryType queryType) {
 		return QueryType.LINKS.equals(queryType);
 	}
-	@Override
-	public Map<String, Object> query(QueryParam param, String role, String format,
-			PageBean... page) throws QueryException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 	@Override
 	protected boolean supportJoinType(QueryType queryType,
 			QueryJoinType queryJoinType) {
 		return QueryJoinType.LINKS.equals(queryJoinType);
 	}
+
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
 			String role, Connection connection, String format)

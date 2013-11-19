@@ -8,7 +8,7 @@ public enum QueryType {
 			"secureDNS"), VARIANTS("variants"), DNRDOMAIN("dnrDomain"), RIRDOMAIN(
 			"rirDomain"), DNRENTITY("dnrEntity"), RIRENTITY("rirEntity"), ENTITYSEARCH(
 			"entitySearch"),DELETATIONKEY("delegationKey"),ERRORMSG("errorMsg"),
-			FUZZYDOMAIN("fuzzyDomain"),FUZZYENTITY("fuzzyEntity"),FUZZYNS("fuzzyNs")
+			SEARCHDOMAIN("fuzzyDomain"),SEARCHENTITY("fuzzyEntity"),SEARCHNS("fuzzyNs")
 			,IPREDIRECTION("ipRedirection");
 	private String name;
 

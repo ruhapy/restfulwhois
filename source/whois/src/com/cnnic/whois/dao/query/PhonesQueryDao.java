@@ -17,22 +17,15 @@ public class PhonesQueryDao extends AbstractDbQueryDao {
 		super(dbQueryDaos);
 	}
 
-	/**
-	 * Connect to the database query phone information
-	 * 
-	 * @param queryInfo
-	 * @param role
-	 * @return map collection
-	 * @throws QueryException
-	 */
-	public Map<String, Object> queryPhones(String queryInfo, String role,
-			String format) throws QueryException {
+	@Override
+	public Map<String, Object> query(QueryParam param, String role,
+			String format, PageBean... page) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
 		try {
 			connection = ds.getConnection();
-			String selectSql = WhoisUtil.SELECT_LIST_PHONE + "'" + queryInfo
+			String selectSql = WhoisUtil.SELECT_LIST_PHONE + "'" + param.getQ()
 					+ "'";
 			map = query(connection, selectSql,
 					permissionCache.getPhonesKeyFileds(role), "$mul$phones",
@@ -53,28 +46,18 @@ public class PhonesQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public QueryType getQueryType() {
-		// TODO Auto-generated method stub
-		return null;
+		return QueryType.PHONES;
 	}
 
 	@Override
 	public boolean supportType(QueryType queryType) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public Map<String, Object> query(QueryParam param, String role, String format,
-			PageBean... page) throws QueryException {
-		// TODO Auto-generated method stub
-		return null;
+		return QueryType.PHONES.equals(queryType);
 	}
 
 	@Override
 	protected boolean supportJoinType(QueryType queryType,
 			QueryJoinType queryJoinType) {
-		// TODO Auto-generated method stub
-		return false;
+		return QueryJoinType.PHONES.equals(queryJoinType);
 	}
 
 	@Override

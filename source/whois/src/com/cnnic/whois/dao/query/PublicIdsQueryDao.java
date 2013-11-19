@@ -20,28 +20,24 @@ public class PublicIdsQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public QueryType getQueryType() {
-		// TODO Auto-generated method stub
-		return null;
+		return QueryType.NONE;
 	}
 
 	@Override
 	public boolean supportType(QueryType queryType) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public Map<String, Object> query(QueryParam param, String role, String format,
 			PageBean... page) throws QueryException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	protected boolean supportJoinType(QueryType queryType,
 			QueryJoinType queryJoinType) {
-		// TODO Auto-generated method stub
-		return false;
+		return QueryJoinType.PUBLICIDS.equals(queryJoinType);
 	}
 
 	@Override
