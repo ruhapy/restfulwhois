@@ -50,14 +50,12 @@ public class AsQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public QueryType getQueryType() {
-		// TODO Auto-generated method stub
-		return null;
+		return QueryType.AUTNUM;
 	}
 
 	@Override
 	public boolean supportType(QueryType queryType) {
-		// TODO Auto-generated method stub
-		return false;
+		return QueryType.AUTNUM.equals(queryType);
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
+import com.cnnic.whois.execption.RedirectExecption;
 
 public interface QueryDao {
 	/**
@@ -31,8 +32,9 @@ public interface QueryDao {
 	 * @param page
 	 * @return
 	 * @throws QueryException
+	 * @throws RedirectExecption 
 	 */
 	// TODO:remove format and role
 	Map<String, Object> query(QueryParam param, String role, String format,
-			PageBean... page) throws QueryException;
+			PageBean... page) throws QueryException, RedirectExecption;
 }

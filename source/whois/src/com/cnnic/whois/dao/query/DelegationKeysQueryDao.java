@@ -68,5 +68,4 @@ public class DelegationKeysQueryDao extends AbstractDbQueryDao {
 				WhoisUtil.SELECT_JOIN_LIST_DELEGATIONKEYS, role, connection,
 				permissionCache.getDelegationKeyFileds(role), format);
 	}
-
 }

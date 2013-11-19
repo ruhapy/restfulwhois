@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-
+import com.cnnic.whois.bean.IpQueryParam;
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryParam;
@@ -20,21 +20,12 @@ public class IpRedirectionQueryDao extends AbstractDbQueryDao {
 		super(dbQueryDaos);
 	}
 
-	/**
-	 * Query IPRedirection information
-	 * 
-	 * @param startHighAddr
-	 * @param endHighAddr
-	 * @param startLowAddr
-	 * @param endLowAddr
-	 * @throws QueryException
-	 * @throws RedirectExecption
-	 *             When the throw this exception query data, and the data
-	 *             content stored to the anomaly.
-	 */
-	public void queryIPRedirection(long startHighAddr, long endHighAddr,
-			long startLowAddr, long endLowAddr) throws QueryException,
-			RedirectExecption {
+	@Override
+	public Map<String, Object> query(QueryParam param, String role,
+			String format, PageBean... page) throws QueryException, RedirectExecption {
+		IpQueryParam ipParam = (IpQueryParam) param;
+		long startHighAddr = ipParam.getStartHighAddr();
+		long startLowAddr = ipParam.getStartLowAddr();
 		Connection connection = null;
 		PreparedStatement stmt = null;
 		ResultSet results = null;
@@ -60,6 +51,7 @@ public class IpRedirectionQueryDao extends AbstractDbQueryDao {
 			if (results.next()) {
 				throw new RedirectExecption(results.getString("redirectURL"));
 			}
+			return null;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -75,8 +67,7 @@ public class IpRedirectionQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public QueryType getQueryType() {
-		// TODO Auto-generated method stub
-		return null;
+		return QueryType.IPREDIRECTION;
 	}
 
 	@Override
@@ -97,12 +88,5 @@ public class IpRedirectionQueryDao extends AbstractDbQueryDao {
 			String role, Connection connection, String format)
 			throws SQLException {
 		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Map<String, Object> query(QueryParam param, String role,
-			String format, PageBean... page) throws QueryException {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }
