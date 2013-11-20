@@ -6,6 +6,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.cnnic.whois.bean.DomainQueryParam;
+import com.cnnic.whois.bean.EntityQueryParam;
 import com.cnnic.whois.bean.IpQueryParam;
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
@@ -105,42 +107,29 @@ public class QueryService {
 		if (map == null) {
 			return queryError("404", role, format);
 		}
-
 		return map;
 	}
 
 	public Map<String, Object> fuzzyQueryNameServer(String nameServer,
 			String role, String format, PageBean page) throws QueryException,
 			RedirectExecption {
-		Map dnrMap = this.queryDAO.fuzzyQueryNameServer(nameServer, role,
-				format,page);
+		Map dnrMap = queryEngine.query(QueryType.SEARCHNS,
+				new QueryParam(nameServer), role, format,page);
 		if (dnrMap == null) {
-			String queryType = "dnrdomain";
-			getRedirectionURL(queryType, nameServer);
 			return queryError("404", role, format);
 		}
-		Map wholeMap = new LinkedHashMap();
-		if (dnrMap != null) {
-			wholeMap.putAll(dnrMap);
-		}
-		return wholeMap;
+		return dnrMap;
 	}
 
 	public Map<String, Object> fuzzyQueryDomain(String domain,
 			String domainPuny, String role, String format, PageBean page)
 			throws QueryException, RedirectExecption {
-		Map dnrMap = this.queryDAO.fuzzyQueryDoamin(domain, domainPuny, role,
-				format,page);
+		Map dnrMap = queryEngine.query(QueryType.SEARCHDOMAIN, 
+				new DomainQueryParam(domain,domainPuny), role, format,page);
 		if (dnrMap == null) {
-			String queryType = "dnrdomain";
-			getRedirectionURL(queryType, domain);
 			return queryError("404", role, format);
 		}
-		Map wholeMap = new LinkedHashMap();
-		if (dnrMap != null) {
-			wholeMap.putAll(dnrMap);
-		}
-		return wholeMap;
+		return dnrMap;
 	}
 
 	public Map<String, Object> queryDomain(String ipInfo, String role,
@@ -187,12 +176,16 @@ public class QueryService {
 	public Map<String, Object> fuzzyQueryEntity(String fuzzyQueryParamName,
 			String queryPara, String role, String format, PageBean page)
 			throws QueryException, SQLException {
-		Map map = this.queryDAO.fuzzyQueryEntity(fuzzyQueryParamName,
-				queryPara, role, format,page);
-		if (map == null) {
-			return queryError("404", role, format);
+		try {
+			Map map = queryEngine.query(QueryType.SEARCHDOMAIN, 
+					new EntityQueryParam(queryPara,fuzzyQueryParamName), role, format,page);
+			if (map == null) {
+				return queryError("404", role, format);
+			}
+			return map;
+		} catch (RedirectExecption e) {
+			throw new QueryException(e);
 		}
-		return map;
 	}
 
 	public Map<String, Object> queryLinks(String queryPara, String role,

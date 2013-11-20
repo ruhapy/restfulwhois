@@ -3,6 +3,7 @@ package com.cnnic.whois.dao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.dao.query.AbstractDbQueryDao;
@@ -14,8 +15,8 @@ import com.cnnic.whois.dao.query.DsDataQueryDao;
 import com.cnnic.whois.dao.query.EntityQueryDao;
 import com.cnnic.whois.dao.query.ErrorMsgQueryDao;
 import com.cnnic.whois.dao.query.EventsQueryDao;
-import com.cnnic.whois.dao.query.FuzzyDomainQueryDao;
-import com.cnnic.whois.dao.query.FuzzyEntityQueryDao;
+import com.cnnic.whois.dao.query.SearchDomainQueryDao;
+import com.cnnic.whois.dao.query.SearchEntityQueryDao;
 import com.cnnic.whois.dao.query.HelpQueryDao;
 import com.cnnic.whois.dao.query.IpQueryDao;
 import com.cnnic.whois.dao.query.IpRedirectionQueryDao;
@@ -54,8 +55,8 @@ public class DbQueryExecutor implements QueryExecutor {
 		dbQueryDaos.add(new EntityQueryDao(dbQueryDaos));
 		dbQueryDaos.add(new ErrorMsgQueryDao(dbQueryDaos));
 		dbQueryDaos.add(new EventsQueryDao(dbQueryDaos));
-		dbQueryDaos.add(new FuzzyDomainQueryDao(dbQueryDaos));
-		dbQueryDaos.add(new FuzzyEntityQueryDao(dbQueryDaos));
+		dbQueryDaos.add(new SearchDomainQueryDao(dbQueryDaos));
+		dbQueryDaos.add(new SearchEntityQueryDao(dbQueryDaos));
 		dbQueryDaos.add(new HelpQueryDao(dbQueryDaos));
 		dbQueryDaos.add(new IpQueryDao(dbQueryDaos));// TODO:
 		dbQueryDaos.add(new IpRedirectionQueryDao(dbQueryDaos));
@@ -82,11 +83,11 @@ public class DbQueryExecutor implements QueryExecutor {
 
 	@Override
 	public Map<String, Object> query(QueryType queryType, QueryParam param,
-			String role, String format) throws QueryException,
+			String role, String format,PageBean... pageParam) throws QueryException,
 			RedirectExecption {
 		for (AbstractDbQueryDao queryDao : dbQueryDaos) {
 			if (queryDao.supportType(queryType)) {
-				return queryDao.query(param, role, format);
+				return queryDao.query(param, role, format,pageParam);
 			}
 		}
 		return null;

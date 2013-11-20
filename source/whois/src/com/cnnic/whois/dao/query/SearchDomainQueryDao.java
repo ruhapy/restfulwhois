@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import com.cnnic.whois.bean.DomainQueryParam;
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
@@ -14,45 +15,44 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.index.SearchResult;
 import com.cnnic.whois.util.WhoisUtil;
 
-public class FuzzyDomainQueryDao extends AbstractSearchQueryDao{
-	
-	public FuzzyDomainQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
+public class SearchDomainQueryDao extends AbstractSearchQueryDao {
+
+	public SearchDomainQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
-	
+
 	@Override
-	public Map<String, Object> query(QueryParam param, String role, String format,
-			PageBean... page) throws QueryException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	public Map<String, Object> fuzzyQueryDoamin(String domain, String domainPuny, String role, 
-			String format, PageBean page)
-			throws QueryException {
+	public Map<String, Object> query(QueryParam param, String role,
+			String format, PageBean... pageParam) throws QueryException {
+		DomainQueryParam domainQueryParam = (DomainQueryParam) param;
 		Connection connection = null;
 		Map<String, Object> map = null;
-		SearchCondition searchCondition = new SearchCondition("ldhName:"+domainPuny + " OR unicodeName:"+domain);
+		PageBean page = pageParam[0];
+		SearchCondition searchCondition = new SearchCondition("ldhName:"
+				+ domainQueryParam.getDomainPuny() + " OR unicodeName:"
+				+ domainQueryParam.getQ());
 		int startPage = page.getCurrentPage() - 1;
 		startPage = startPage >= 0 ? startPage : 0;
 		int start = startPage * page.getMaxRecords();
 		searchCondition.setStart(start);
 		searchCondition.setRow(page.getMaxRecords());
-		SearchResult<DomainIndex> result = domainIndexService.queryDomains(searchCondition);
+		SearchResult<DomainIndex> result = domainIndexService
+				.queryDomains(searchCondition);
 		page.setRecordsCount(Long.valueOf(result.getTotalResults()).intValue());
-		if(result.getResultList().size()==0){
+		if (result.getResultList().size() == 0) {
 			return map;
 		}
 		try {
 			connection = ds.getConnection();
 			String sql = WhoisUtil.SELECT_LIST_DNRDOMAIN;
 			DomainIndex domainIndex = result.getResultList().get(0);
-			if("rirDomain".equals(domainIndex.getDocType())){
+			if ("rirDomain".equals(domainIndex.getDocType())) {
 				sql = WhoisUtil.SELECT_LIST_RIRDOMAIN;
 			}
-			Map<String, Object> domainMap = super.fuzzyQuery(connection, result,sql,"$mul$domains",
-					role, format);
-			if(domainMap != null){
-				map =  rdapConformance(map);
+			Map<String, Object> domainMap = super.fuzzyQuery(connection,
+					result, sql, "$mul$domains", role, format);
+			if (domainMap != null) {
+				map = rdapConformance(map);
 				map.putAll(domainMap);
 				addTruncatedParamToMap(map, result);
 			}
@@ -72,11 +72,11 @@ public class FuzzyDomainQueryDao extends AbstractSearchQueryDao{
 
 	@Override
 	public QueryType getQueryType() {
-		return QueryType.FUZZYDOMAIN;
+		return QueryType.SEARCHDOMAIN;
 	}
 
 	@Override
 	public boolean supportType(QueryType queryType) {
-		return QueryType.FUZZYDOMAIN.equals(queryType);
+		return QueryType.SEARCHDOMAIN.equals(queryType);
 	}
 }

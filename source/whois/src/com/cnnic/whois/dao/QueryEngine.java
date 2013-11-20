@@ -1,6 +1,7 @@
 package com.cnnic.whois.dao;
 
 import java.util.Map;
+import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
@@ -23,8 +24,8 @@ public class QueryEngine {
 	}
 
 	public Map<String, Object> query(QueryType queryType, QueryParam param,
-			String role, String format) throws QueryException,
+			String role, String format,PageBean... pageParam) throws QueryException,
 			RedirectExecption {
-		return queryExecutor.query(queryType, param, role, format);
+		return queryExecutor.query(queryType, param, role, format,pageParam);
 	}
 }
