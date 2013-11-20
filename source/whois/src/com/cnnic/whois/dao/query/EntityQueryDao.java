@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,8 @@ import com.cnnic.whois.service.index.SearchResult;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class EntityQueryDao extends AbstractSearchQueryDao {
+	public static final String GET_ALL_DNRENTITY = "select * from DNREntity ";
+	public static final String GET_ALL_RIRENTITY = "select * from RIREntity ";
 	protected EntityIndexService entityIndexService = EntityIndexService
 			.getIndexService();
 
@@ -141,6 +144,57 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 			map = WhoisUtil.toVCard(map, format);
 		}
 		return map;
+	}
+
+	private Map<String, Object> getAllDNREntity(String role, String format)
+			throws QueryException {
+		String sql = GET_ALL_DNRENTITY;
+		List<String> keyFields = permissionCache.getDNREntityKeyFileds(role);
+		return getAllEntity(role, format, sql, keyFields);
+	}
+
+	private Map<String, Object> getAllRIREntity(String role, String format)
+			throws QueryException {
+		String sql = GET_ALL_RIRENTITY;
+		List<String> keyFields = permissionCache.getRIREntityKeyFileds(role);
+		return getAllEntity(role, format, sql, keyFields);
+	}
+
+	private Map<String, Object> getAllEntity(String role, String format,
+			String sql, List<String> keyFields) throws QueryException {
+		Connection connection = null;
+		Map<String, Object> map = null;
+		try {
+			connection = ds.getConnection();
+			Map<String, Object> entityMap = query(connection, sql, keyFields,
+					"$mul$entity", role, format);
+			if (entityMap != null) {
+				map = rdapConformance(map);
+				map.putAll(entityMap);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new QueryException(e);
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException se) {
+				}
+			}
+		}
+		return map;
+	}
+
+	@Override
+	public Map<String, Object> getAll(String role, String format)
+			throws QueryException {
+		Map<String, Object> allDnrEntity = getAllDNREntity(role, format);
+		Map<String, Object> allRirEntity = this.getAllRIREntity(role, format);
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.putAll(allDnrEntity);
+		result.putAll(allRirEntity);
+		return result;
 	}
 
 	@Override

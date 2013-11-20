@@ -2,8 +2,12 @@ package com.cnnic.whois.dao.cache;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
+import com.cnnic.whois.execption.QueryException;
+import com.cnnic.whois.util.DataFormat;
 
 public class EntityQueryDao extends AbstractCacheQueryDao {
 	@Override
@@ -32,6 +36,30 @@ public class EntityQueryDao extends AbstractCacheQueryDao {
 
 	@Override
 	protected void initCache() {
-		super.initCache();
+		try {
+			Map<String, Object> valuesMap = dbQueryExecutor.getAll(
+					QueryType.ENTITY, "root", "application/json");
+			if (null == valuesMap) {
+				return;
+			}
+			if (null == valuesMap.get("$mul$entity")) {
+				setCache(valuesMap);
+				return;
+			}
+			Object[] values = (Object[]) valuesMap.get("$mul$entity");
+			for (Object entity : values) {
+				Map<String, Object> entityMap = (Map<String, Object>) entity;
+				setCache(entityMap);
+			}
+		} catch (QueryException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void setCache(Map<String, Object> entityMap) {
+		String key = super.getCacheKey(new QueryParam(entityMap
+				.get("handle").toString()));
+		String jsonStr = DataFormat.getJsonObject(entityMap).toString();
+		cache.set(key, jsonStr);
 	}
 }

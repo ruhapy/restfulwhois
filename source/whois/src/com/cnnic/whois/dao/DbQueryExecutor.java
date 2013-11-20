@@ -83,11 +83,21 @@ public class DbQueryExecutor implements QueryExecutor {
 
 	@Override
 	public Map<String, Object> query(QueryType queryType, QueryParam param,
-			String role, String format,PageBean... pageParam) throws QueryException,
-			RedirectExecption {
+			String role, String format, PageBean... pageParam)
+			throws QueryException, RedirectExecption {
 		for (AbstractDbQueryDao queryDao : dbQueryDaos) {
 			if (queryDao.supportType(queryType)) {
-				return queryDao.query(param, role, format,pageParam);
+				return queryDao.query(param, role, format, pageParam);
+			}
+		}
+		return null;
+	}
+
+	public Map<String, Object> getAll(QueryType queryType, String role,
+			String format) throws QueryException {
+		for (AbstractDbQueryDao queryDao : dbQueryDaos) {
+			if (queryDao.supportType(queryType)) {
+				return queryDao.getAll(role, format);
 			}
 		}
 		return null;
