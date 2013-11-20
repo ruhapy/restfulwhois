@@ -15,28 +15,19 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.index.SearchResult;
 import com.cnnic.whois.util.WhoisUtil;
 
-public class FuzzyNsQueryDao extends AbstractSearchQueryDao {
+public class SearchNsQueryDao extends AbstractSearchQueryDao {
 
-	public FuzzyNsQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
+	public SearchNsQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
 
-	// public static AbstractDbQueryDao getQueryDAO() {
-	// return queryDAO;
-	// }
-
 	@Override
 	public Map<String, Object> query(QueryParam param, String role, String format,
-			PageBean... page) throws QueryException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Map<String, Object> fuzzyQueryNameServer(String queryInfo,
-			String role, String format, PageBean page) throws QueryException {
+			PageBean... pageParam) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
-		SearchCondition searchCondition = new SearchCondition(queryInfo);
+		SearchCondition searchCondition = new SearchCondition(param.getQ());
+		PageBean page = pageParam[0];
 		int startPage = page.getCurrentPage() - 1;
 		startPage = startPage >= 0 ? startPage : 0;
 		int start = startPage * page.getMaxRecords();
@@ -48,7 +39,7 @@ public class FuzzyNsQueryDao extends AbstractSearchQueryDao {
 		try {
 			connection = ds.getConnection();
 			String selectSql = WhoisUtil.SELECT_LIST_NAMESREVER + "'"
-					+ queryInfo + "'";
+					+ param.getQ() + "'";
 			Map<String, Object> nsMap = fuzzyQuery(connection, result,
 					selectSql, "$mul$nameServer", role, format);
 			if (nsMap != null) {
@@ -85,11 +76,11 @@ public class FuzzyNsQueryDao extends AbstractSearchQueryDao {
 
 	@Override
 	public QueryType getQueryType() {
-		return QueryType.FUZZYNS;
+		return QueryType.SEARCHNS;
 	}
 
 	@Override
 	public boolean supportType(QueryType queryType) {
-		return QueryType.FUZZYNS.equals(queryType);
+		return QueryType.SEARCHNS.equals(queryType);
 	}
 }
