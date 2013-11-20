@@ -2,21 +2,26 @@ package com.cnnic.whois.dao.cache;
 
 import java.util.List;
 import java.util.Map;
+
 import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.StringUtils;
+
 import redis.clients.jedis.Jedis;
+
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
-import com.cnnic.whois.dao.query.QueryDao;
+import com.cnnic.whois.dao.db.DbQueryExecutor;
+import com.cnnic.whois.dao.db.QueryDao;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.util.DataFormat;
 import com.cnnic.whois.util.WhoisProperties;
 
 public abstract class AbstractCacheQueryDao implements QueryDao {
-
+	protected static DbQueryExecutor dbQueryExecutor = DbQueryExecutor.getExecutor();
 	@SuppressWarnings("unused")
-	private static Jedis cache = new Jedis(WhoisProperties.getCacheIp(),
+	protected static Jedis cache = new Jedis(WhoisProperties.getCacheIp(),
 			Integer.valueOf(WhoisProperties.getCachePort()));
 
 	public AbstractCacheQueryDao() {
