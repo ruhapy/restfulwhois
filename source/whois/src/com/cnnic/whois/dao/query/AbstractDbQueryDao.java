@@ -14,6 +14,7 @@ import javax.sql.DataSource;
 
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryType;
+import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.DomainIndexService;
 import com.cnnic.whois.service.EntityIndexService;
 import com.cnnic.whois.service.NameServerIndexService;
@@ -34,6 +35,11 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 	public abstract Object querySpecificJoinTable(String key, String handle,
 			String role, Connection connection, String format)
 			throws SQLException ;
+	@Override
+	public Map<String, Object> getAll(String role, String format)
+			throws QueryException {
+		throw new UnsupportedOperationException();
+	}
 	/**
 	 * Connect to the datasource in the constructor
 	 * 
