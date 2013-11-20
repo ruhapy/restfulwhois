@@ -12,13 +12,14 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class DnrDomainQueryDao extends AbstractDomainQueryDao {
+	public static final String GET_ALL_DNRDOMAIN = "select * from DNRDomain";
 
 	public DnrDomainQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
 
-	public Map<String, Object> query(QueryParam param, String role, String format,
-			PageBean... page) throws QueryException {
+	public Map<String, Object> query(QueryParam param, String role,
+			String format, PageBean... page) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
@@ -27,7 +28,8 @@ public class DnrDomainQueryDao extends AbstractDomainQueryDao {
 			List<String> keyFields = permissionCache
 					.getDNRDomainKeyFileds(role);
 			Map<String, Object> domainMap = query(
-					WhoisUtil.SELECT_LIST_DNRDOMAIN, keyFields, param.getQ(), role, format);
+					WhoisUtil.SELECT_LIST_DNRDOMAIN, keyFields, param.getQ(),
+					role, format);
 			if (domainMap != null) {
 				map = rdapConformance(map);
 				map.putAll(domainMap);
@@ -45,13 +47,21 @@ public class DnrDomainQueryDao extends AbstractDomainQueryDao {
 		}
 		return map;
 	}
-	 @Override
-	 public boolean supportType(QueryType queryType) {
-	 return QueryType.DNRDOMAIN.equals(queryType);
-	 }
-	
-	 @Override
-	 public QueryType getQueryType() {
-	 return QueryType.DNRDOMAIN;
-	 }
+
+	@Override
+	public Map<String, Object> getAll(String role, String format)
+			throws QueryException {
+		List<String> keyFields = permissionCache.getDNRDomainKeyFileds(role);
+		return super.queryBySql(GET_ALL_DNRDOMAIN, keyFields, role, format);
+	}
+
+	@Override
+	public boolean supportType(QueryType queryType) {
+		return QueryType.DNRDOMAIN.equals(queryType);
+	}
+
+	@Override
+	public QueryType getQueryType() {
+		return QueryType.DNRDOMAIN;
+	}
 }

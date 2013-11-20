@@ -8,7 +8,6 @@ import java.util.Map;
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
-import com.cnnic.whois.util.WhoisUtil;
 
 public abstract class AbstractDomainQueryDao extends AbstractDbQueryDao {
 	public AbstractDomainQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
@@ -19,52 +18,19 @@ public abstract class AbstractDomainQueryDao extends AbstractDbQueryDao {
 
 	public Map<String, Object> query(String listSql, List<String> keyFields,
 			String q, String role, String format) throws QueryException {
-		Connection connection = null;
-		Map<String, Object> map = null;
-
-		try {
-			connection = ds.getConnection();
-			String selectSql = listSql + "'" + q + "'";
-			Map<String, Object> domainMap = query(connection, selectSql,
-					keyFields, "$mul$domains", role, format);
-			if (domainMap != null) {
-				map = rdapConformance(map);
-				map.putAll(domainMap);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new QueryException(e);
-		} finally {
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException se) {
-				}
-			}
-		}
-		return map;
+		String sql = listSql + "'" + q + "'";
+		return this.queryBySql(sql, keyFields, role, format);
 	}
 
-	/**
-	 * Connect to the database query RIRDoamin information
-	 * 
-	 * @param queryInfo
-	 * @param role
-	 * @return map collection
-	 * @throws QueryException
-	 */
-	public Map<String, Object> queryRIRDoamin(String queryInfo, String role,
-			String format) throws QueryException {
+	protected Map<String, Object> queryBySql(String sql, List<String> keyFields,
+			String role, String format) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
 		try {
 			connection = ds.getConnection();
-			String selectSql = WhoisUtil.SELECT_LIST_RIRDOMAIN + "'"
-					+ queryInfo + "'";
-			Map<String, Object> domainMap = query(connection, selectSql,
-					permissionCache.getRIRDomainKeyFileds(role),
-					"$mul$domains", role, format);
+			Map<String, Object> domainMap = query(connection, sql, keyFields,
+					QUERY_KEY, role, format);
 			if (domainMap != null) {
 				map = rdapConformance(map);
 				map.putAll(domainMap);
@@ -95,5 +61,4 @@ public abstract class AbstractDomainQueryDao extends AbstractDbQueryDao {
 			throws SQLException {
 		throw new UnsupportedOperationException();
 	}
-
 }
