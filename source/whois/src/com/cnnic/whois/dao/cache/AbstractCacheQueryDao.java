@@ -11,8 +11,8 @@ import redis.clients.jedis.Jedis;
 
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
-import com.cnnic.whois.dao.DbQueryExecutor;
-import com.cnnic.whois.dao.query.QueryDao;
+import com.cnnic.whois.dao.db.DbQueryExecutor;
+import com.cnnic.whois.dao.db.QueryDao;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.util.DataFormat;
