@@ -25,6 +25,7 @@ public class DbQueryExecutor implements QueryExecutor {
 		dbQueryDaos.add(new DelegationKeysQueryDao(dbQueryDaos));
 		dbQueryDaos.add(new DnrDomainQueryDao(dbQueryDaos));
 		dbQueryDaos.add(new DnrEntityQueryDao(dbQueryDaos));
+		dbQueryDaos.add(new AbstractDomainQueryDao(dbQueryDaos){});//for getAll
 		dbQueryDaos.add(new DsDataQueryDao(dbQueryDaos));
 		dbQueryDaos.add(new EntityQueryDao(dbQueryDaos));
 		dbQueryDaos.add(new ErrorMsgQueryDao(dbQueryDaos));

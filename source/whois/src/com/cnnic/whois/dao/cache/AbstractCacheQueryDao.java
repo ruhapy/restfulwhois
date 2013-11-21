@@ -20,7 +20,6 @@ import com.cnnic.whois.util.WhoisProperties;
 
 public abstract class AbstractCacheQueryDao implements QueryDao {
 	protected static DbQueryExecutor dbQueryExecutor = DbQueryExecutor.getExecutor();
-	@SuppressWarnings("unused")
 	protected static Jedis cache = new Jedis(WhoisProperties.getCacheIp(),
 			Integer.valueOf(WhoisProperties.getCachePort()));
 
@@ -69,5 +68,9 @@ public abstract class AbstractCacheQueryDao implements QueryDao {
 	public Map<String, Object> getAll(String role, String format)
 			throws QueryException {
 		throw new UnsupportedOperationException();
+	}
+	protected void setCache(String key,Map<String, Object> entityMap) {
+		String jsonStr = DataFormat.getJsonObject(entityMap).toString();
+		cache.set(key, jsonStr);
 	}
 }

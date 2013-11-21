@@ -6,14 +6,14 @@ import java.util.Map;
 
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
+import com.cnnic.whois.dao.db.AbstractDomainQueryDao;
 import com.cnnic.whois.execption.QueryException;
-import com.cnnic.whois.util.DataFormat;
 
-public class EntityQueryDao extends AbstractCacheQueryDao {
+public class DomainQueryDao extends AbstractCacheQueryDao {
 	@Override
 	protected List<String> getCacheKeySplits(QueryParam param) {
 		List<String> keySplits = new ArrayList<String>();
-		keySplits.add(QueryType.ENTITY.toString());
+		keySplits.add(QueryType.DOMAIN.toString());
 		keySplits.add("handle");
 		keySplits.add(param.getQ());
 		return keySplits;
@@ -21,12 +21,12 @@ public class EntityQueryDao extends AbstractCacheQueryDao {
 
 	@Override
 	public QueryType getQueryType() {
-		return QueryType.ENTITY;
+		return QueryType.DOMAIN;
 	}
 
 	@Override
 	public boolean supportType(QueryType queryType) {
-		return QueryType.ENTITY.equals(queryType);
+		return QueryType.DOMAIN.equals(queryType);
 	}
 
 	@Override
@@ -38,15 +38,16 @@ public class EntityQueryDao extends AbstractCacheQueryDao {
 	protected void initCache() {
 		try {
 			Map<String, Object> valuesMap = dbQueryExecutor.getAll(
-					QueryType.ENTITY, "root", "application/json");
+					QueryType.DOMAIN, "root", "application/json");
 			if (null == valuesMap) {
 				return;
 			}
-			if (null == valuesMap.get("$mul$entity")) {
+			if (null == valuesMap.get(AbstractDomainQueryDao.QUERY_KEY)) {
 				setCache(valuesMap);
 				return;
 			}
-			Object[] values = (Object[]) valuesMap.get("$mul$entity");
+			Object[] values = (Object[]) valuesMap
+					.get(AbstractDomainQueryDao.QUERY_KEY);
 			for (Object entity : values) {
 				Map<String, Object> entityMap = (Map<String, Object>) entity;
 				setCache(entityMap);
@@ -55,7 +56,6 @@ public class EntityQueryDao extends AbstractCacheQueryDao {
 			e.printStackTrace();
 		}
 	}
-
 	private void setCache(Map<String, Object> entityMap) {
 		String key = super.getCacheKey(new QueryParam(entityMap
 				.get("handle").toString()));

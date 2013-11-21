@@ -2,19 +2,32 @@ package com.cnnic.whois.dao.db;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryJoinType;
+import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
+import com.cnnic.whois.execption.RedirectExecption;
 
 public abstract class AbstractDomainQueryDao extends AbstractDbQueryDao {
+	public static final String GET_ALL_DNRDOMAIN = "select * from DNRDomain";
+	public static final String GET_ALL_RIRDOMAIN = "select * from RIRDomain";
+	public static final String QUERY_KEY = "$mul$domains";
+	
 	public AbstractDomainQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
 
-	private static final String QUERY_KEY = "$mul$domains";
+	@Override
+	public Map<String, Object> query(QueryParam param, String role,
+			String format, PageBean... page) throws QueryException,
+			RedirectExecption {
+		throw new UnsupportedOperationException();
+	}
 
 	public Map<String, Object> query(String listSql, List<String> keyFields,
 			String q, String role, String format) throws QueryException {
@@ -47,6 +60,30 @@ public abstract class AbstractDomainQueryDao extends AbstractDbQueryDao {
 			}
 		}
 		return map;
+	}
+
+	@Override
+	public Map<String, Object> getAll(String role, String format)
+			throws QueryException {
+		List<String> dnrKeyFields = permissionCache.getDNRDomainKeyFileds(role);
+		Map<String, Object> dnrDomains = queryBySql(GET_ALL_DNRDOMAIN, dnrKeyFields, role, format);
+		List<String> rirKeyFields = permissionCache.getRIRDomainKeyFileds(role);
+		Map<String, Object> rirDomains = queryBySql(GET_ALL_RIRDOMAIN, rirKeyFields, role, format);
+		Map<String, Object> result = new HashMap<String, Object>();
+		//TODO:handle size 1
+		result.putAll(dnrDomains);
+		result.putAll(rirDomains);
+		return result;
+	}
+	
+	@Override
+	public QueryType getQueryType() {
+		return QueryType.DOMAIN;
+	}
+	
+	@Override
+	public boolean supportType(QueryType queryType) {
+		return QueryType.DOMAIN.equals(queryType);
 	}
 
 	@Override
