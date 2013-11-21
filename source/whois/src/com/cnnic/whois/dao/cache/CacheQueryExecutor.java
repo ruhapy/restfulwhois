@@ -28,6 +28,7 @@ public class CacheQueryExecutor implements QueryExecutor {
 //		dbQueryDaos.add(new DnrEntityQueryDao(dbQueryDaos));
 //		dbQueryDaos.add(new DsDataQueryDao(dbQueryDaos));
 		cacheQueryDaos.add(new EntityQueryDao());
+		cacheQueryDaos.add(new DomainQueryDao());
 //		dbQueryDaos.add(new ErrorMsgQueryDao(dbQueryDaos));
 //		dbQueryDaos.add(new EventsQueryDao(dbQueryDaos));
 //		dbQueryDaos.add(new SearchDomainQueryDao(dbQueryDaos));

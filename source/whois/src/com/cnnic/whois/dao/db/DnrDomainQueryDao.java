@@ -12,7 +12,6 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class DnrDomainQueryDao extends AbstractDomainQueryDao {
-	public static final String GET_ALL_DNRDOMAIN = "select * from DNRDomain";
 
 	public DnrDomainQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
@@ -46,13 +45,6 @@ public class DnrDomainQueryDao extends AbstractDomainQueryDao {
 			}
 		}
 		return map;
-	}
-
-	@Override
-	public Map<String, Object> getAll(String role, String format)
-			throws QueryException {
-		List<String> keyFields = permissionCache.getDNRDomainKeyFileds(role);
-		return super.queryBySql(GET_ALL_DNRDOMAIN, keyFields, role, format);
 	}
 
 	@Override
