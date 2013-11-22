@@ -13,6 +13,9 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class DsDataQueryDao extends AbstractDbQueryDao {
+	public static final String GET_ALL_DSDATA = "select * from dsData";
+	private static final String QUERY_KEY = "$mul$dsData";
+
 	public DsDataQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
@@ -54,6 +57,29 @@ public class DsDataQueryDao extends AbstractDbQueryDao {
 			fliedName = WhoisUtil.HANDLE;
 		}
 		return fliedName;
+	}
+
+	@Override
+	public Map<String, Object> getAll(String role) throws QueryException {
+		Connection connection = null;
+		Map<String, Object> map = null;
+		try {
+			connection = ds.getConnection();
+			map = query(connection, GET_ALL_DSDATA,
+					permissionCache.getDsDataMapKeyFileds(role), QUERY_KEY,
+					role);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new QueryException(e);
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException se) {
+				}
+			}
+		}
+		return map;
 	}
 
 	@Override

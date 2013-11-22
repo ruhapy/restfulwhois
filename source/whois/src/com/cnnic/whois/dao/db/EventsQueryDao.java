@@ -13,6 +13,8 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class EventsQueryDao extends AbstractDbQueryDao {
+	public static final String GET_ALL_EVENTS = "select * from events ";
+
 	public EventsQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
@@ -28,6 +30,29 @@ public class EventsQueryDao extends AbstractDbQueryDao {
 			String selectSql = WhoisUtil.SELECT_LIST_EVENTS + "'"
 					+ param.getQ() + "'";
 			map = query(connection, selectSql,
+					permissionCache.getEventsKeyFileds(role), "$mul$events",
+					role);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new QueryException(e);
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException se) {
+				}
+			}
+		}
+		return map;
+	}
+
+	@Override
+	public Map<String, Object> getAll(String role) throws QueryException {
+		Connection connection = null;
+		Map<String, Object> map = null;
+		try {
+			connection = ds.getConnection();
+			map = query(connection, GET_ALL_EVENTS,
 					permissionCache.getEventsKeyFileds(role), "$mul$events",
 					role);
 		} catch (SQLException e) {

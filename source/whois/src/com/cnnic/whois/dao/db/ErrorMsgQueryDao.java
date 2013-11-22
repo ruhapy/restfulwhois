@@ -13,6 +13,8 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class ErrorMsgQueryDao extends AbstractDbQueryDao {
+	public static final String GET_ALL_ERRORMESSAGE = "select * from errormessage ";
+
 	public ErrorMsgQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
@@ -56,6 +58,34 @@ public class ErrorMsgQueryDao extends AbstractDbQueryDao {
 			fliedName = WhoisUtil.HANDLE;
 		}
 		return fliedName;
+	}
+
+	@Override
+	public Map<String, Object> getAll(String role) throws QueryException {
+		Connection connection = null;
+		Map<String, Object> map = null;
+		try {
+			connection = ds.getConnection();
+			Map<String, Object> errorMessageMap = query(connection,
+					GET_ALL_ERRORMESSAGE,
+					permissionCache.getErrorMessageKeyFileds(role),
+					"$mul$errormessage", role);
+			if (errorMessageMap != null) {
+				map = rdapConformance(map);
+				map.putAll(errorMessageMap);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new QueryException(e);
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException se) {
+				}
+			}
+		}
+		return map;
 	}
 
 	@Override
