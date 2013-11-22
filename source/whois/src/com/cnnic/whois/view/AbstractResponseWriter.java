@@ -64,4 +64,13 @@ public abstract class AbstractResponseWriter implements ResponseWriter {
 		}
 		return result;
 	}
+
+	protected String formatKeyToCamelCase(String keyName) {
+		String[] names = keyName.split("_");
+		keyName = names[0].toLowerCase();
+		for (int i = 1; i < names.length; i++) {
+			keyName += names[i];
+		}
+		return keyName;
+	}
 }

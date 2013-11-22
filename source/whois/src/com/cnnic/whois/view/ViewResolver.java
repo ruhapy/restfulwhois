@@ -21,9 +21,11 @@ public class ViewResolver {
 	private void init() {
 		responseWriters.add(new JsonResponseWriter());
 		responseWriters.add(new HtmlResponseWriter());
+		responseWriters.add(new XmlResponseWriter());
 	}
 
-	public Map<String, Object> format(Map<String, Object> map, FormatType formatType) {
+	public Map<String, Object> format(Map<String, Object> map,
+			FormatType formatType) {
 		for (ResponseWriter writer : responseWriters) {
 			if (writer.support(formatType)) {
 				return writer.format(map);

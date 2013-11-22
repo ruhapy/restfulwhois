@@ -5,8 +5,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class JsonResponseWriter extends AbstractResponseWriter {
-	private static JsonResponseWriter writer = new JsonResponseWriter();
+public class TextResponseWriter extends AbstractResponseWriter {
+	private static TextResponseWriter writer = new TextResponseWriter();
 
 	public static ResponseWriter getWriter() {
 		return writer;
@@ -14,7 +14,7 @@ public class JsonResponseWriter extends AbstractResponseWriter {
 
 	@Override
 	public String formatKey(String keyName) {
-		return formatKeyToCamelCase(keyName);
+		return keyName;
 	}
 
 	@Override
@@ -25,6 +25,6 @@ public class JsonResponseWriter extends AbstractResponseWriter {
 
 	@Override
 	public boolean support(FormatType formatType) {
-		return formatType.isJsonFormat();
+		return FormatType.TEXTPLAIN.equals(formatType);
 	}
 }

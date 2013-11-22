@@ -5,8 +5,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class JsonResponseWriter extends AbstractResponseWriter {
-	private static JsonResponseWriter writer = new JsonResponseWriter();
+public class XmlResponseWriter extends AbstractResponseWriter {
+	private static XmlResponseWriter writer = new XmlResponseWriter();
 
 	public static ResponseWriter getWriter() {
 		return writer;
@@ -25,6 +25,6 @@ public class JsonResponseWriter extends AbstractResponseWriter {
 
 	@Override
 	public boolean support(FormatType formatType) {
-		return formatType.isJsonFormat();
+		return FormatType.XML.equals(formatType);
 	}
 }
