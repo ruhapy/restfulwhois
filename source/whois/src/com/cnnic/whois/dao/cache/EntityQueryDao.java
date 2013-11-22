@@ -7,7 +7,6 @@ import java.util.Map;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
-import com.cnnic.whois.util.DataFormat;
 
 public class EntityQueryDao extends AbstractCacheQueryDao {
 	@Override

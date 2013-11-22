@@ -1,32 +1,25 @@
 package com.cnnic.whois.dao.cache;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
-import com.cnnic.whois.dao.db.AbstractDomainQueryDao;
 import com.cnnic.whois.execption.QueryException;
 
-public class DomainQueryDao extends AbstractCacheQueryDao {
+public class DsDataQueryDao extends AbstractCacheQueryDao {
 	@Override
 	protected List<String> getCacheKeySplits(QueryParam param) {
-		List<String> keySplits = new ArrayList<String>();
-		keySplits.add(QueryType.DOMAIN.toString());
-		keySplits.add("ldhName");
-		keySplits.add(param.getQ());
-		return keySplits;
+		return super.getHandleCacheKeySplits(param);
 	}
 
 	@Override
 	public QueryType getQueryType() {
-		return QueryType.DOMAIN;
+		return QueryType.DSDATA;
 	}
 
 	@Override
 	public boolean supportType(QueryType queryType) {
-		return QueryType.DOMAIN.equals(queryType);
+		return QueryType.DSDATA.equals(queryType);
 	}
 
 	@Override
@@ -38,16 +31,15 @@ public class DomainQueryDao extends AbstractCacheQueryDao {
 	protected void initCache() {
 		try {
 			Map<String, Object> valuesMap = dbQueryExecutor.getAll(
-					QueryType.DOMAIN, "root");
+					QueryType.DSDATA, "root");
 			if (null == valuesMap) {
 				return;
 			}
-			if (null == valuesMap.get(AbstractDomainQueryDao.QUERY_KEY)) {
+			if (null == valuesMap.get("$mul$dsData")) {
 				setCache(valuesMap);
 				return;
 			}
-			Object[] values = (Object[]) valuesMap
-					.get(AbstractDomainQueryDao.QUERY_KEY);
+			Object[] values = (Object[]) valuesMap.get("$mul$dsData");
 			for (Object entity : values) {
 				Map<String, Object> entityMap = (Map<String, Object>) entity;
 				setCache(entityMap);
@@ -58,7 +50,7 @@ public class DomainQueryDao extends AbstractCacheQueryDao {
 	}
 
 	private void setCache(Map<String, Object> entityMap) {
-		String key = super.getCacheKey(new QueryParam(entityMap.get("Ldh_Name")
+		String key = super.getCacheKey(new QueryParam(entityMap.get("DsDataID")
 				.toString()));
 		super.setCache(key, entityMap);
 	}
