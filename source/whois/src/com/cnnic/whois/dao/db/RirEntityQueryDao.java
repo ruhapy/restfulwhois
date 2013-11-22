@@ -35,11 +35,10 @@ public class RirEntityQueryDao extends EntityQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection, String format)
-			throws SQLException {
+			String role, Connection connection) throws SQLException {
 		return querySpecificJoinTable(key, handle,
 				WhoisUtil.SELECT_JOIN_LIST_JOINRIRENTITY, role, connection,
-				permissionCache.getRIREntityKeyFileds(role), format);
+				permissionCache.getRIREntityKeyFileds(role));
 	}
 
 	public static boolean joinRirEntity(QueryType queryType) {

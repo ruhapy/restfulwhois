@@ -20,7 +20,7 @@ public class IpQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role, String format,
+	public Map<String, Object> query(QueryParam param, String role,
 			PageBean... page) throws QueryException {
 		IpQueryParam ipParam = (IpQueryParam) param;
 		long startHighAddr = ipParam.getStartHighAddr();
@@ -58,20 +58,16 @@ public class IpQueryDao extends AbstractDbQueryDao {
 			}
 
 			Map<String, Object> ipMap = query(connection, selectSql,
-					permissionCache.getIPKeyFileds(role), "$mul$IP", role,
-					format);
+					permissionCache.getIPKeyFileds(role), "$mul$IP", role);
 			if (ipMap != null) {
 				map = rdapConformance(map);
 				map.putAll(ipMap);
 			}
 			if (map != null) {
-				map.remove(WhoisUtil.getDisplayKeyName("StartLowAddress",
-						format));
-				map.remove(WhoisUtil.getDisplayKeyName("EndLowAddress", format));
-				map.remove(WhoisUtil.getDisplayKeyName("StartHighAddress",
-						format));
-				map.remove(WhoisUtil
-						.getDisplayKeyName("EndHighAddress", format));
+				map.remove("StartLowAddress");
+				map.remove("EndLowAddress");
+				map.remove("StartHighAddress");
+				map.remove("EndHighAddress");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -150,8 +146,7 @@ public class IpQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection, String format)
-			throws SQLException {
+			String role, Connection connection) throws SQLException {
 		throw new UnsupportedOperationException();
 	}
 }

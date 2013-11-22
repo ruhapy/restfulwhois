@@ -16,7 +16,7 @@ import com.cnnic.whois.util.WhoisUtil;
 
 public abstract class AbstractSearchQueryDao extends AbstractDbQueryDao{
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection, String format)
+			String role, Connection connection)
 			throws SQLException{
 		throw new UnsupportedOperationException();
 	}
@@ -40,7 +40,7 @@ public abstract class AbstractSearchQueryDao extends AbstractDbQueryDao{
 	}
 	
 	protected Map<String, Object> fuzzyQuery(Connection connection, SearchResult<? extends Index> domains,
-			String selectSql,String keyName, String role, String format)
+			String selectSql,String keyName, String role)
 			throws SQLException {
 			List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 			for(Index index:domains.getResultList()){
@@ -49,36 +49,37 @@ public abstract class AbstractSearchQueryDao extends AbstractDbQueryDao{
 				Map<String, Object> map = new LinkedHashMap<String, Object>();
 				for (int i = 0; i < keyFlieds.size(); i++) {
 					Object resultsInfo = null;
-					if (keyFlieds.get(i).startsWith(WhoisUtil.ARRAYFILEDPRX)) {
-						String key = keyFlieds.get(i).substring(WhoisUtil.ARRAYFILEDPRX.length());
+					String field = keyFlieds.get(i);
+					if (field.startsWith(WhoisUtil.ARRAYFILEDPRX)) {
+						String key = field.substring(WhoisUtil.ARRAYFILEDPRX.length());
 						resultsInfo = index.getPropValue(key);
 						String[] values = null;
 						if (resultsInfo != null) {
 							values = resultsInfo.toString().split(WhoisUtil.VALUEARRAYPRX);
 						}
-						map.put(WhoisUtil.getDisplayKeyName(key, format), values);
-					} else if (keyFlieds.get(i).startsWith(WhoisUtil.EXTENDPRX)) {
-						resultsInfo = index.getPropValue(keyFlieds.get(i));
-						map.put(keyFlieds.get(i).substring(WhoisUtil.EXTENDPRX.length()), resultsInfo);
-					} else if (keyFlieds.get(i).startsWith(WhoisUtil.JOINFILEDPRX)) {
-						String key = keyFlieds.get(i).substring(WhoisUtil.JOINFILEDPRX.length());
-						Object value = queryJoinTable(keyFlieds.get(i),
+						map.put(key, values);
+					} else if (field.startsWith(WhoisUtil.EXTENDPRX)) {
+						resultsInfo = index.getPropValue(field);
+						map.put(field.substring(WhoisUtil.EXTENDPRX.length()), resultsInfo);
+					} else if (field.startsWith(WhoisUtil.JOINFILEDPRX)) {
+						String key = field.substring(WhoisUtil.JOINFILEDPRX.length());
+						Object value = queryJoinTable(field,
 								index.getHandle(), selectSql, role,
-								connection, format);
+								connection);
 						if (value != null)
 							map.put(key, value);
 					} else {
-						resultsInfo = index.getPropValue(keyFlieds.get(i));
+						resultsInfo = index.getPropValue(field);
 						resultsInfo = resultsInfo==null?"":resultsInfo;
 						CharSequence id = "id";
-						if(!keyName.equals(WhoisUtil.JOINPUBLICIDS) && WhoisUtil.getDisplayKeyName(keyFlieds.get(i), format).substring(keyFlieds.get(i).length() - 2).equals(id) && !format.equals("application/html")){
-							continue;
-						}else{
-							map.put(WhoisUtil.getDisplayKeyName(keyFlieds.get(i), format), resultsInfo);//a different format have different name;
-						}
+//						if(!keyName.equals(WhoisUtil.JOINPUBLICIDS) && field.substring(field.length() - 2).equals(id) && !format.equals("application/html")){
+//							continue;
+//						}else{
+						map.put(field, resultsInfo);//a different format have different name;
+//						}
 					}
 				}
-				map = postHandleFieldsFuzzy(keyName, format, map);
+				map = postHandleFieldsFuzzy(keyName, map);
 				list.add(map);
 			}
 			if (list.size() == 0){
@@ -94,20 +95,20 @@ public abstract class AbstractSearchQueryDao extends AbstractDbQueryDao{
 	}
 
 	protected Map<String, Object> postHandleFieldsFuzzy(String keyName,
-			String format, Map<String, Object> map) {
+			 Map<String, Object> map) {
 		if (keyName.equals("$mul$nameServer") || keyName.equals("$join$nameServer")){
 			Map<String, Object> map_IP = new LinkedHashMap<String, Object>();
-			Object IPAddressArray = map.get(WhoisUtil.getDisplayKeyName("IPV4_Addresses", format));
+			Object IPAddressArray = map.get("IPV4_Addresses");
 			map_IP.put(WhoisUtil.IPV4PREFIX, IPAddressArray);
-			IPAddressArray = map.get(WhoisUtil.getDisplayKeyName("IPV6_Addresses", format));
+			IPAddressArray = map.get("IPV6_Addresses");
 			map_IP.put(WhoisUtil.IPV6PREFIX, IPAddressArray);
 			map.put(WhoisUtil.IPPREFIX, map_IP);
-			map.remove(WhoisUtil.getDisplayKeyName("IPV4_Addresses", format));
-			map.remove(WhoisUtil.getDisplayKeyName("IPV6_Addresses", format));
+			map.remove("IPV4_Addresses");
+			map.remove("IPV6_Addresses");
 		}
 		//vcard format
 		if(keyName.equals(WhoisUtil.MULTIPRXENTITY)){
-			map = WhoisUtil.toVCard(map, format);
+			map = WhoisUtil.toVCard(map);
 		}
 		return map;
 	}

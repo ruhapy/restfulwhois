@@ -19,7 +19,7 @@ public class HelpQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Map<String, Object> query(QueryParam param, String role,
-			String format, PageBean... page) throws QueryException {
+			PageBean... page) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 		try {
@@ -27,7 +27,7 @@ public class HelpQueryDao extends AbstractDbQueryDao {
 			String selectSql = WhoisUtil.SELECT_HELP + "'" + param.getQ() + "'";
 			Map<String, Object> helpMap = query(connection, selectSql,
 					permissionCache.getHelpKeyFileds(role), "$mul$notices",
-					role, format);
+					role);
 			if (helpMap != null) {
 				map = rdapConformance(map);
 				map.putAll(helpMap);
@@ -64,8 +64,7 @@ public class HelpQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection, String format)
-			throws SQLException {
+			String role, Connection connection) throws SQLException {
 		throw new UnsupportedOperationException();
 	}
 }

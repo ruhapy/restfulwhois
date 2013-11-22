@@ -32,10 +32,12 @@ public interface QueryDao {
 	 * @param page
 	 * @return
 	 * @throws QueryException
-	 * @throws RedirectExecption 
+	 * @throws RedirectExecption
 	 */
 	// TODO:remove format and role
-	Map<String, Object> query(QueryParam param, String role, String format,
-			PageBean... page) throws QueryException, RedirectExecption;
-	Map<String, Object> getAll(String role, String format) throws QueryException;
+	Map<String, Object> query(QueryParam param, String role, PageBean... page)
+			throws QueryException, RedirectExecption;
+
+	Map<String, Object> getAll(String role, String format)
+			throws QueryException;
 }

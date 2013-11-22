@@ -16,20 +16,20 @@ public class VariantsQueryDao extends AbstractDbQueryDao {
 	public VariantsQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
-	
+
 	@Override
-	public Map<String, Object> query(QueryParam param, String role, String format,
+	public Map<String, Object> query(QueryParam param, String role,
 			PageBean... page) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
 		try {
 			connection = ds.getConnection();
-			String selectSql = WhoisUtil.SELECT_LIST_VARIANTS + "'" + param.getQ()
-					+ "'";
+			String selectSql = WhoisUtil.SELECT_LIST_VARIANTS + "'"
+					+ param.getQ() + "'";
 			map = query(connection, selectSql,
 					permissionCache.getVariantsKeyFileds(role),
-					"$mul$variants", role, format);
+					"$mul$variants", role);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -48,24 +48,23 @@ public class VariantsQueryDao extends AbstractDbQueryDao {
 	public QueryType getQueryType() {
 		return QueryType.VARIANTS;
 	}
-	
+
 	@Override
 	public boolean supportType(QueryType queryType) {
 		return QueryType.VARIANTS.equals(queryType);
 	}
-	
+
 	@Override
 	protected boolean supportJoinType(QueryType queryType,
 			QueryJoinType queryJoinType) {
 		return QueryJoinType.VARIANTS.equals(queryJoinType);
 	}
-	
+
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection, String format)
-			throws SQLException {
+			String role, Connection connection) throws SQLException {
 		return querySpecificJoinTable(key, handle,
 				WhoisUtil.SELECT_JOIN_LIST_VARIANTS, role, connection,
-				permissionCache.getVariantsKeyFileds(role), format);
+				permissionCache.getVariantsKeyFileds(role));
 	}
 }
