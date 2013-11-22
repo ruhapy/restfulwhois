@@ -38,7 +38,7 @@ public class DomainQueryDao extends AbstractCacheQueryDao {
 	protected void initCache() {
 		try {
 			Map<String, Object> valuesMap = dbQueryExecutor.getAll(
-					QueryType.DOMAIN, "root", "application/json");
+					QueryType.DOMAIN, "root");
 			if (null == valuesMap) {
 				return;
 			}
@@ -56,9 +56,10 @@ public class DomainQueryDao extends AbstractCacheQueryDao {
 			e.printStackTrace();
 		}
 	}
+
 	private void setCache(Map<String, Object> entityMap) {
-		String key = super.getCacheKey(new QueryParam(entityMap
-				.get("handle").toString()));
+		String key = super.getCacheKey(new QueryParam(entityMap.get("handle")
+				.toString()));
 		super.setCache(key, entityMap);
 	}
 }

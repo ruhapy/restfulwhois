@@ -38,7 +38,7 @@ public class EntityQueryDao extends AbstractCacheQueryDao {
 	protected void initCache() {
 		try {
 			Map<String, Object> valuesMap = dbQueryExecutor.getAll(
-					QueryType.ENTITY, "root", "application/json");
+					QueryType.ENTITY, "root");
 			if (null == valuesMap) {
 				return;
 			}
@@ -57,8 +57,8 @@ public class EntityQueryDao extends AbstractCacheQueryDao {
 	}
 
 	private void setCache(Map<String, Object> entityMap) {
-		String key = super.getCacheKey(new QueryParam(entityMap
-				.get("handle").toString()));
+		String key = super.getCacheKey(new QueryParam(entityMap.get("handle")
+				.toString()));
 		super.setCache(key, entityMap);
 	}
 }
