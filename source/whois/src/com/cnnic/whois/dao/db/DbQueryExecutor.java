@@ -25,7 +25,8 @@ public class DbQueryExecutor implements QueryExecutor {
 		dbQueryDaos.add(new DelegationKeysQueryDao(dbQueryDaos));
 		dbQueryDaos.add(new DnrDomainQueryDao(dbQueryDaos));
 		dbQueryDaos.add(new DnrEntityQueryDao(dbQueryDaos));
-		dbQueryDaos.add(new AbstractDomainQueryDao(dbQueryDaos){});//for getAll
+		dbQueryDaos.add(new AbstractDomainQueryDao(dbQueryDaos) {
+		});// for getAll
 		dbQueryDaos.add(new DsDataQueryDao(dbQueryDaos));
 		dbQueryDaos.add(new EntityQueryDao(dbQueryDaos));
 		dbQueryDaos.add(new ErrorMsgQueryDao(dbQueryDaos));
@@ -58,11 +59,11 @@ public class DbQueryExecutor implements QueryExecutor {
 
 	@Override
 	public Map<String, Object> query(QueryType queryType, QueryParam param,
-			String role, String format, PageBean... pageParam)
-			throws QueryException, RedirectExecption {
+			String role, PageBean... pageParam) throws QueryException,
+			RedirectExecption {
 		for (AbstractDbQueryDao queryDao : dbQueryDaos) {
 			if (queryDao.supportType(queryType)) {
-				return queryDao.query(param, role, format, pageParam);
+				return queryDao.query(param, role, pageParam);
 			}
 		}
 		return null;

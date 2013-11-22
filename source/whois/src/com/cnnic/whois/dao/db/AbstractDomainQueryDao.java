@@ -17,33 +17,32 @@ public abstract class AbstractDomainQueryDao extends AbstractDbQueryDao {
 	public static final String GET_ALL_DNRDOMAIN = "select * from DNRDomain";
 	public static final String GET_ALL_RIRDOMAIN = "select * from RIRDomain";
 	public static final String QUERY_KEY = "$mul$domains";
-	
+
 	public AbstractDomainQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
 
 	@Override
 	public Map<String, Object> query(QueryParam param, String role,
-			String format, PageBean... page) throws QueryException,
-			RedirectExecption {
+			PageBean... page) throws QueryException, RedirectExecption {
 		throw new UnsupportedOperationException();
 	}
 
 	public Map<String, Object> query(String listSql, List<String> keyFields,
-			String q, String role, String format) throws QueryException {
+			String q, String role) throws QueryException {
 		String sql = listSql + "'" + q + "'";
-		return this.queryBySql(sql, keyFields, role, format);
+		return this.queryBySql(sql, keyFields, role);
 	}
 
-	protected Map<String, Object> queryBySql(String sql, List<String> keyFields,
-			String role, String format) throws QueryException {
+	protected Map<String, Object> queryBySql(String sql,
+			List<String> keyFields, String role) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
 		try {
 			connection = ds.getConnection();
 			Map<String, Object> domainMap = query(connection, sql, keyFields,
-					QUERY_KEY, role, format);
+					QUERY_KEY, role);
 			if (domainMap != null) {
 				map = rdapConformance(map);
 				map.putAll(domainMap);
@@ -66,21 +65,23 @@ public abstract class AbstractDomainQueryDao extends AbstractDbQueryDao {
 	public Map<String, Object> getAll(String role, String format)
 			throws QueryException {
 		List<String> dnrKeyFields = permissionCache.getDNRDomainKeyFileds(role);
-		Map<String, Object> dnrDomains = queryBySql(GET_ALL_DNRDOMAIN, dnrKeyFields, role, format);
+		Map<String, Object> dnrDomains = queryBySql(GET_ALL_DNRDOMAIN,
+				dnrKeyFields, role);
 		List<String> rirKeyFields = permissionCache.getRIRDomainKeyFileds(role);
-		Map<String, Object> rirDomains = queryBySql(GET_ALL_RIRDOMAIN, rirKeyFields, role, format);
+		Map<String, Object> rirDomains = queryBySql(GET_ALL_RIRDOMAIN,
+				rirKeyFields, role);
 		Map<String, Object> result = new HashMap<String, Object>();
-		//TODO:handle size 1
+		// TODO:handle size 1
 		result.putAll(dnrDomains);
 		result.putAll(rirDomains);
 		return result;
 	}
-	
+
 	@Override
 	public QueryType getQueryType() {
 		return QueryType.DOMAIN;
 	}
-	
+
 	@Override
 	public boolean supportType(QueryType queryType) {
 		return QueryType.DOMAIN.equals(queryType);
@@ -94,8 +95,7 @@ public abstract class AbstractDomainQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection, String format)
-			throws SQLException {
+			String role, Connection connection) throws SQLException {
 		throw new UnsupportedOperationException();
 	}
 }

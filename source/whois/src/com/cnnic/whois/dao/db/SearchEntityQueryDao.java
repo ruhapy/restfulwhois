@@ -21,11 +21,12 @@ public class SearchEntityQueryDao extends AbstractSearchQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role, String format,
+	public Map<String, Object> query(QueryParam param, String role,
 			PageBean... pageParams) throws QueryException {
 		EntityQueryParam entityQueryParam = (EntityQueryParam) param;
 		SearchResult<EntityIndex> result = entityIndexService
-				.fuzzyQueryEntitiesByHandleAndName(entityQueryParam.getFuzzyQueryParamName(),
+				.fuzzyQueryEntitiesByHandleAndName(
+						entityQueryParam.getFuzzyQueryParamName(),
 						entityQueryParam.getQ(), pageParams[0]);
 		String selectSql = WhoisUtil.SELECT_LIST_RIRENTITY;
 		Connection connection = null;
@@ -33,7 +34,7 @@ public class SearchEntityQueryDao extends AbstractSearchQueryDao {
 		try {
 			connection = ds.getConnection();
 			Map<String, Object> entityMap = fuzzyQuery(connection, result,
-					selectSql, "$mul$entity", role, format);
+					selectSql, "$mul$entity", role);
 			if (entityMap != null) {
 				map = rdapConformance(map);
 				map.putAll(entityMap);
@@ -52,9 +53,10 @@ public class SearchEntityQueryDao extends AbstractSearchQueryDao {
 		}
 		return map;
 	}
+
 	protected Map<String, Object> postHandleFieldsFuzzy(String keyName,
 			String format, Map<String, Object> map) {
-		map = WhoisUtil.toVCard(map, format);
+		map = WhoisUtil.toVCard(map);
 		return map;
 	}
 

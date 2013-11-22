@@ -19,7 +19,8 @@ import com.cnnic.whois.util.DataFormat;
 import com.cnnic.whois.util.WhoisProperties;
 
 public abstract class AbstractCacheQueryDao implements QueryDao {
-	protected static DbQueryExecutor dbQueryExecutor = DbQueryExecutor.getExecutor();
+	protected static DbQueryExecutor dbQueryExecutor = DbQueryExecutor
+			.getExecutor();
 	protected static Jedis cache = new Jedis(WhoisProperties.getCacheIp(),
 			Integer.valueOf(WhoisProperties.getCachePort()));
 
@@ -34,8 +35,7 @@ public abstract class AbstractCacheQueryDao implements QueryDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Map<String, Object> query(QueryParam param, String role,
-			String format, PageBean... page) throws QueryException,
-			RedirectExecption {
+			PageBean... page) throws QueryException, RedirectExecption {
 		String cacheKey = getCacheKey(param);
 		return getMapAndConvertToJsonObject(cacheKey);
 	}
@@ -57,19 +57,21 @@ public abstract class AbstractCacheQueryDao implements QueryDao {
 		return DataFormat.fromObject(cacheObj);
 	}
 
-	protected boolean needInitCache(){
+	protected boolean needInitCache() {
 		return false;
 	}
-	protected void initCache(){
+
+	protected void initCache() {
 		throw new UnsupportedOperationException();
 	}
-	
+
 	@Override
 	public Map<String, Object> getAll(String role, String format)
 			throws QueryException {
 		throw new UnsupportedOperationException();
 	}
-	protected void setCache(String key,Map<String, Object> entityMap) {
+
+	protected void setCache(String key, Map<String, Object> entityMap) {
 		String jsonStr = DataFormat.getJsonObject(entityMap).toString();
 		cache.set(key, jsonStr);
 	}

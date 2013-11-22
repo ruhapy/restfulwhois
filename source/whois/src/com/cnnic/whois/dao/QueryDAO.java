@@ -314,7 +314,7 @@ public class QueryDAO {
 				handleIpWhenQueryNs(keyName, format, map);
 				//vcard format
 				if(keyName.equals(WhoisUtil.MULTIPRXENTITY)){
-					map = WhoisUtil.toVCard(map, format);
+					map = WhoisUtil.toVCard(map);
 				}
 				list.add(map);
 			}
@@ -1152,7 +1152,7 @@ public class QueryDAO {
 				
 				//vcard format
 				if(keyName.equals(WhoisUtil.JOINENTITESFILED) || keyName.equals(WhoisUtil.MULTIPRXENTITY)){
-					map = WhoisUtil.toVCard(map, format);
+					map = WhoisUtil.toVCard(map);
 				}
 				list.add(map);
 			}

@@ -778,28 +778,28 @@ public class WhoisUtil {
 	 * @param map
 	 * @return map collection
 	 */
-	public static Map<String, Object> toVCard(Map<String, Object> map, String format) {
+	public static Map<String, Object> toVCard(Map<String, Object> map) {
 		List<Object> Resultlist = new ArrayList<Object>();
 		List<List<Object>> list = new ArrayList<List<Object>>();
-		Object entityNames = map.get(getDisplayKeyName("Entity_Names", format));
-		Object Bday = map.get(getDisplayKeyName("Bday", format));
-		Object Anniversary = map.get(getDisplayKeyName("Anniversary", format));
-		Object Gender = map.get(getDisplayKeyName("Gender", format));
-		Object Kind = map.get(getDisplayKeyName("Kind", format));
-		Object Language_Tag_1 = map.get(getDisplayKeyName("Language_Tag_1", format));
-		Object Pref1 = map.get(getDisplayKeyName("Pref1", format));
-		Object Language_Tag_2 = map.get(getDisplayKeyName("Language_Tag_2", format));
-		Object Pref2 = map.get(getDisplayKeyName("Pref2", format));
-		Object Org = map.get(getDisplayKeyName("Org", format));
-		Object Title = map.get(getDisplayKeyName("Title", format));
-		Object Role = map.get(getDisplayKeyName("Role", format));
+		Object entityNames = map.get(getDisplayKeyName("Entity_Names"));
+		Object Bday = map.get(getDisplayKeyName("Bday"));
+		Object Anniversary = map.get(getDisplayKeyName("Anniversary"));
+		Object Gender = map.get(getDisplayKeyName("Gender"));
+		Object Kind = map.get(getDisplayKeyName("Kind"));
+		Object Language_Tag_1 = map.get(getDisplayKeyName("Language_Tag_1"));
+		Object Pref1 = map.get(getDisplayKeyName("Pref1"));
+		Object Language_Tag_2 = map.get(getDisplayKeyName("Language_Tag_2"));
+		Object Pref2 = map.get(getDisplayKeyName("Pref2"));
+		Object Org = map.get(getDisplayKeyName("Org"));
+		Object Title = map.get(getDisplayKeyName("Title"));
+		Object Role = map.get(getDisplayKeyName("Role"));
 		Object postalAddress = map.get("postalAddress");
-		Object emails = map.get(getDisplayKeyName("Emails", format));
-		Object phones = map.get(getDisplayKeyName("phones", format));
-		Object Geo = map.get(getDisplayKeyName("Geo", format));
-		Object Key = map.get(getDisplayKeyName("Key", format));
-		Object Tz = map.get(getDisplayKeyName("Tz", format));
-		Object Url = map.get(getDisplayKeyName("Url", format));
+		Object emails = map.get(getDisplayKeyName("Emails"));
+		Object phones = map.get(getDisplayKeyName("phones"));
+		Object Geo = map.get(getDisplayKeyName("Geo"));
+		Object Key = map.get(getDisplayKeyName("Key"));
+		Object Tz = map.get(getDisplayKeyName("Tz"));
+		Object Url = map.get(getDisplayKeyName("Url"));
 
 		List<Object> firstNameList = new ArrayList<Object>();
 		firstNameList.add("version");
@@ -826,7 +826,7 @@ public class WhoisUtil {
 				nameList.add(entityNames.toString());
 				list.add(nameList);
 			}
-			map.remove(getDisplayKeyName("Entity_Names", format));
+			map.remove(getDisplayKeyName("Entity_Names"));
 		}
 		
 		if (Bday != null) {
@@ -848,7 +848,7 @@ public class WhoisUtil {
 				BdayList.add(Bday.toString());
 				list.add(BdayList);
 			}
-			map.remove(getDisplayKeyName("Bday", format));
+			map.remove(getDisplayKeyName("Bday"));
 		}
 		
 		if (Anniversary != null) {
@@ -870,7 +870,7 @@ public class WhoisUtil {
 				AnniversaryList.add(Anniversary.toString());
 				list.add(AnniversaryList);
 			}
-			map.remove(getDisplayKeyName("Anniversary", format));
+			map.remove(getDisplayKeyName("Anniversary"));
 		}
 		
 		if (Gender != null) {
@@ -892,7 +892,7 @@ public class WhoisUtil {
 				GenderList.add(Gender.toString());
 				list.add(GenderList);
 			}
-			map.remove(getDisplayKeyName("Gender", format));
+			map.remove(getDisplayKeyName("Gender"));
 		}
 		
 		if (Kind != null) {
@@ -914,7 +914,7 @@ public class WhoisUtil {
 				KindList.add(Kind.toString());
 				list.add(KindList);
 			}
-			map.remove(getDisplayKeyName("Kind", format));
+			map.remove(getDisplayKeyName("Kind"));
 		}
 		
 		if ((Language_Tag_1 != null) && (Pref1 != null)) {
@@ -924,8 +924,8 @@ public class WhoisUtil {
 			LanguageTagList.add("language-tag");
 			LanguageTagList.add((String)Language_Tag_1);
 			list.add(LanguageTagList);			
-			map.remove(getDisplayKeyName("Language_Tag_1", format));
-			map.remove(getDisplayKeyName("Pref1", format));
+			map.remove(getDisplayKeyName("Language_Tag_1"));
+			map.remove(getDisplayKeyName("Pref1"));
 		}
 		
 		if ((Language_Tag_2 != null) && (Pref2 != null)) {
@@ -935,8 +935,8 @@ public class WhoisUtil {
 			LanguageTagList.add("language-tag");
 			LanguageTagList.add((String)Language_Tag_2);
 			list.add(LanguageTagList);			
-			map.remove(getDisplayKeyName("Language_Tag_2", format));
-			map.remove(getDisplayKeyName("Pref2", format));
+			map.remove(getDisplayKeyName("Language_Tag_2"));
+			map.remove(getDisplayKeyName("Pref2"));
 		}
 		
 		if (Org != null) {
@@ -946,7 +946,7 @@ public class WhoisUtil {
 			OrgList.add("text");
 			OrgList.add((String)Org);
 			list.add(OrgList);	
-			map.remove(getDisplayKeyName("Org", format));
+			map.remove(getDisplayKeyName("Org"));
 		}
 		
 		if (Title != null) {
@@ -956,7 +956,7 @@ public class WhoisUtil {
 			TitleList.add("text");
 			TitleList.add((String)Title);
 			list.add(TitleList);	
-			map.remove(getDisplayKeyName("Title", format));
+			map.remove(getDisplayKeyName("Title"));
 		}
 		
 		if (Role != null) {
@@ -966,7 +966,7 @@ public class WhoisUtil {
 			RoleList.add("text");
 			RoleList.add((String)Role);
 			list.add(RoleList);	
-			map.remove(getDisplayKeyName("Role", format));
+			map.remove(getDisplayKeyName("Role"));
 		}
 		
 		if (postalAddress != null) {
@@ -981,33 +981,33 @@ public class WhoisUtil {
 				String KeyName = "";
 				String Element = "";
 				String Result = "";
-				KeyName = getDisplayKeyName("Street1", format);
+				KeyName = getDisplayKeyName("Street1");
 				Element = ((Map) postalAddress).get(KeyName).toString();
 				Result = Result + Element;
 				Result = Result + (String)",";
 				
-				KeyName = getDisplayKeyName("Street2", format);
+				KeyName = getDisplayKeyName("Street2");
 				Element = ((Map) postalAddress).get(KeyName).toString();
 				Result = Result + Element;
 				AddressList.add(Result);
 				
-				KeyName = getDisplayKeyName("Street", format);
+				KeyName = getDisplayKeyName("Street");
 				Element = ((Map) postalAddress).get(KeyName).toString();
 				AddressList.add(Element);
 				
-				KeyName = getDisplayKeyName("City", format);
+				KeyName = getDisplayKeyName("City");
 				Element = ((Map) postalAddress).get(KeyName).toString();
 				AddressList.add(Element);
 				
-				KeyName = getDisplayKeyName("SP", format);
+				KeyName = getDisplayKeyName("SP");
 				Element = ((Map) postalAddress).get(KeyName).toString();
 				AddressList.add(Element);
 				
-				KeyName = getDisplayKeyName("Postal_Code", format);
+				KeyName = getDisplayKeyName("Postal_Code");
 				Element = ((Map) postalAddress).get(KeyName).toString();
 				AddressList.add(Element);
 				
-				KeyName = getDisplayKeyName("Country", format);
+				KeyName = getDisplayKeyName("Country");
 				Element = ((Map) postalAddress).get(KeyName).toString();
 				AddressList.add(Element);
 				nameList.add(AddressList);
@@ -1025,39 +1025,39 @@ public class WhoisUtil {
 					String KeyName = "";
 					String Element = "";
 					String Result = "";
-					KeyName = getDisplayKeyName("Street1", format);
+					KeyName = getDisplayKeyName("Street1");
 					Element = ((Map) postalAddressObject).get(KeyName).toString();
 					Result = Result + Element;
 					Result = Result + (String)",";
 					
-					KeyName = getDisplayKeyName("Street2", format);
+					KeyName = getDisplayKeyName("Street2");
 					Element = ((Map) postalAddressObject).get(KeyName).toString();
 					Result = Result + Element;
 					AddressList.add(Result);
 					
-					KeyName = getDisplayKeyName("Street", format);
+					KeyName = getDisplayKeyName("Street");
 					Element = ((Map) postalAddressObject).get(KeyName).toString();
 					AddressList.add(Element);
 					
-					KeyName = getDisplayKeyName("City", format);
+					KeyName = getDisplayKeyName("City");
 					Element = ((Map) postalAddressObject).get(KeyName).toString();
 					AddressList.add(Element);
 					
-					KeyName = getDisplayKeyName("SP", format);
+					KeyName = getDisplayKeyName("SP");
 					Element = ((Map) postalAddressObject).get(KeyName).toString();
 					AddressList.add(Element);
 					
-					KeyName = getDisplayKeyName("Postal_Code", format);
+					KeyName = getDisplayKeyName("Postal_Code");
 					Element = ((Map) postalAddressObject).get(KeyName).toString();
 					AddressList.add(Element);
 					
-					KeyName = getDisplayKeyName("Country", format);
+					KeyName = getDisplayKeyName("Country");
 					Element = ((Map) postalAddressObject).get(KeyName).toString();
 					AddressList.add(Element);
 					nameList.add(AddressList);
 					list.add(nameList);					
 				}
-				map.remove(getDisplayKeyName("postal_Address", format));
+				map.remove(getDisplayKeyName("postal_Address"));
 			}			
 		}
 		;
@@ -1071,7 +1071,7 @@ public class WhoisUtil {
 				nameList.add(names);
 				list.add(nameList);
 			}
-			map.remove(getDisplayKeyName("Emails", format));
+			map.remove(getDisplayKeyName("Emails"));
 		}
 		;
 		if (phones != null) {
@@ -1082,11 +1082,11 @@ public class WhoisUtil {
 					Object values = ((Map) phones).get(name);
 					if (values instanceof String[]) {
 						String typeName = "";
-						if (name.equals(getDisplayKeyName("Office", format))) {
+						if (name.equals(getDisplayKeyName("Office"))) {
 							typeName = "{\"type\":\"work\"}";
-						} else if (name.equals(getDisplayKeyName("Fax", format))) {
+						} else if (name.equals(getDisplayKeyName("Fax"))) {
 							typeName = "{\"type\":\"fax\"}";
-						} else if (name.equals(getDisplayKeyName("Mobile", format))) {
+						} else if (name.equals(getDisplayKeyName("Mobile"))) {
 							typeName = "{\"type\":\"cell\"}";
 						}
 						for (String valueName : (String[]) values) {
@@ -1115,11 +1115,11 @@ public class WhoisUtil {
 						Object values = ((Map) phonesObject).get(name);
 						if (values instanceof String[]) {
 							String typeName = "";
-							if (name.equals(getDisplayKeyName("Office", format))) {
+							if (name.equals(getDisplayKeyName("Office"))) {
 								typeName = "{\"type\":\"work\"}";
-							} else if (name.equals(getDisplayKeyName("Fax", format))) {
+							} else if (name.equals(getDisplayKeyName("Fax"))) {
 								typeName = "{\"type\":\"fax\"}";
-							} else if (name.equals(getDisplayKeyName("Mobile", format))) {
+							} else if (name.equals(getDisplayKeyName("Mobile"))) {
 								typeName = "{\"type\":\"cell\"}";
 							}
 							for (String valueName : (String[]) values) {
@@ -1140,7 +1140,7 @@ public class WhoisUtil {
 					}
 				}
 			}
-			map.remove(getDisplayKeyName("phones", format));
+			map.remove(getDisplayKeyName("phones"));
 		}
 		
 		if (Geo != null) {
@@ -1162,7 +1162,7 @@ public class WhoisUtil {
 				GeoList.add(Geo.toString());
 				list.add(GeoList);
 			}
-			map.remove(getDisplayKeyName("Geo", format));
+			map.remove(getDisplayKeyName("Geo"));
 		}
 		
 		if (Key != null) {
@@ -1184,7 +1184,7 @@ public class WhoisUtil {
 				KeyList.add(Key.toString());
 				list.add(KeyList);
 			}
-			map.remove(getDisplayKeyName("Key", format));
+			map.remove(getDisplayKeyName("Key"));
 		}
 		
 		if (Tz != null) {
@@ -1206,7 +1206,7 @@ public class WhoisUtil {
 				TzList.add(Tz.toString());
 				list.add(TzList);
 			}
-			map.remove(getDisplayKeyName("Tz", format));
+			map.remove(getDisplayKeyName("Tz"));
 		}
 		
 		if (Url != null) {
@@ -1228,14 +1228,16 @@ public class WhoisUtil {
 				UrlList.add(Url.toString());
 				list.add(UrlList);
 			}
-			map.remove(getDisplayKeyName("Url", format));
+			map.remove(getDisplayKeyName("Url"));
 		}
 		Resultlist.add("vcard");
 		Resultlist.add(list);
 		map.put("vcardArray", Resultlist.toArray());
 		return map;
 	}
-	
+	public static String getDisplayKeyName(String name) {
+		return name;
+	}
 	public static String getDisplayKeyName(String name, String format) {
 		if (format.equals("application/html")) {
 			return name.replaceAll("_", " ");

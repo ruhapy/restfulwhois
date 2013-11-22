@@ -18,18 +18,18 @@ public class RemarksQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role, String format,
+	public Map<String, Object> query(QueryParam param, String role,
 			PageBean... page) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
 		try {
 			connection = ds.getConnection();
-			String selectSql = WhoisUtil.SELECT_LIST_REMARKS + "'" + param.getQ()
-					+ "'";
+			String selectSql = WhoisUtil.SELECT_LIST_REMARKS + "'"
+					+ param.getQ() + "'";
 			map = query(connection, selectSql,
 					permissionCache.getRemarksKeyFileds(role), "$mul$remarks",
-					role, format);
+					role);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -50,7 +50,8 @@ public class RemarksQueryDao extends AbstractDbQueryDao {
 		if (keyName.equals(WhoisUtil.MULTIPRXREMARKS)) {
 			fliedName = keyName.substring(WhoisUtil.MULTIPRX.length()) + "Id";
 		} else if (keyName.equals(WhoisUtil.JOINREMARKS)) {
-			fliedName = keyName.substring(WhoisUtil.JOINFILEDPRX.length()) + "Id";
+			fliedName = keyName.substring(WhoisUtil.JOINFILEDPRX.length())
+					+ "Id";
 		} else {
 			fliedName = WhoisUtil.HANDLE;
 		}
@@ -75,10 +76,9 @@ public class RemarksQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection, String format)
-			throws SQLException {
+			String role, Connection connection) throws SQLException {
 		return querySpecificJoinTable(key, handle,
 				WhoisUtil.SELECT_JOIN_LIST_REMARKS, role, connection,
-				permissionCache.getRemarksKeyFileds(role), format);
+				permissionCache.getRemarksKeyFileds(role));
 	}
 }

@@ -10,6 +10,6 @@ import com.cnnic.whois.execption.RedirectExecption;
 
 public interface QueryExecutor {
 	Map<String, Object> query(QueryType queryType, QueryParam param,
-			String role, String format, PageBean... pageParam)
-			throws QueryException, RedirectExecption;
+			String role, PageBean... pageParam) throws QueryException,
+			RedirectExecption;
 }

@@ -19,14 +19,14 @@ public class RefirectionQueryDao extends AbstractDbQueryDao {
 	public RefirectionQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
-	
+
 	@Override
-	public Map<String, Object> query(QueryParam param, String role, String format,
+	public Map<String, Object> query(QueryParam param, String role,
 			PageBean... page) throws QueryException {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	public void queryRedirection(String tableName, String queryInfo)
 			throws QueryException, RedirectExecption {
 		Connection connection = null;
@@ -63,27 +63,26 @@ public class RefirectionQueryDao extends AbstractDbQueryDao {
 			}
 		}
 	}
-	
+
 	@Override
 	public QueryType getQueryType() {
 		return QueryType.NONE;
 	}
-	
+
 	@Override
 	public boolean supportType(QueryType queryType) {
 		return false;
 	}
-	
+
 	@Override
 	protected boolean supportJoinType(QueryType queryType,
 			QueryJoinType queryJoinType) {
 		return false;
 	}
-	
+
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection, String format)
-			throws SQLException {
+			String role, Connection connection) throws SQLException {
 		throw new UnsupportedOperationException();
 	}
 }

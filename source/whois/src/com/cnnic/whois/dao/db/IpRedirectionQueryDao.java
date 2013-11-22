@@ -22,7 +22,7 @@ public class IpRedirectionQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Map<String, Object> query(QueryParam param, String role,
-			String format, PageBean... page) throws QueryException, RedirectExecption {
+			PageBean... page) throws QueryException, RedirectExecption {
 		IpQueryParam ipParam = (IpQueryParam) param;
 		long startHighAddr = ipParam.getStartHighAddr();
 		long startLowAddr = ipParam.getStartLowAddr();
@@ -75,8 +75,6 @@ public class IpRedirectionQueryDao extends AbstractDbQueryDao {
 		return QueryType.IPREDIRECTION.equals(queryType);
 	}
 
-
-
 	@Override
 	protected boolean supportJoinType(QueryType queryType,
 			QueryJoinType queryJoinType) {
@@ -85,8 +83,7 @@ public class IpRedirectionQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection, String format)
-			throws SQLException {
+			String role, Connection connection) throws SQLException {
 		throw new UnsupportedOperationException();
 	}
 }

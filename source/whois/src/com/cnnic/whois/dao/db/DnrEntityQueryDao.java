@@ -38,10 +38,10 @@ public class DnrEntityQueryDao extends EntityQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection, String format)
+			String role, Connection connection)
 			throws SQLException {
 		return querySpecificJoinTable(key, handle,
 				WhoisUtil.SELECT_JOIN_LIST_JOINDNRENTITY, role, connection,
-				permissionCache.getRIREntityKeyFileds(role), format);
+				permissionCache.getRIREntityKeyFileds(role));
 	}
 }
