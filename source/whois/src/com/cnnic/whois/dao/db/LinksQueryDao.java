@@ -19,7 +19,7 @@ public class LinksQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Map<String, Object> query(QueryParam param, String role,
-			String format, PageBean... page) throws QueryException {
+			PageBean... page) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
@@ -28,8 +28,7 @@ public class LinksQueryDao extends AbstractDbQueryDao {
 			String selectSql = WhoisUtil.SELECT_LIST_LINK + "'" + param.getQ()
 					+ "'";
 			map = query(connection, selectSql,
-					permissionCache.getLinkKeyFileds(role), "$mul$link", role,
-					format);
+					permissionCache.getLinkKeyFileds(role), "$mul$link", role);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -62,10 +61,9 @@ public class LinksQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection, String format)
-			throws SQLException {
+			String role, Connection connection) throws SQLException {
 		return querySpecificJoinTable(key, handle,
 				WhoisUtil.SELECT_JOIN_LIST_LINK, role, connection,
-				permissionCache.getLinkKeyFileds(role), format);
+				permissionCache.getLinkKeyFileds(role));
 	}
 }

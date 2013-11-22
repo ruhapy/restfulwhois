@@ -19,16 +19,8 @@ public class NsQueryDao extends AbstractDbQueryDao {
 		super(dbQueryDaos);
 	}
 
-	/**
-	 * Connect to the database query nameServer information
-	 * 
-	 * @param queryInfo
-	 * @param role
-	 * @return map collection
-	 * @throws QueryException
-	 */
 	public Map<String, Object> query(QueryParam param, String role,
-			String format, PageBean... page) throws QueryException {
+			PageBean... page) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
@@ -39,7 +31,7 @@ public class NsQueryDao extends AbstractDbQueryDao {
 					+ param.getQ() + "'";
 			Map<String, Object> nsMap = query(connection, selectSql,
 					permissionCache.getNameServerKeyFileds(role),
-					"$mul$nameServer", role, format);
+					"$mul$nameServer", role);
 			if (nsMap != null) {
 				map = rdapConformance(map);
 				map.putAll(nsMap);
@@ -95,10 +87,9 @@ public class NsQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection, String format)
-			throws SQLException {
+			String role, Connection connection) throws SQLException {
 		return querySpecificJoinTable(key, handle,
 				WhoisUtil.SELECT_JOIN_LIST_JOINNAMESERVER, role, connection,
-				permissionCache.getNameServerKeyFileds(role), format);
+				permissionCache.getNameServerKeyFileds(role));
 	}
 }

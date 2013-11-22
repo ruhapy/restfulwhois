@@ -8,11 +8,13 @@ import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.dao.db.DbQueryExecutor;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
+import com.cnnic.whois.view.FormatType;
+import com.cnnic.whois.view.ViewResolver;
 
 public class QueryEngine {
 	private static QueryEngine engine = new QueryEngine();
 	private static QueryExecutor queryExecutor = DbQueryExecutor.getExecutor();
-
+	private ViewResolver viewResolver = ViewResolver.getResolver();
 	public static QueryEngine getEngine() {
 		return engine;
 	}
@@ -28,6 +30,8 @@ public class QueryEngine {
 	public Map<String, Object> query(QueryType queryType, QueryParam param,
 			String role, String format,PageBean... pageParam) throws QueryException,
 			RedirectExecption {
-		return queryExecutor.query(queryType, param, role, format,pageParam);
+		Map<String, Object> result = queryExecutor.query(queryType, param, role, pageParam);
+		result = viewResolver.format(result, FormatType.getFormatType(format));
+		return result;
 	}
 }

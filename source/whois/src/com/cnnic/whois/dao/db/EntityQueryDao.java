@@ -30,7 +30,7 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 
 	@Override
 	public Map<String, Object> query(QueryParam param, String role,
-			String format, PageBean... page) throws QueryException {
+			PageBean... page) throws QueryException {
 		SearchResult<EntityIndex> result = entityIndexService
 				.preciseQueryEntitiesByHandleOrName(param.getQ());
 		String selectSql = WhoisUtil.SELECT_LIST_RIRENTITY;
@@ -38,8 +38,7 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 		Map<String, Object> map = null;
 		try {
 			connection = ds.getConnection();
-			map = fuzzyQuery(connection, result, selectSql, "$mul$entity",
-					role, format);
+			map = fuzzyQuery(connection, result, selectSql, "$mul$entity", role);
 			map = rdapConformance(map);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -141,7 +140,7 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 		// vcard format
 		if (keyName.equals(WhoisUtil.JOINENTITESFILED)
 				|| keyName.equals(WhoisUtil.MULTIPRXENTITY)) {
-			map = WhoisUtil.toVCard(map, format);
+			map = WhoisUtil.toVCard(map);
 		}
 		return map;
 	}

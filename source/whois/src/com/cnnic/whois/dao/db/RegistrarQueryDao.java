@@ -16,6 +16,7 @@ public class RegistrarQueryDao extends AbstractDbQueryDao {
 	public RegistrarQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
+
 	/**
 	 * Connect to the database query variant information
 	 * 
@@ -24,8 +25,8 @@ public class RegistrarQueryDao extends AbstractDbQueryDao {
 	 * @return map collection
 	 * @throws QueryException
 	 */
-	public Map<String, Object> queryVariants(String queryInfo, String role, String format)
-			throws QueryException {
+	public Map<String, Object> queryVariants(String queryInfo, String role,
+			String format) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
@@ -49,34 +50,38 @@ public class RegistrarQueryDao extends AbstractDbQueryDao {
 		}
 		return map;
 	}
+
 	@Override
 	public QueryType getQueryType() {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 	@Override
 	public boolean supportType(QueryType queryType) {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
 	@Override
-	public Map<String, Object> query(QueryParam param, String role, String format,
+	public Map<String, Object> query(QueryParam param, String role,
 			PageBean... page) throws QueryException {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 	@Override
 	protected boolean supportJoinType(QueryType queryType,
 			QueryJoinType queryJoinType) {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection, String format)
-			throws SQLException {
+			String role, Connection connection) throws SQLException {
 		return querySpecificJoinTable(key, handle,
 				WhoisUtil.SELECT_JOIN_LIST_REGISTRAR, role, connection,
-				permissionCache.getRegistrarKeyFileds(role), format);
-	}	
+				permissionCache.getRegistrarKeyFileds(role));
+	}
 }
