@@ -145,28 +145,28 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 		return map;
 	}
 
-	private Map<String, Object> getAllDNREntity(String role, String format)
+	private Map<String, Object> getAllDNREntity(String role)
 			throws QueryException {
 		String sql = GET_ALL_DNRENTITY;
 		List<String> keyFields = permissionCache.getDNREntityKeyFileds(role);
-		return getAllEntity(role, format, sql, keyFields);
+		return getAllEntity(role, sql, keyFields);
 	}
 
-	private Map<String, Object> getAllRIREntity(String role, String format)
+	private Map<String, Object> getAllRIREntity(String role)
 			throws QueryException {
 		String sql = GET_ALL_RIRENTITY;
 		List<String> keyFields = permissionCache.getRIREntityKeyFileds(role);
-		return getAllEntity(role, format, sql, keyFields);
+		return getAllEntity(role, sql, keyFields);
 	}
 
-	private Map<String, Object> getAllEntity(String role, String format,
-			String sql, List<String> keyFields) throws QueryException {
+	private Map<String, Object> getAllEntity(String role, String sql,
+			List<String> keyFields) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 		try {
 			connection = ds.getConnection();
 			Map<String, Object> entityMap = query(connection, sql, keyFields,
-					"$mul$entity", role, format);
+					"$mul$entity", role);
 			if (entityMap != null) {
 				map = rdapConformance(map);
 				map.putAll(entityMap);
@@ -186,10 +186,9 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> getAll(String role, String format)
-			throws QueryException {
-		Map<String, Object> allDnrEntity = getAllDNREntity(role, format);
-		Map<String, Object> allRirEntity = this.getAllRIREntity(role, format);
+	public Map<String, Object> getAll(String role) throws QueryException {
+		Map<String, Object> allDnrEntity = getAllDNREntity(role);
+		Map<String, Object> allRirEntity = this.getAllRIREntity(role);
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.putAll(allDnrEntity);
 		result.putAll(allRirEntity);

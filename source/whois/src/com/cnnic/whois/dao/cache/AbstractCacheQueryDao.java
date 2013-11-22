@@ -66,8 +66,7 @@ public abstract class AbstractCacheQueryDao implements QueryDao {
 	}
 
 	@Override
-	public Map<String, Object> getAll(String role, String format)
-			throws QueryException {
+	public Map<String, Object> getAll(String role) throws QueryException {
 		throw new UnsupportedOperationException();
 	}
 

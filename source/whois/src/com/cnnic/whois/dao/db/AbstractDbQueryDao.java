@@ -36,7 +36,7 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 			String role, Connection connection)
 			throws SQLException ;
 	@Override
-	public Map<String, Object> getAll(String role, String format)
+	public Map<String, Object> getAll(String role)
 			throws QueryException {
 		throw new UnsupportedOperationException();
 	}

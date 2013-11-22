@@ -62,8 +62,7 @@ public abstract class AbstractDomainQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> getAll(String role, String format)
-			throws QueryException {
+	public Map<String, Object> getAll(String role) throws QueryException {
 		List<String> dnrKeyFields = permissionCache.getDNRDomainKeyFileds(role);
 		Map<String, Object> dnrDomains = queryBySql(GET_ALL_DNRDOMAIN,
 				dnrKeyFields, role);

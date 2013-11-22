@@ -69,11 +69,11 @@ public class DbQueryExecutor implements QueryExecutor {
 		return null;
 	}
 
-	public Map<String, Object> getAll(QueryType queryType, String role,
-			String format) throws QueryException {
+	public Map<String, Object> getAll(QueryType queryType, String role)
+			throws QueryException {
 		for (AbstractDbQueryDao queryDao : dbQueryDaos) {
 			if (queryDao.supportType(queryType)) {
-				return queryDao.getAll(role, format);
+				return queryDao.getAll(role);
 			}
 		}
 		return null;
