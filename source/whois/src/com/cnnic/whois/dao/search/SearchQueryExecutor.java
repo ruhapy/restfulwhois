@@ -8,7 +8,6 @@ import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.bean.index.Index;
 import com.cnnic.whois.execption.QueryException;
-import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.service.index.SearchResult;
 import com.cnnic.whois.util.WhoisProperties;
 
@@ -36,8 +35,7 @@ public class SearchQueryExecutor {
 	}
 
 	public SearchResult<? extends Index> query(QueryType queryType,
-			QueryParam param, PageBean... pageParam) throws QueryException,
-			RedirectExecption {
+			QueryParam param, PageBean... pageParam) throws QueryException {
 		for (SearchQueryDao queryDao : searchQueryDaos) {
 			if (queryDao.supportType(queryType)) {
 				return queryDao.query(param, pageParam);

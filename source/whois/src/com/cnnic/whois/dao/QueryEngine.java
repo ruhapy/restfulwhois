@@ -13,7 +13,9 @@ import com.cnnic.whois.view.ViewResolver;
 
 public class QueryEngine {
 	private static QueryEngine engine = new QueryEngine();
-	private static QueryExecutor queryExecutor = DbQueryExecutor.getExecutor();
+	private static QueryExecutor queryExecutor = 
+//			CacheQueryExecutor.getExecutor();
+			DbQueryExecutor.getExecutor();
 	private ViewResolver viewResolver = ViewResolver.getResolver();
 	public static QueryEngine getEngine() {
 		return engine;

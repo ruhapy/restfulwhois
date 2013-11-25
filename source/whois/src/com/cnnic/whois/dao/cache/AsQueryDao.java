@@ -13,16 +13,16 @@ public class AsQueryDao extends AbstractCacheQueryDao {
 	@Override
 	public Map<String, Object> query(QueryParam param, String role,
 			PageBean... pageParam) throws QueryException, RedirectExecption {
-		return dbQueryExecutor.query(QueryType.SEARCHDOMAIN, param, role, pageParam);
+		return dbQueryExecutor.query(QueryType.AUTNUM, param, role, pageParam);
 	}
 
 	@Override
 	public QueryType getQueryType() {
-		return QueryType.SEARCHDOMAIN;
+		return QueryType.AUTNUM;
 	}
 
 	@Override
 	public boolean supportType(QueryType queryType) {
-		return QueryType.SEARCHDOMAIN.equals(queryType);
+		return QueryType.AUTNUM.equals(queryType);
 	}
 }

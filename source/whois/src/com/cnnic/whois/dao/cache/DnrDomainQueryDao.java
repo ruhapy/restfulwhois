@@ -6,26 +6,27 @@ import java.util.Map;
 
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
+import com.cnnic.whois.dao.db.AbstractDomainQueryDao;
 import com.cnnic.whois.execption.QueryException;
 
-public class EntityQueryDao extends AbstractCacheQueryDao {
+public class DnrDomainQueryDao extends AbstractCacheQueryDao {
 	@Override
 	protected List<String> getCacheKeySplits(QueryParam param) {
 		List<String> keySplits = new ArrayList<String>();
-		keySplits.add(QueryType.ENTITY.toString());
-		keySplits.add("handle");
+		keySplits.add(QueryType.DNRDOMAIN.toString());
+		keySplits.add("ldhName");
 		keySplits.add(param.getQ());
 		return keySplits;
 	}
 
 	@Override
 	public QueryType getQueryType() {
-		return QueryType.ENTITY;
+		return QueryType.DNRDOMAIN;
 	}
 
 	@Override
 	public boolean supportType(QueryType queryType) {
-		return QueryType.ENTITY.equals(queryType);
+		return QueryType.DNRDOMAIN.equals(queryType);
 	}
 
 	@Override
@@ -37,29 +38,31 @@ public class EntityQueryDao extends AbstractCacheQueryDao {
 	protected void initCache() {
 		try {
 			Map<String, Object> valuesMap = dbQueryExecutor.getAll(
-					QueryType.ENTITY, "root");
+					QueryType.DNRDOMAIN, "root");
 			if (null == valuesMap) {
 				return;
 			}
-			if (null == valuesMap.get("$mul$entity")) {
+			if (null == valuesMap.get(AbstractDomainQueryDao.QUERY_KEY)) {
 				setCache(valuesMap);
 				return;
 			}
-			Object[] values = (Object[]) valuesMap.get("$mul$entity");
+			Object[] values = (Object[]) valuesMap
+					.get(AbstractDomainQueryDao.QUERY_KEY);
 			for (Object entity : values) {
 				Map<String, Object> entityMap = (Map<String, Object>) entity;
 				setCache(entityMap);
 			}
-			System.err.println("init cache,add entities size:"+values.length);
+			System.err
+					.println("init cache,add DNRDOMAIN size:" + values.length);
 		} catch (QueryException e) {
 			e.printStackTrace();
 		}
 	}
 
 	private void setCache(Map<String, Object> entityMap) {
-		String key = super.getCacheKey(new QueryParam(entityMap.get("Handle")
+		String key = super.getCacheKey(new QueryParam(entityMap.get("Ldh_Name")
 				.toString()));
-		System.err.println("init cache,add entity,key:"+key);
+		System.err.println("init cache,add DNRDOMAIN,key:" + key);
 		super.setCache(key, entityMap);
 	}
 }
