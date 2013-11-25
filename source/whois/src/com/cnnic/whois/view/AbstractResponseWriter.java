@@ -3,6 +3,7 @@ package com.cnnic.whois.view;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import net.sf.json.JSONArray;
 
 public abstract class AbstractResponseWriter implements ResponseWriter {
 
@@ -49,10 +50,21 @@ public abstract class AbstractResponseWriter implements ResponseWriter {
 		}
 		if (object instanceof Object[]) {
 			return formatArray((Object[]) object);
+		} else if (object instanceof JSONArray) {
+			return formatJSONArray((JSONArray) object);
 		} else if (object instanceof Map) {
 			return format((Map<String, Object>) object);
 		}
 		return object;
+	}
+
+	private Object formatJSONArray(JSONArray object) {
+		JSONArray result = new JSONArray();
+		for(int i=0;i<object.size();i++){
+			Object formatedObj = formatObject(object.get(i));
+			result.add(formatedObj);
+		}
+		return result;
 	}
 
 	private Object formatArray(Object[] array) {

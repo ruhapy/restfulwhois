@@ -2,7 +2,6 @@ package com.cnnic.whois.dao.db;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +13,7 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 
 public abstract class AbstractDomainQueryDao extends AbstractDbQueryDao {
-	public static final String GET_ALL_DNRDOMAIN = "select * from DNRDomain";
+	public static final String GET_ALL_DNRDOMAIN = "select * from DNRDomain where ldh_name='z.cn'";
 	public static final String GET_ALL_RIRDOMAIN = "select * from RIRDomain";
 	public static final String QUERY_KEY = "$mul$domains";
 
@@ -59,21 +58,6 @@ public abstract class AbstractDomainQueryDao extends AbstractDbQueryDao {
 			}
 		}
 		return map;
-	}
-
-	@Override
-	public Map<String, Object> getAll(String role) throws QueryException {
-		List<String> dnrKeyFields = permissionCache.getDNRDomainKeyFileds(role);
-		Map<String, Object> dnrDomains = queryBySql(GET_ALL_DNRDOMAIN,
-				dnrKeyFields, role);
-		List<String> rirKeyFields = permissionCache.getRIRDomainKeyFileds(role);
-		Map<String, Object> rirDomains = queryBySql(GET_ALL_RIRDOMAIN,
-				rirKeyFields, role);
-		Map<String, Object> result = new HashMap<String, Object>();
-		// TODO:handle size 1
-		result.putAll(dnrDomains);
-		result.putAll(rirDomains);
-		return result;
 	}
 
 	@Override

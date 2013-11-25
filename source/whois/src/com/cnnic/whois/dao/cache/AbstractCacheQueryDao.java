@@ -12,7 +12,6 @@ import redis.clients.jedis.Jedis;
 
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
-import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.dao.db.DbQueryExecutor;
 import com.cnnic.whois.dao.db.QueryDao;
 import com.cnnic.whois.execption.QueryException;
@@ -23,7 +22,7 @@ import com.cnnic.whois.util.WhoisProperties;
 public abstract class AbstractCacheQueryDao implements QueryDao {
 	protected static DbQueryExecutor dbQueryExecutor = DbQueryExecutor
 			.getExecutor();
-	protected static Jedis cache = new Jedis(WhoisProperties.getCacheIp(),
+	private static Jedis cache = new Jedis(WhoisProperties.getCacheIp(),
 			Integer.valueOf(WhoisProperties.getCachePort()));
 
 	public AbstractCacheQueryDao() {
@@ -50,7 +49,7 @@ public abstract class AbstractCacheQueryDao implements QueryDao {
 	protected List<String> getCacheKeySplits(QueryParam param) {
 		throw new UnsupportedOperationException();
 	}
-	
+
 	protected List<String> getHandleCacheKeySplits(QueryParam param) {
 		List<String> keySplits = new ArrayList<String>();
 		keySplits.add(this.getQueryType().toString());
@@ -75,7 +74,7 @@ public abstract class AbstractCacheQueryDao implements QueryDao {
 		throw new UnsupportedOperationException();
 	}
 
-	protected void initCacheWithOneKey(String queryResultKey,String key) {
+	protected void initCacheWithOneKey(String queryResultKey, String key) {
 		try {
 			Map<String, Object> valuesMap = dbQueryExecutor.getAll(
 					this.getQueryType(), "root");
@@ -83,24 +82,29 @@ public abstract class AbstractCacheQueryDao implements QueryDao {
 				return;
 			}
 			if (null == valuesMap.get(queryResultKey)) {
-				setCache(valuesMap,key);
+				setCache(valuesMap, key);
 				return;
 			}
 			Object[] values = (Object[]) valuesMap.get(queryResultKey);
 			for (Object entity : values) {
 				Map<String, Object> entityMap = (Map<String, Object>) entity;
-				setCache(entityMap,key);
+				setCache(entityMap, key);
 			}
+			System.err
+			.println("init cache,add "+getQueryType()+" size:" + values.length);
 		} catch (QueryException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void setCache(Map<String, Object> entityMap,String key) {
-		String cacheKey = getCacheKey(new QueryParam(entityMap
-				.get(key).toString()));
+	private void setCache(Map<String, Object> entityMap, String key) {
+		String cacheKey = getCacheKey(new QueryParam(entityMap.get(key)
+				.toString()));
+		System.err
+		.println("init cache,add "+getQueryType()+",key:" + cacheKey);
 		setCache(cacheKey, entityMap);
 	}
+
 	@Override
 	public Map<String, Object> getAll(String role) throws QueryException {
 		throw new UnsupportedOperationException();

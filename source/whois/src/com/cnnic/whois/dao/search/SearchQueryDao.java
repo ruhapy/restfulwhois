@@ -23,7 +23,6 @@ public interface SearchQueryDao {
 	 */
 	boolean supportType(QueryType queryType);
 
-	// TODO:remove format and role
 	SearchResult<? extends Index> query(QueryParam param, PageBean... page)
 			throws QueryException;
 }

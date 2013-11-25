@@ -2,6 +2,8 @@ package com.cnnic.whois.dao.db;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,7 +49,29 @@ public class DnrDomainQueryDao extends AbstractDomainQueryDao {
 		}
 		return map;
 	}
+	@Override
+	public Map<String, Object> getAll(String role) throws QueryException {
+		List<String> dnrKeyFields = permissionCache.getDNRDomainKeyFileds(role);
+		Map<String, Object> dnrDomains = queryBySql(GET_ALL_DNRDOMAIN,
+				dnrKeyFields, role);
+		List<Map<String, Object>> mapList = new ArrayList<Map<String, Object>>();
+		getListFromMap(dnrDomains, mapList);
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(QUERY_KEY, mapList.toArray());
+		return result;
+	}
 
+	private void getListFromMap(Map<String, Object> allDnrEntity,
+			List<Map<String, Object>> mapList) {
+		if(null != allDnrEntity.get("Handle")){// only one result
+			mapList.add(allDnrEntity);
+		}else{
+			Object[] entities = (Object[]) allDnrEntity.get(QUERY_KEY);
+			for(Object entity: entities){
+				mapList.add((Map<String, Object>)entity);
+			}
+		}
+	}
 	@Override
 	public boolean supportType(QueryType queryType) {
 		return QueryType.DNRDOMAIN.equals(queryType);

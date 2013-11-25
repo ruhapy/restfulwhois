@@ -13,6 +13,8 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class SecureDnsQueryDao extends AbstractDbQueryDao {
+	public static final String GET_ALL_SECUREDNS = "select * from secureDNS ";
+
 	public SecureDnsQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
@@ -54,6 +56,30 @@ public class SecureDnsQueryDao extends AbstractDbQueryDao {
 			fliedName = WhoisUtil.HANDLE;
 		}
 		return fliedName;
+	}
+
+	@Override
+	public Map<String, Object> getAll(String role) throws QueryException {
+		Connection connection = null;
+		Map<String, Object> map = null;
+
+		try {
+			connection = ds.getConnection();
+			map = query(connection, GET_ALL_SECUREDNS,
+					permissionCache.getSecureDNSMapKeyFileds(role),
+					"$mul$secureDNS", role);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new QueryException(e);
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException se) {
+				}
+			}
+		}
+		return map;
 	}
 
 	@Override

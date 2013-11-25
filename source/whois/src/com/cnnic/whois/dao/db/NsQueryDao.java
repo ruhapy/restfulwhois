@@ -15,6 +15,8 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class NsQueryDao extends AbstractDbQueryDao {
+	public static final String GET_ALL_NAMESREVER = "select * from nameServer ";
+
 	public NsQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
@@ -65,6 +67,33 @@ public class NsQueryDao extends AbstractDbQueryDao {
 			map.put(WhoisUtil.IPPREFIX, map_IP);
 			map.remove(WhoisUtil.getDisplayKeyName("IPV4_Addresses", format));
 			map.remove(WhoisUtil.getDisplayKeyName("IPV6_Addresses", format));
+		}
+		return map;
+	}
+
+	@Override
+	public Map<String, Object> getAll(String role) throws QueryException {
+		Connection connection = null;
+		Map<String, Object> map = null;
+		try {
+			connection = ds.getConnection();
+			Map<String, Object> nsMap = query(connection, GET_ALL_NAMESREVER,
+					permissionCache.getNameServerKeyFileds(role),
+					"$mul$nameServer", role);
+			if (nsMap != null) {
+				map = rdapConformance(map);
+				map.putAll(nsMap);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new QueryException(e);
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException se) {
+				}
+			}
 		}
 		return map;
 	}
