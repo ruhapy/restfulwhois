@@ -2,6 +2,8 @@ package com.cnnic.whois.dao.db;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +49,30 @@ public class RirDomainQueryDao extends AbstractDomainQueryDao {
 		return map;
 	}
 
+	@Override
+	public Map<String, Object> getAll(String role) throws QueryException {
+		List<Map<String, Object>> mapList = new ArrayList<Map<String, Object>>();
+		List<String> rirKeyFields = permissionCache.getRIRDomainKeyFileds(role);
+		Map<String, Object> rirDomains = queryBySql(GET_ALL_RIRDOMAIN,
+				rirKeyFields, role);
+		getListFromMap(rirDomains, mapList);
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(QUERY_KEY, mapList.toArray());
+		return result;
+	}
+
+	private void getListFromMap(Map<String, Object> allDnrEntity,
+			List<Map<String, Object>> mapList) {
+		if(null != allDnrEntity.get("Handle")){// only one result
+			mapList.add(allDnrEntity);
+		}else{
+			Object[] entities = (Object[]) allDnrEntity.get(QUERY_KEY);
+			for(Object entity: entities){
+				mapList.add((Map<String, Object>)entity);
+			}
+		}
+	}
+	
 	@Override
 	public boolean supportType(QueryType queryType) {
 		return QueryType.RIRDOMAIN.equals(queryType);
