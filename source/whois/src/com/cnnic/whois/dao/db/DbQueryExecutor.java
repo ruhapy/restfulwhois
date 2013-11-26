@@ -33,6 +33,7 @@ public class DbQueryExecutor implements QueryExecutor {
 		dbQueryDaos.add(new EventsQueryDao(dbQueryDaos));
 		dbQueryDaos.add(new SearchDomainQueryDao(dbQueryDaos));
 		dbQueryDaos.add(new SearchEntityQueryDao(dbQueryDaos));
+		dbQueryDaos.add(new SearchNsQueryDao(dbQueryDaos));
 		dbQueryDaos.add(new HelpQueryDao(dbQueryDaos));
 		dbQueryDaos.add(new IpQueryDao(dbQueryDaos));// TODO:
 		dbQueryDaos.add(new IpRedirectionQueryDao(dbQueryDaos));
