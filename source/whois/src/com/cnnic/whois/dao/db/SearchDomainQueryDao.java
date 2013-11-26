@@ -22,8 +22,8 @@ public class SearchDomainQueryDao extends AbstractSearchQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
-			PageBean... pageParam) throws QueryException {
+	public Map<String, Object> query(QueryParam param, PageBean... pageParam)
+			throws QueryException {
 		DomainQueryParam domainQueryParam = (DomainQueryParam) param;
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -50,7 +50,7 @@ public class SearchDomainQueryDao extends AbstractSearchQueryDao {
 				sql = WhoisUtil.SELECT_LIST_RIRDOMAIN;
 			}
 			Map<String, Object> domainMap = super.fuzzyQuery(connection,
-					result, sql, "$mul$domains", role);
+					result, sql, "$mul$domains");
 			if (domainMap != null) {
 				map = rdapConformance(map);
 				map.putAll(domainMap);

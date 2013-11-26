@@ -10,6 +10,8 @@ import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
+import com.cnnic.whois.util.ColumnCache;
+import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class ErrorMsgQueryDao extends AbstractDbQueryDao {
@@ -20,7 +22,7 @@ public class ErrorMsgQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
+	public Map<String, Object> query(QueryParam param,
 			PageBean... page) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -29,8 +31,8 @@ public class ErrorMsgQueryDao extends AbstractDbQueryDao {
 			String selectSql = WhoisUtil.SELECT_LIST_ERRORMESSAGE + "'"
 					+ param.getQ() + "'";
 			Map<String, Object> errorMessageMap = query(connection, selectSql,
-					permissionCache.getErrorMessageKeyFileds(role),
-					"$mul$errormessage", role);
+					ColumnCache.getColumnCache().getErrorMessageKeyFileds(),
+					"$mul$errormessage");
 			if (errorMessageMap != null) {
 				map = rdapConformance(map);
 				map.putAll(errorMessageMap);
@@ -106,7 +108,11 @@ public class ErrorMsgQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection) throws SQLException {
+			Connection connection) throws SQLException {
 		throw new UnsupportedOperationException();
+	}
+	@Override
+	public List<String> getKeyFields(String role) {
+		return PermissionCache.getPermissionCache().getErrorMessageKeyFileds(role);
 	}
 }

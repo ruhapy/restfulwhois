@@ -22,7 +22,8 @@ import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
 
 public abstract class AbstractDbQueryDao implements QueryDao{
-//	private static AbstractDbQueryDao queryDAO = new AbstractDbQueryDao();
+	public static final String QUERY_TYPE = "queryType";
+	//	private static AbstractDbQueryDao queryDAO = new AbstractDbQueryDao();
 	protected DataSource ds;
 	protected PermissionCache permissionCache = PermissionCache
 			.getPermissionCache();
@@ -33,7 +34,7 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 	protected abstract boolean supportJoinType(QueryType queryType,
 			QueryJoinType queryJoinType);
 	public abstract Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection)
+			Connection connection)
 			throws SQLException ;
 	@Override
 	public Map<String, Object> getAll(String role)
@@ -79,13 +80,13 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 	 * @throws SQLException
 	 */
 	protected Map<String, Object> query(Connection connection, String sql,
-			List<String> keyFields, String keyName, String role,String format)
+			List<String> keyFields, String keyName, String format)
 			throws SQLException {
-		Map<String, Object> result = query(connection,sql,keyFields,keyName, role);
+		Map<String, Object> result = query(connection,sql,keyFields,keyName);
 		return result;
 	}
 	protected Map<String, Object> query(Connection connection, String sql,
-			List<String> keyFlieds, String keyName, String role)
+			List<String> keyFlieds, String keyName)
 			throws SQLException {
 		PreparedStatement stmt = null; 
 		ResultSet results = null;
@@ -95,6 +96,7 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 			List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 			while (results.next()) {
 				Map<String, Object> map = new LinkedHashMap<String, Object>();
+				putQueryType(map);
 				for (int i = 0; i < keyFlieds.size(); i++) {
 					Object resultsInfo = null;
 					String field = keyFlieds.get(i);
@@ -113,7 +115,7 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 						String fliedName = getJoinFieldName(keyName);
 						String key = field.substring(WhoisUtil.JOINFILEDPRX.length());
 						Object value = queryJoinTable(field,
-								results.getString(fliedName), sql, role,
+								results.getString(fliedName), sql,
 								connection);
 						if (value != null)
 							map.put(key, value);
@@ -191,13 +193,13 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 	 * @throws SQLException
 	 */
 	public Object queryJoinTable(String key, String handle, String sql,
-			String role, Connection connection) throws SQLException {
+			Connection connection) throws SQLException {
 		String keyWithoutJoinPrefix = key.substring(WhoisUtil.JOINFILEDPRX.length());
 		QueryJoinType joinType = QueryJoinType.getQueryJoinType(keyWithoutJoinPrefix);
 		QueryType queryType = getQueryType();
 		for (AbstractDbQueryDao dbQueryDao : dbQueryDaos) {
 			if (dbQueryDao.supportJoinType(queryType, joinType)) {
-				return dbQueryDao.querySpecificJoinTable(key, handle, role,
+				return dbQueryDao.querySpecificJoinTable(key, handle,
 						connection);
 			}
 		}
@@ -217,11 +219,11 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 	 * @throws SQLException
 	 */
 	public Object querySpecificJoinTable(String key, String handle, String sql,
-			String role, Connection connection, List<String> keyFlieds)
+			Connection connection, List<String> keyFlieds)
 			throws SQLException {
 
 		Map<String, Object> map = query(connection, sql + "'" + handle + "'",
-				keyFlieds, key, role);
+				keyFlieds, key);
 		if (map != null) {
 			if (null == map.get(key)) {
 				return map;
@@ -240,5 +242,16 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 		conform[0] = WhoisUtil.RDAPCONFORMANCE;
 		map.put(WhoisUtil.RDAPCONFORMANCEKEY, conform);
 		return map;
+	}
+	
+	public List<String> getKeyFields(String role) {
+		throw new UnsupportedOperationException();
+	}
+	
+	private void putQueryType(Map<String, Object> map){
+		if(map == null){
+			return;
+		}
+		map.put(QUERY_TYPE, getQueryType().getName());
 	}
 }

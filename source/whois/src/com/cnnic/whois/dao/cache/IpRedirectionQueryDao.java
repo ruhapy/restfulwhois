@@ -11,10 +11,9 @@ import com.cnnic.whois.execption.RedirectExecption;
 public class IpRedirectionQueryDao extends AbstractCacheQueryDao {
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
-			PageBean... pageParam) throws QueryException, RedirectExecption {
-		return dbQueryExecutor.query(QueryType.IPREDIRECTION, param, role,
-				pageParam);
+	public Map<String, Object> query(QueryParam param, PageBean... pageParam)
+			throws QueryException, RedirectExecption {
+		return dbQueryExecutor.query(QueryType.IPREDIRECTION, param, pageParam);
 	}
 
 	@Override

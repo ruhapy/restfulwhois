@@ -10,6 +10,8 @@ import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
+import com.cnnic.whois.util.ColumnCache;
+import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class RemarksQueryDao extends AbstractDbQueryDao {
@@ -18,8 +20,8 @@ public class RemarksQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
-			PageBean... page) throws QueryException {
+	public Map<String, Object> query(QueryParam param, PageBean... page)
+			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
@@ -27,9 +29,8 @@ public class RemarksQueryDao extends AbstractDbQueryDao {
 			connection = ds.getConnection();
 			String selectSql = WhoisUtil.SELECT_LIST_REMARKS + "'"
 					+ param.getQ() + "'";
-			map = query(connection, selectSql,
-					permissionCache.getRemarksKeyFileds(role), "$mul$remarks",
-					role);
+			map = query(connection, selectSql, ColumnCache.getColumnCache()
+					.getRemarksKeyFileds(), "$mul$remarks");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -76,9 +77,13 @@ public class RemarksQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection) throws SQLException {
+			Connection connection) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_REMARKS, role, connection,
-				permissionCache.getRemarksKeyFileds(role));
+				WhoisUtil.SELECT_JOIN_LIST_REMARKS, connection, ColumnCache
+						.getColumnCache().getRemarksKeyFileds());
+	}
+	@Override
+	public List<String> getKeyFields(String role) {
+		return PermissionCache.getPermissionCache().getRemarksKeyFileds(role);
 	}
 }

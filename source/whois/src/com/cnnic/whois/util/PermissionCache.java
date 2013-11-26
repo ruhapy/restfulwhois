@@ -541,7 +541,7 @@ public class PermissionCache {
 		}
 
 	}
-	
+	@Deprecated
 	public List<String> getKeyFiledsByClass(Object o, String role) {
 		 if ((o instanceof DomainIndex)) {
 		      if (((DomainIndex)o).isDnrDomain()) {
@@ -558,6 +558,27 @@ public class PermissionCache {
 		        return getDNREntityKeyFileds(role);
 		      }
 		      return getRIREntityKeyFileds(role);
+		    }
+
+		    return new ArrayList();
+		  }
+	
+	public List<String> getKeyFiledsByClass(Object o) {
+		 if ((o instanceof DomainIndex)) {
+		      if (((DomainIndex)o).isDnrDomain()) {
+		        return this.columnCache.getDNRDomainKeyFileds();
+		      }
+		      return this.columnCache.getRIRDomainKeyFileds();
+		    }
+
+		    if ((o instanceof NameServerIndex)) {
+		      return this.columnCache.getNameServerKeyFileds();
+		    }
+		    if ((o instanceof EntityIndex)) {
+		      if (((EntityIndex)o).isDnrEntity()) {
+		        return this.columnCache.getDNREntityKeyFileds();
+		      }
+		      return this.columnCache.getRIREntityKeyFileds();
 		    }
 
 		    return new ArrayList();

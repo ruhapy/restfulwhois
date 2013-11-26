@@ -26,27 +26,27 @@ public class CacheQueryExecutor implements QueryExecutor {
 		cacheQueryDaos.add(new DnrDomainQueryDao());
 		// cacheQueryDaos.add(new DnrEntityQueryDao());
 		// cacheQueryDaos.add(new DsDataQueryDao());
-		cacheQueryDaos.add(new EntityQueryDao());
+		// cacheQueryDaos.add(new EntityQueryDao());
 		// cacheQueryDaos.add(new ErrorMsgQueryDao());
 		// cacheQueryDaos.add(new EventsQueryDao());
 		// cacheQueryDaos.add(new SearchDomainQueryDao());
 		// cacheQueryDaos.add(new SearchEntityQueryDao());
-		// cacheQueryDaos.add(new HelpQueryDao());
+		 cacheQueryDaos.add(new HelpQueryDao());
 		// cacheQueryDaos.add(new IpQueryDao());// TODO:
 		// cacheQueryDaos.add(new IpRedirectionQueryDao());
 		// cacheQueryDaos.add(new KeyDataQueryDao());
 		// cacheQueryDaos.add(new LinksQueryDao());
 		// cacheQueryDaos.add(new NoticesQueryDao());
-		 cacheQueryDaos.add(new NsQueryDao());
+		// cacheQueryDaos.add(new NsQueryDao());
 		// cacheQueryDaos.add(new PhonesQueryDao());
 		// cacheQueryDaos.add(new PostalAddressQueryDao());
 		// cacheQueryDaos.add(new PublicIdsQueryDao());
 		// cacheQueryDaos.add(new RefirectionQueryDao());
 		// cacheQueryDaos.add(new RegistrarQueryDao());
 		// cacheQueryDaos.add(new RemarksQueryDao());
-		cacheQueryDaos.add(new RirDomainQueryDao());
+		// cacheQueryDaos.add(new RirDomainQueryDao());
 		// cacheQueryDaos.add(new RirEntityQueryDao());
-		 cacheQueryDaos.add(new SecureDnsQueryDao());
+		// cacheQueryDaos.add(new SecureDnsQueryDao());
 		// cacheQueryDaos.add(new VariantsQueryDao());
 	}
 
@@ -57,11 +57,10 @@ public class CacheQueryExecutor implements QueryExecutor {
 
 	@Override
 	public Map<String, Object> query(QueryType queryType, QueryParam param,
-			String role, PageBean... pageParam) throws QueryException,
-			RedirectExecption {
+			PageBean... pageParam) throws QueryException, RedirectExecption {
 		for (AbstractCacheQueryDao queryDao : cacheQueryDaos) {
 			if (queryDao.supportType(queryType)) {
-				return queryDao.query(param, role, pageParam);
+				return queryDao.query(param, pageParam);
 			}
 		}
 		return null;

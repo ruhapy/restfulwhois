@@ -10,6 +10,7 @@ import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
+import com.cnnic.whois.util.ColumnCache;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class RegistrarQueryDao extends AbstractDbQueryDao {
@@ -25,8 +26,8 @@ public class RegistrarQueryDao extends AbstractDbQueryDao {
 	 * @return map collection
 	 * @throws QueryException
 	 */
-	public Map<String, Object> queryVariants(String queryInfo, String role,
-			String format) throws QueryException {
+	public Map<String, Object> queryVariants(String queryInfo, String format)
+			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
@@ -34,9 +35,8 @@ public class RegistrarQueryDao extends AbstractDbQueryDao {
 			connection = ds.getConnection();
 			String selectSql = WhoisUtil.SELECT_LIST_VARIANTS + "'" + queryInfo
 					+ "'";
-			map = query(connection, selectSql,
-					permissionCache.getVariantsKeyFileds(role),
-					"$mul$variants", role, format);
+			map = query(connection, selectSql, ColumnCache.getColumnCache()
+					.getRegistrarKeyFileds(), "$mul$variants", format);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -64,8 +64,8 @@ public class RegistrarQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
-			PageBean... page) throws QueryException {
+	public Map<String, Object> query(QueryParam param, PageBean... page)
+			throws QueryException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -79,9 +79,9 @@ public class RegistrarQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection) throws SQLException {
+			Connection connection) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_REGISTRAR, role, connection,
-				permissionCache.getRegistrarKeyFileds(role));
+				WhoisUtil.SELECT_JOIN_LIST_REGISTRAR, connection, ColumnCache
+						.getColumnCache().getRegistrarKeyFileds());
 	}
 }
