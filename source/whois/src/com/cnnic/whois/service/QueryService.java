@@ -177,7 +177,7 @@ public class QueryService {
 			String queryPara, String role, String format, PageBean page)
 			throws QueryException, SQLException {
 		try {
-			Map map = queryEngine.query(QueryType.SEARCHDOMAIN, 
+			Map map = queryEngine.query(QueryType.SEARCHENTITY, 
 					new EntityQueryParam(queryPara,fuzzyQueryParamName), role, format,page);
 			if (map == null) {
 				return queryError("404", role, format);
