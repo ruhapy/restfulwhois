@@ -12,6 +12,7 @@ import redis.clients.jedis.Jedis;
 
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
+import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.dao.db.DbQueryExecutor;
 import com.cnnic.whois.dao.db.QueryDao;
 import com.cnnic.whois.execption.QueryException;
@@ -75,9 +76,13 @@ public abstract class AbstractCacheQueryDao implements QueryDao {
 	}
 
 	protected void initCacheWithOneKey(String queryResultKey, String key) {
+		initCacheWithOneKey(queryResultKey, key, getQueryType());
+	}
+
+	protected void initCacheWithOneKey(String queryResultKey, String key,
+			QueryType queryType) {
 		try {
-			Map<String, Object> valuesMap = dbQueryExecutor
-					.getAll(getQueryType());
+			Map<String, Object> valuesMap = dbQueryExecutor.getAll(queryType);
 			if (null == valuesMap) {
 				return;
 			}
