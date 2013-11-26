@@ -37,7 +37,7 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 			Connection connection)
 			throws SQLException ;
 	@Override
-	public Map<String, Object> getAll(String role)
+	public Map<String, Object> getAll()
 			throws QueryException {
 		throw new UnsupportedOperationException();
 	}
@@ -58,33 +58,6 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 		}
 	}
 
-	/**
-	 * Get QueryDAO objects
-	 * 
-	 * @return QueryDAO objects
-	 */
-//	public static AbstractDbQueryDao getQueryDAO() {
-//		return queryDAO;
-//	}
-	
-	/**
-	 * According to the table field collections and SQL to obtain the
-	 * corresponding data information
-	 * 
-	 * @param connection
-	 * @param sql
-	 * @param keyFlieds
-	 * @param keyName
-	 * @param role
-	 * @return map collection
-	 * @throws SQLException
-	 */
-	protected Map<String, Object> query(Connection connection, String sql,
-			List<String> keyFields, String keyName, String format)
-			throws SQLException {
-		Map<String, Object> result = query(connection,sql,keyFields,keyName);
-		return result;
-	}
 	protected Map<String, Object> query(Connection connection, String sql,
 			List<String> keyFlieds, String keyName)
 			throws SQLException {

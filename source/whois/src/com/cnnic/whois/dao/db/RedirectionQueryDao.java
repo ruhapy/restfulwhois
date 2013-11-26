@@ -16,8 +16,8 @@ import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
 
-public class RefirectionQueryDao extends AbstractDbQueryDao {
-	public RefirectionQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
+public class RedirectionQueryDao extends AbstractDbQueryDao {
+	public RedirectionQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
 

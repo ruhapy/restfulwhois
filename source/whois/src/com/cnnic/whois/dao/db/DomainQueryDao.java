@@ -149,11 +149,11 @@ public class DomainQueryDao extends AbstractSearchQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> getAll(String role) throws QueryException {
-		List<String> dnrKeyFields = permissionCache.getDNRDomainKeyFileds(role);
+	public Map<String, Object> getAll() throws QueryException {
+		List<String> dnrKeyFields = ColumnCache.getColumnCache().getDNRDomainKeyFileds();
 		Map<String, Object> dnrDomains = queryBySql(GET_ALL_DNRDOMAIN,
 				dnrKeyFields);
-		List<String> rirKeyFields = permissionCache.getRIRDomainKeyFileds(role);
+		List<String> rirKeyFields = ColumnCache.getColumnCache().getRIRDomainKeyFileds();
 		Map<String, Object> rirDomains = queryBySql(GET_ALL_RIRDOMAIN,
 				rirKeyFields);
 		Map<String, Object> result = new HashMap<String, Object>();

@@ -16,46 +16,22 @@ import com.cnnic.whois.util.WhoisUtil;
 
 public class HelpQueryDao extends AbstractDbQueryDao {
 	public static final String GET_ALL_HELP = "select * from notices ";
+
 	public HelpQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param,
-			PageBean... page) throws QueryException {
+	public Map<String, Object> query(QueryParam param, PageBean... page)
+			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 		try {
 			connection = ds.getConnection();
 			String selectSql = WhoisUtil.SELECT_HELP + "'" + param.getQ() + "'";
 			Map<String, Object> helpMap = query(connection, selectSql,
-					ColumnCache.getColumnCache().getHelpKeyFields(), "$mul$notices");
-			if (helpMap != null) {
-				map = rdapConformance(map);
-				map.putAll(helpMap);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new QueryException(e);
-		} finally {
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException se) {
-				}
-			}
-		}
-		return map;
-	}
-	
-	@Override
-	public Map<String, Object> getAll(String role) throws QueryException {
-		Connection connection = null;
-		Map<String, Object> map = null;
-		try {
-			connection = ds.getConnection();
-			Map<String, Object> helpMap = query(connection, GET_ALL_HELP,
-					ColumnCache.getColumnCache().getHelpKeyFields(), "$mul$notices");
+					ColumnCache.getColumnCache().getHelpKeyFields(),
+					"$mul$notices");
 			if (helpMap != null) {
 				map = rdapConformance(map);
 				map.putAll(helpMap);
@@ -74,7 +50,33 @@ public class HelpQueryDao extends AbstractDbQueryDao {
 		return map;
 	}
 
-	
+	@Override
+	public Map<String, Object> getAll() throws QueryException {
+		Connection connection = null;
+		Map<String, Object> map = null;
+		try {
+			connection = ds.getConnection();
+			Map<String, Object> helpMap = query(connection, GET_ALL_HELP,
+					ColumnCache.getColumnCache().getHelpKeyFields(),
+					"$mul$notices");
+			if (helpMap != null) {
+				map = rdapConformance(map);
+				map.putAll(helpMap);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new QueryException(e);
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException se) {
+				}
+			}
+		}
+		return map;
+	}
+
 	@Override
 	protected String getJoinFieldName(String keyName) {
 		String fliedName = "";
@@ -110,6 +112,7 @@ public class HelpQueryDao extends AbstractDbQueryDao {
 			Connection connection) throws SQLException {
 		throw new UnsupportedOperationException();
 	}
+
 	@Override
 	public List<String> getKeyFields(String role) {
 		return PermissionCache.getPermissionCache().getHelpKeyFileds(role);

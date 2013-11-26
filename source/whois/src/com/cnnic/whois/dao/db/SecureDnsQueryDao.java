@@ -60,15 +60,14 @@ public class SecureDnsQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> getAll(String role) throws QueryException {
+	public Map<String, Object> getAll() throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
 		try {
 			connection = ds.getConnection();
-			map = query(connection, GET_ALL_SECUREDNS,
-					permissionCache.getSecureDNSMapKeyFileds(role),
-					"$mul$secureDNS", role);
+			map = query(connection, GET_ALL_SECUREDNS, ColumnCache
+					.getColumnCache().getSecureDNSKeyFileds(), "$mul$secureDNS");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -106,9 +105,10 @@ public class SecureDnsQueryDao extends AbstractDbQueryDao {
 				WhoisUtil.SELECT_JOIN_LIST_SECUREDNS, connection, ColumnCache
 						.getColumnCache().getSecureDNSKeyFileds());
 	}
-	
+
 	@Override
 	public List<String> getKeyFields(String role) {
-		return PermissionCache.getPermissionCache().getSecureDNSMapKeyFileds(role);
+		return PermissionCache.getPermissionCache().getSecureDNSMapKeyFileds(
+				role);
 	}
 }

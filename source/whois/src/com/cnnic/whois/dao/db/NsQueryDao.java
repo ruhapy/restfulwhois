@@ -24,8 +24,8 @@ public class NsQueryDao extends AbstractDbQueryDao {
 		super(dbQueryDaos);
 	}
 
-	public Map<String, Object> query(QueryParam param, 
-			PageBean... page) throws QueryException {
+	public Map<String, Object> query(QueryParam param, PageBean... page)
+			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
@@ -75,14 +75,14 @@ public class NsQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> getAll(String role) throws QueryException {
+	public Map<String, Object> getAll() throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 		try {
 			connection = ds.getConnection();
 			Map<String, Object> nsMap = query(connection, GET_ALL_NAMESREVER,
-					permissionCache.getNameServerKeyFileds(role),
-					"$mul$nameServer", role);
+					ColumnCache.getColumnCache().getNameServerKeyFileds(),
+					"$mul$nameServer");
 			if (nsMap != null) {
 				map = rdapConformance(map);
 				map.putAll(nsMap);
@@ -124,8 +124,10 @@ public class NsQueryDao extends AbstractDbQueryDao {
 				WhoisUtil.SELECT_JOIN_LIST_JOINNAMESERVER, connection,
 				ColumnCache.getColumnCache().getNameServerKeyFileds());
 	}
+
 	@Override
 	public List<String> getKeyFields(String role) {
-		return PermissionCache.getPermissionCache().getNameServerKeyFileds(role);
+		return PermissionCache.getPermissionCache()
+				.getNameServerKeyFileds(role);
 	}
 }

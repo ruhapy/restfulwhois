@@ -21,33 +21,28 @@ public class CacheQueryExecutor implements QueryExecutor {
 	private List<AbstractCacheQueryDao> cacheQueryDaos = new ArrayList<AbstractCacheQueryDao>();
 
 	private void init() {
-		// cacheQueryDaos.add(new AsQueryDao());
-		// cacheQueryDaos.add(new DelegationKeysQueryDao());
-		cacheQueryDaos.add(new DnrDomainQueryDao());
-		// cacheQueryDaos.add(new DnrEntityQueryDao());
-		// cacheQueryDaos.add(new DsDataQueryDao());
-		// cacheQueryDaos.add(new EntityQueryDao());
-		// cacheQueryDaos.add(new ErrorMsgQueryDao());
-		// cacheQueryDaos.add(new EventsQueryDao());
-		// cacheQueryDaos.add(new SearchDomainQueryDao());
-		// cacheQueryDaos.add(new SearchEntityQueryDao());
-		 cacheQueryDaos.add(new HelpQueryDao());
-		// cacheQueryDaos.add(new IpQueryDao());// TODO:
-		// cacheQueryDaos.add(new IpRedirectionQueryDao());
-		// cacheQueryDaos.add(new KeyDataQueryDao());
-		// cacheQueryDaos.add(new LinksQueryDao());
-		// cacheQueryDaos.add(new NoticesQueryDao());
-		// cacheQueryDaos.add(new NsQueryDao());
-		// cacheQueryDaos.add(new PhonesQueryDao());
-		// cacheQueryDaos.add(new PostalAddressQueryDao());
-		// cacheQueryDaos.add(new PublicIdsQueryDao());
-		// cacheQueryDaos.add(new RefirectionQueryDao());
-		// cacheQueryDaos.add(new RegistrarQueryDao());
-		// cacheQueryDaos.add(new RemarksQueryDao());
-		// cacheQueryDaos.add(new RirDomainQueryDao());
-		// cacheQueryDaos.add(new RirEntityQueryDao());
-		// cacheQueryDaos.add(new SecureDnsQueryDao());
-		// cacheQueryDaos.add(new VariantsQueryDao());
+//		cacheQueryDaos.add(new AsQueryDao());
+//		cacheQueryDaos.add(new DnrDomainQueryDao());
+//		cacheQueryDaos.add(new DsDataQueryDao());
+		cacheQueryDaos.add(new EntityQueryDao());
+//		cacheQueryDaos.add(new ErrorMsgQueryDao());
+//		cacheQueryDaos.add(new EventsQueryDao());
+//		cacheQueryDaos.add(new SearchDomainQueryDao());
+//		cacheQueryDaos.add(new SearchEntityQueryDao());
+//		cacheQueryDaos.add(new HelpQueryDao());
+//		cacheQueryDaos.add(new IpQueryDao());
+//		cacheQueryDaos.add(new IpRedirectionQueryDao());
+//		cacheQueryDaos.add(new KeyDataQueryDao());
+//		cacheQueryDaos.add(new LinksQueryDao());
+//		cacheQueryDaos.add(new NoticesQueryDao());
+//		cacheQueryDaos.add(new NsQueryDao());
+//		cacheQueryDaos.add(new PhonesQueryDao());
+//		cacheQueryDaos.add(new PostalAddressQueryDao());
+//		cacheQueryDaos.add(new RedirectionQueryDao());
+//		cacheQueryDaos.add(new RemarksQueryDao());
+//		cacheQueryDaos.add(new RirDomainQueryDao());
+//		cacheQueryDaos.add(new SecureDnsQueryDao());
+//		cacheQueryDaos.add(new VariantsQueryDao());
 	}
 
 	public CacheQueryExecutor() {

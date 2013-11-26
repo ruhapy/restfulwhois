@@ -15,6 +15,8 @@ import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class VariantsQueryDao extends AbstractDbQueryDao {
+	public static final String GET_ALL_VARIANTS = "select * from variants ";
+
 	public VariantsQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
@@ -31,6 +33,28 @@ public class VariantsQueryDao extends AbstractDbQueryDao {
 					+ param.getQ() + "'";
 			map = query(connection, selectSql, ColumnCache.getColumnCache()
 					.getVariantsKeyFileds(), "$mul$variants");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new QueryException(e);
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException se) {
+				}
+			}
+		}
+		return map;
+	}
+
+	@Override
+	public Map<String, Object> getAll() throws QueryException {
+		Connection connection = null;
+		Map<String, Object> map = null;
+		try {
+			connection = ds.getConnection();
+			map = query(connection, GET_ALL_VARIANTS, ColumnCache
+					.getColumnCache().getVariantsKeyFileds(), "$mul$variants");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -68,6 +92,7 @@ public class VariantsQueryDao extends AbstractDbQueryDao {
 				WhoisUtil.SELECT_JOIN_LIST_VARIANTS, connection, ColumnCache
 						.getColumnCache().getVariantsKeyFileds());
 	}
+
 	@Override
 	public List<String> getKeyFields(String role) {
 		return PermissionCache.getPermissionCache().getVariantsKeyFileds(role);
