@@ -35,7 +35,7 @@ public class QueryEngine {
 			String role, String format,PageBean... pageParam) throws QueryException,
 			RedirectExecption {
 		Map<String, Object> result = queryExecutor.query(queryType, param, pageParam);
-		result = permissionController.removeUnAuthedEntriesMap(result, role);
+		result = permissionController.removeUnAuthedEntries(result, role);
 		result = viewResolver.format(result, FormatType.getFormatType(format));
 		return result;
 	}

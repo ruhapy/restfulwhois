@@ -29,6 +29,7 @@ public class CacheQueryExecutor implements QueryExecutor {
 		cacheQueryDaos.add(new EventsQueryDao());
 		cacheQueryDaos.add(new SearchDomainQueryDao());
 		cacheQueryDaos.add(new SearchEntityQueryDao());
+		cacheQueryDaos.add(new SearchNsQueryDao());
 		cacheQueryDaos.add(new HelpQueryDao());
 		cacheQueryDaos.add(new IpQueryDao());
 		cacheQueryDaos.add(new IpRedirectionQueryDao());

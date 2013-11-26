@@ -13,7 +13,7 @@ public class SearchDomainQueryDao extends AbstractCacheQueryDao {
 	@Override
 	public Map<String, Object> query(QueryParam param, PageBean... pageParam)
 			throws QueryException, RedirectExecption {
-		return dbQueryExecutor.query(QueryType.AUTNUM, param, pageParam);
+		return dbQueryExecutor.query(QueryType.SEARCHDOMAIN, param, pageParam);
 	}
 
 	@Override

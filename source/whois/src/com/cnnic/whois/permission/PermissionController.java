@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import net.sf.json.JSONArray;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.dao.db.AbstractDbQueryDao;
@@ -20,7 +21,20 @@ public class PermissionController {
 		return permissionController;
 	}
 
-	public Map<String, Object> removeUnAuthedEntriesMap(
+	public Map<String, Object> removeUnAuthedEntries(
+			Map<String, Object> map, String role) {
+		if (null == map) {
+			return map;
+		}
+		Object[] multiObjs = getMultiObjs(map);
+		if(null != multiObjs){
+			removeUnAuthedEntriesObject(multiObjs, role);
+			return map;
+		}
+		return removeUnAuthedEntriesMap(map, role);
+	}
+	
+	private Map<String, Object> removeUnAuthedEntriesMap(
 			Map<String, Object> map, String role) {
 		if (null == map) {
 			return map;
@@ -47,6 +61,16 @@ public class PermissionController {
 			removeUnAuthedEntriesObject(valueObj, role);
 		}
 		return resultMap;
+	}
+	private Object[] getMultiObjs(Map<String, Object> map){
+		for (Iterator<Entry<String, Object>> it = map.entrySet().iterator(); it
+				.hasNext();) {
+			Entry<String, Object> entry = it.next();
+			if (entry.getKey().startsWith(WhoisUtil.MULTIPRX)) {
+				return (Object[]) entry.getValue();
+			}
+		}
+		return null;
 	}
 
 	private List<String> removeFieldPrefix(List<String> fields) {
