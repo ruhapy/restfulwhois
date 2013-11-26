@@ -10,6 +10,8 @@ import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
+import com.cnnic.whois.util.ColumnCache;
+import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class PhonesQueryDao extends AbstractDbQueryDao {
@@ -18,8 +20,8 @@ public class PhonesQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
-			PageBean... page) throws QueryException {
+	public Map<String, Object> query(QueryParam param, PageBean... page)
+			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
@@ -27,9 +29,8 @@ public class PhonesQueryDao extends AbstractDbQueryDao {
 			connection = ds.getConnection();
 			String selectSql = WhoisUtil.SELECT_LIST_PHONE + "'" + param.getQ()
 					+ "'";
-			map = query(connection, selectSql,
-					permissionCache.getPhonesKeyFileds(role), "$mul$phones",
-					role);
+			map = query(connection, selectSql, ColumnCache.getColumnCache()
+					.getPhonesKeyFileds(), "$mul$phones");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -62,9 +63,13 @@ public class PhonesQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection) throws SQLException {
+			Connection connection) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_PHONE, role, connection,
-				permissionCache.getPhonesKeyFileds(role));
+				WhoisUtil.SELECT_JOIN_LIST_PHONE, connection, ColumnCache
+						.getColumnCache().getPhonesKeyFileds());
+	}
+	@Override
+	public List<String> getKeyFields(String role) {
+		return PermissionCache.getPermissionCache().getPhonesKeyFileds(role);
 	}
 }

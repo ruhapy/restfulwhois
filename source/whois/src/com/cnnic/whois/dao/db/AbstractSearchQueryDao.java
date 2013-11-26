@@ -16,7 +16,7 @@ import com.cnnic.whois.util.WhoisUtil;
 
 public abstract class AbstractSearchQueryDao extends AbstractDbQueryDao{
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection)
+			Connection connection)
 			throws SQLException{
 		throw new UnsupportedOperationException();
 	}
@@ -40,13 +40,14 @@ public abstract class AbstractSearchQueryDao extends AbstractDbQueryDao{
 	}
 	
 	protected Map<String, Object> fuzzyQuery(Connection connection, SearchResult<? extends Index> domains,
-			String selectSql,String keyName, String role)
+			String selectSql,String keyName)
 			throws SQLException {
 			List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 			for(Index index:domains.getResultList()){
 				index.initPropValueMap();
-				List<String> keyFlieds = permissionCache.getKeyFiledsByClass(index, role);
+				List<String> keyFlieds = permissionCache.getKeyFiledsByClass(index);
 				Map<String, Object> map = new LinkedHashMap<String, Object>();
+				putQueryType(map, index);
 				for (int i = 0; i < keyFlieds.size(); i++) {
 					Object resultsInfo = null;
 					String field = keyFlieds.get(i);
@@ -64,7 +65,7 @@ public abstract class AbstractSearchQueryDao extends AbstractDbQueryDao{
 					} else if (field.startsWith(WhoisUtil.JOINFILEDPRX)) {
 						String key = field.substring(WhoisUtil.JOINFILEDPRX.length());
 						Object value = queryJoinTable(field,
-								index.getHandle(), selectSql, role,
+								index.getHandle(), selectSql,
 								connection);
 						if (value != null)
 							map.put(key, value);
@@ -111,5 +112,12 @@ public abstract class AbstractSearchQueryDao extends AbstractDbQueryDao{
 			map = WhoisUtil.toVCard(map);
 		}
 		return map;
+	}
+	
+	private void putQueryType(Map<String, Object> map,Index index){
+		if(map == null){
+			return;
+		}
+		map.put(QUERY_TYPE, index.getDocType());
 	}
 }

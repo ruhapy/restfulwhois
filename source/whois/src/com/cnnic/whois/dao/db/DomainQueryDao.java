@@ -16,6 +16,7 @@ import com.cnnic.whois.dao.search.SearchQueryExecutor;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.service.index.SearchResult;
+import com.cnnic.whois.util.ColumnCache;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class DomainQueryDao extends AbstractSearchQueryDao {
@@ -29,23 +30,23 @@ public class DomainQueryDao extends AbstractSearchQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
+	public Map<String, Object> query(QueryParam param,
 			PageBean... page) throws QueryException, RedirectExecption {
 		if (param.isFuzzyQ()) {
-			return doFuzzyQuery(param, role, page);
+			return doFuzzyQuery(param, page);
 		} else {
-			return doQuery(param, role, page);
+			return doQuery(param, page);
 		}
 	}
 
-	private Map<String, Object> doFuzzyQuery(QueryParam param, String role,
+	private Map<String, Object> doFuzzyQuery(QueryParam param,
 			PageBean... pageParam) throws QueryException {
 		SearchResult<? extends Index> result = searchQueryExecutor.query(
 				QueryType.DOMAIN, param, pageParam);
-		return queryWithIndexs(role, result);
+		return queryWithIndexs(result);
 	}
 
-	private Map<String, Object> queryWithIndexs(String role,
+	private Map<String, Object> queryWithIndexs(
 			SearchResult<? extends Index> result) throws QueryException {
 		Map<String, Object> map = null;
 		if (result.getResultList().size() == 0) {
@@ -56,7 +57,7 @@ public class DomainQueryDao extends AbstractSearchQueryDao {
 			connection = ds.getConnection();
 			String sql = "to delete";// TODO:delete
 			Map<String, Object> domainMap = super.fuzzyQuery(connection,
-					result, sql, "$mul$domains", role);
+					result, sql, "$mul$domains");
 			if (domainMap != null) {
 				map = rdapConformance(map);
 				map.putAll(domainMap);
@@ -76,27 +77,26 @@ public class DomainQueryDao extends AbstractSearchQueryDao {
 		return map;
 	}
 
-	private Map<String, Object> doQuery(QueryParam param, String role,
+	private Map<String, Object> doQuery(QueryParam param, 
 			PageBean... page) throws QueryException {
 		Map<String, Object> map = null;
-		List<String> dnrKeyFields = permissionCache.getDNRDomainKeyFileds(role);
-		Map<String, Object> dnrMap = query(param, role, dnrKeyFields, page);
+		List<String> dnrKeyFields = ColumnCache.getColumnCache().getDNRDomainKeyFileds();
+		Map<String, Object> dnrMap = query(param, dnrKeyFields, page);
 		map.putAll(dnrMap);
-		List<String> rirKeyFields = permissionCache.getDNRDomainKeyFileds(role);
-		Map<String, Object> rirMap = query(param, role, rirKeyFields, page);
+		List<String> rirKeyFields = ColumnCache.getColumnCache().getRIRDomainKeyFileds();
+		Map<String, Object> rirMap = query(param, rirKeyFields, page);
 		map.putAll(rirMap);
 		return map;
 	}
 
-	private Map<String, Object> query(QueryParam param, String role,
+	private Map<String, Object> query(QueryParam param,
 			List<String> keyFields, PageBean... page) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 		try {
 			connection = ds.getConnection();
 			Map<String, Object> domainMap = query(
-					WhoisUtil.SELECT_LIST_DNRDOMAIN, keyFields, param.getQ(),
-					role);
+					WhoisUtil.SELECT_LIST_DNRDOMAIN, keyFields, param.getQ());
 			if (domainMap != null) {
 				map = rdapConformance(map);
 				map.putAll(domainMap);
@@ -116,20 +116,20 @@ public class DomainQueryDao extends AbstractSearchQueryDao {
 	}
 
 	protected Map<String, Object> query(String listSql, List<String> keyFields,
-			String q, String role) throws QueryException {
+			String q) throws QueryException {
 		String sql = listSql + "'" + q + "'";
-		return this.queryBySql(sql, keyFields, role);
+		return this.queryBySql(sql, keyFields);
 	}
 
 	protected Map<String, Object> queryBySql(String sql,
-			List<String> keyFields, String role) throws QueryException {
+			List<String> keyFields) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
 		try {
 			connection = ds.getConnection();
 			Map<String, Object> domainMap = query(connection, sql, keyFields,
-					QUERY_KEY, role);
+					QUERY_KEY);
 			if (domainMap != null) {
 				map = rdapConformance(map);
 				map.putAll(domainMap);
@@ -152,10 +152,10 @@ public class DomainQueryDao extends AbstractSearchQueryDao {
 	public Map<String, Object> getAll(String role) throws QueryException {
 		List<String> dnrKeyFields = permissionCache.getDNRDomainKeyFileds(role);
 		Map<String, Object> dnrDomains = queryBySql(GET_ALL_DNRDOMAIN,
-				dnrKeyFields, role);
+				dnrKeyFields);
 		List<String> rirKeyFields = permissionCache.getRIRDomainKeyFileds(role);
 		Map<String, Object> rirDomains = queryBySql(GET_ALL_RIRDOMAIN,
-				rirKeyFields, role);
+				rirKeyFields);
 		Map<String, Object> result = new HashMap<String, Object>();
 		// TODO:handle size 1
 		result.putAll(dnrDomains);
@@ -181,7 +181,7 @@ public class DomainQueryDao extends AbstractSearchQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection) throws SQLException {
+			Connection connection) throws SQLException {
 		throw new UnsupportedOperationException();
 	}
 }

@@ -10,6 +10,8 @@ import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
+import com.cnnic.whois.util.ColumnCache;
+import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class SecureDnsQueryDao extends AbstractDbQueryDao {
@@ -20,8 +22,8 @@ public class SecureDnsQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
-			PageBean... page) throws QueryException {
+	public Map<String, Object> query(QueryParam param, PageBean... page)
+			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
@@ -29,9 +31,8 @@ public class SecureDnsQueryDao extends AbstractDbQueryDao {
 			connection = ds.getConnection();
 			String selectSql = WhoisUtil.SELECT_LIST_SECUREDNS + "'"
 					+ param.getQ() + "'";
-			map = query(connection, selectSql,
-					permissionCache.getSecureDNSMapKeyFileds(role),
-					"$mul$secureDNS", role);
+			map = query(connection, selectSql, ColumnCache.getColumnCache()
+					.getSecureDNSKeyFileds(), "$mul$secureDNS");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -100,9 +101,14 @@ public class SecureDnsQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection) throws SQLException {
+			Connection connection) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_SECUREDNS, role, connection,
-				permissionCache.getSecureDNSMapKeyFileds(role));
+				WhoisUtil.SELECT_JOIN_LIST_SECUREDNS, connection, ColumnCache
+						.getColumnCache().getSecureDNSKeyFileds());
+	}
+	
+	@Override
+	public List<String> getKeyFields(String role) {
+		return PermissionCache.getPermissionCache().getSecureDNSMapKeyFileds(role);
 	}
 }

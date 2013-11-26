@@ -16,12 +16,13 @@ import com.cnnic.whois.bean.index.EntityIndex;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.EntityIndexService;
 import com.cnnic.whois.service.index.SearchResult;
+import com.cnnic.whois.util.ColumnCache;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class EntityQueryDao extends AbstractSearchQueryDao {
 	private static final String MAP_KEY = "$mul$entity";
-	public static final String GET_ALL_DNRENTITY = "select * from DNREntity ";
-	public static final String GET_ALL_RIRENTITY = "select * from RIREntity ";
+	public static final String GET_ALL_DNRENTITY = "select * from DNREntity limit 1";
+	public static final String GET_ALL_RIRENTITY = "select * from RIREntity limit 0 ";
 	protected EntityIndexService entityIndexService = EntityIndexService
 			.getIndexService();
 
@@ -30,7 +31,7 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
+	public Map<String, Object> query(QueryParam param,
 			PageBean... page) throws QueryException {
 		SearchResult<EntityIndex> result = entityIndexService
 				.preciseQueryEntitiesByHandleOrName(param.getQ());
@@ -39,7 +40,7 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 		Map<String, Object> map = null;
 		try {
 			connection = ds.getConnection();
-			map = fuzzyQuery(connection, result, selectSql, MAP_KEY, role);
+			map = fuzzyQuery(connection, result, selectSql, MAP_KEY);
 			map = rdapConformance(map);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -66,8 +67,8 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 			String selectSql = WhoisUtil.SELECT_LIST_DNRENTITY + "'"
 					+ queryInfo + "'";
 			Map<String, Object> entityMap = query(connection, selectSql,
-					permissionCache.getDNREntityKeyFileds(role), MAP_KEY,
-					role, format);
+					ColumnCache.getColumnCache().getDNREntityKeyFileds(), MAP_KEY,
+					format);
 			if (entityMap != null) {
 				map = rdapConformance(map);
 				map.putAll(entityMap);
@@ -97,8 +98,8 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 			String selectSql = WhoisUtil.SELECT_LIST_RIRENTITY + "'"
 					+ queryInfo + "'";
 			Map<String, Object> entityMap = query(connection, selectSql,
-					permissionCache.getRIREntityKeyFileds(role), MAP_KEY,
-					role, format);
+					ColumnCache.getColumnCache().getRIREntityKeyFileds(), MAP_KEY,
+					 format);
 			if (entityMap != null) {
 				map = rdapConformance(map);
 				map.putAll(entityMap);
@@ -118,7 +119,7 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 	}
 
 	protected Map<String, Object> postHandleFields(String keyName,
-			String format, ResultSet results, Map<String, Object> map)
+			ResultSet results, Map<String, Object> map)
 			throws SQLException {
 		// asevent
 		if (keyName.equals(WhoisUtil.JOINENTITESFILED)) {
@@ -198,12 +199,15 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 		return result;
 	}
 
-	private void getListFromMap(Map<String, Object> allDnrEntity,
+	private void getListFromMap(Map<String, Object> allEntity,
 			List<Map<String, Object>> mapList) {
-		if(null != allDnrEntity.get("Handle")){// only one result
-			mapList.add(allDnrEntity);
+		if(null == allEntity){
+			return ;
+		}
+		if(null != allEntity.get("Handle")){// only one result
+			mapList.add(allEntity);
 		}else{
-			Object[] entities = (Object[]) allDnrEntity.get(MAP_KEY);
+			Object[] entities = (Object[]) allEntity.get(MAP_KEY);
 			for(Object entity: entities){
 				mapList.add((Map<String, Object>)entity);
 			}

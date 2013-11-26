@@ -6,6 +6,8 @@ import java.util.List;
 
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryType;
+import com.cnnic.whois.util.ColumnCache;
+import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class DnrEntityQueryDao extends EntityQueryDao {
@@ -16,7 +18,7 @@ public class DnrEntityQueryDao extends EntityQueryDao {
 
 	@Override
 	public QueryType getQueryType() {
-		return QueryType.NONE;
+		return QueryType.DNRENTITY;
 	}
 
 	@Override
@@ -38,10 +40,15 @@ public class DnrEntityQueryDao extends EntityQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection)
+			Connection connection)
 			throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_JOINDNRENTITY, role, connection,
-				permissionCache.getRIREntityKeyFileds(role));
+				WhoisUtil.SELECT_JOIN_LIST_JOINDNRENTITY, connection,
+				ColumnCache.getColumnCache().getRIREntityKeyFileds());
+	}
+	
+	@Override
+	public List<String> getKeyFields(String role) {
+		return PermissionCache.getPermissionCache().getDNREntityKeyFileds(role);
 	}
 }

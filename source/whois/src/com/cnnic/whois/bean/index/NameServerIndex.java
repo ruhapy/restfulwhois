@@ -7,6 +7,8 @@ import org.apache.solr.client.solrj.beans.Field;
 
 public class NameServerIndex implements Index{
 
+	@Field("docType")
+	private String docType;
 	@Field("id")
 	private String id;
 	@Field("handle")
@@ -47,13 +49,14 @@ public class NameServerIndex implements Index{
 
 	@Override
 	public String getHandle() {
-		// TODO Auto-generated method stub
-		return null;
+		return handle;
 	}
 
-	@Override
 	public String getDocType() {
-		// TODO Auto-generated method stub
-		return null;
+		return docType;
+	}
+
+	public void setDocType(String docType) {
+		this.docType = docType;
 	}
 }
