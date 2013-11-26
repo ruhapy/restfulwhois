@@ -35,7 +35,7 @@ public abstract class AbstractCacheQueryDao implements QueryDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
+	public Map<String, Object> query(QueryParam param, 
 			PageBean... page) throws QueryException, RedirectExecption {
 		String cacheKey = getCacheKey(param);
 		return getMapAndConvertToJsonObject(cacheKey);

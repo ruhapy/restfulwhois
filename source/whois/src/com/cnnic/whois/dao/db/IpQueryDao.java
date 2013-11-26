@@ -12,6 +12,8 @@ import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
+import com.cnnic.whois.util.ColumnCache;
+import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class IpQueryDao extends AbstractDbQueryDao {
@@ -20,7 +22,7 @@ public class IpQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
+	public Map<String, Object> query(QueryParam param,
 			PageBean... page) throws QueryException {
 		IpQueryParam ipParam = (IpQueryParam) param;
 		long startHighAddr = ipParam.getStartHighAddr();
@@ -58,7 +60,7 @@ public class IpQueryDao extends AbstractDbQueryDao {
 			}
 
 			Map<String, Object> ipMap = query(connection, selectSql,
-					permissionCache.getIPKeyFileds(role), "$mul$IP", role);
+					ColumnCache.getColumnCache().getIPKeyFileds(), "$mul$IP");
 			if (ipMap != null) {
 				map = rdapConformance(map);
 				map.putAll(ipMap);
@@ -146,7 +148,11 @@ public class IpQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection) throws SQLException {
+			Connection connection) throws SQLException {
 		throw new UnsupportedOperationException();
+	}
+	@Override
+	public List<String> getKeyFields(String role) {
+		return PermissionCache.getPermissionCache().getIPKeyFileds(role);
 	}
 }

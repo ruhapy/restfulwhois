@@ -10,6 +10,8 @@ import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
+import com.cnnic.whois.util.ColumnCache;
+import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class VariantsQueryDao extends AbstractDbQueryDao {
@@ -18,8 +20,8 @@ public class VariantsQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
-			PageBean... page) throws QueryException {
+	public Map<String, Object> query(QueryParam param, PageBean... page)
+			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
@@ -27,9 +29,8 @@ public class VariantsQueryDao extends AbstractDbQueryDao {
 			connection = ds.getConnection();
 			String selectSql = WhoisUtil.SELECT_LIST_VARIANTS + "'"
 					+ param.getQ() + "'";
-			map = query(connection, selectSql,
-					permissionCache.getVariantsKeyFileds(role),
-					"$mul$variants", role);
+			map = query(connection, selectSql, ColumnCache.getColumnCache()
+					.getVariantsKeyFileds(), "$mul$variants");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -62,9 +63,13 @@ public class VariantsQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection) throws SQLException {
+			Connection connection) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_VARIANTS, role, connection,
-				permissionCache.getVariantsKeyFileds(role));
+				WhoisUtil.SELECT_JOIN_LIST_VARIANTS, connection, ColumnCache
+						.getColumnCache().getVariantsKeyFileds());
+	}
+	@Override
+	public List<String> getKeyFields(String role) {
+		return PermissionCache.getPermissionCache().getVariantsKeyFileds(role);
 	}
 }

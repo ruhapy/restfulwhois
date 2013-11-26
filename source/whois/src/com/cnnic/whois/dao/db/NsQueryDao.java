@@ -12,6 +12,9 @@ import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
+import com.cnnic.whois.execption.RedirectExecption;
+import com.cnnic.whois.util.ColumnCache;
+import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class NsQueryDao extends AbstractDbQueryDao {
@@ -21,7 +24,7 @@ public class NsQueryDao extends AbstractDbQueryDao {
 		super(dbQueryDaos);
 	}
 
-	public Map<String, Object> query(QueryParam param, String role,
+	public Map<String, Object> query(QueryParam param, 
 			PageBean... page) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -32,8 +35,8 @@ public class NsQueryDao extends AbstractDbQueryDao {
 			String selectSql = WhoisUtil.SELECT_LIST_NAMESREVER + "'"
 					+ param.getQ() + "'";
 			Map<String, Object> nsMap = query(connection, selectSql,
-					permissionCache.getNameServerKeyFileds(role),
-					"$mul$nameServer", role);
+					ColumnCache.getColumnCache().getNameServerKeyFileds(),
+					"$mul$nameServer");
 			if (nsMap != null) {
 				map = rdapConformance(map);
 				map.putAll(nsMap);
@@ -116,9 +119,13 @@ public class NsQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection) throws SQLException {
+			Connection connection) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_JOINNAMESERVER, role, connection,
-				permissionCache.getNameServerKeyFileds(role));
+				WhoisUtil.SELECT_JOIN_LIST_JOINNAMESERVER, connection,
+				ColumnCache.getColumnCache().getNameServerKeyFileds());
+	}
+	@Override
+	public List<String> getKeyFields(String role) {
+		return PermissionCache.getPermissionCache().getNameServerKeyFileds(role);
 	}
 }

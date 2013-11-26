@@ -8,6 +8,7 @@ import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.dao.db.DbQueryExecutor;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
+import com.cnnic.whois.permission.PermissionController;
 import com.cnnic.whois.view.FormatType;
 import com.cnnic.whois.view.ViewResolver;
 
@@ -17,6 +18,7 @@ public class QueryEngine {
 //			CacheQueryExecutor.getExecutor();
 			DbQueryExecutor.getExecutor();
 	private ViewResolver viewResolver = ViewResolver.getResolver();
+	private PermissionController permissionController = PermissionController.getPermissionController();
 	public static QueryEngine getEngine() {
 		return engine;
 	}
@@ -32,7 +34,8 @@ public class QueryEngine {
 	public Map<String, Object> query(QueryType queryType, QueryParam param,
 			String role, String format,PageBean... pageParam) throws QueryException,
 			RedirectExecption {
-		Map<String, Object> result = queryExecutor.query(queryType, param, role, pageParam);
+		Map<String, Object> result = queryExecutor.query(queryType, param, pageParam);
+		result = permissionController.removeUnAuthedEntriesMap(result, queryType, role);
 		result = viewResolver.format(result, FormatType.getFormatType(format));
 		return result;
 	}

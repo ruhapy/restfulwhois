@@ -11,10 +11,9 @@ import com.cnnic.whois.execption.RedirectExecption;
 public class SearchEntityQueryDao extends AbstractCacheQueryDao {
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
-			PageBean... pageParam) throws QueryException, RedirectExecption {
-		return dbQueryExecutor.query(QueryType.SEARCHENTITY, param, role,
-				pageParam);
+	public Map<String, Object> query(QueryParam param, PageBean... pageParam)
+			throws QueryException, RedirectExecption {
+		return dbQueryExecutor.query(QueryType.SEARCHENTITY, param, pageParam);
 	}
 
 	@Override

@@ -10,6 +10,8 @@ import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
+import com.cnnic.whois.util.ColumnCache;
+import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class LinksQueryDao extends AbstractDbQueryDao {
@@ -18,7 +20,7 @@ public class LinksQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
+	public Map<String, Object> query(QueryParam param, 
 			PageBean... page) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -28,7 +30,7 @@ public class LinksQueryDao extends AbstractDbQueryDao {
 			String selectSql = WhoisUtil.SELECT_LIST_LINK + "'" + param.getQ()
 					+ "'";
 			map = query(connection, selectSql,
-					permissionCache.getLinkKeyFileds(role), "$mul$link", role);
+					ColumnCache.getColumnCache().getLinkKeyFileds(), "$mul$link");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -61,9 +63,13 @@ public class LinksQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection) throws SQLException {
+			Connection connection) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_LINK, role, connection,
-				permissionCache.getLinkKeyFileds(role));
+				WhoisUtil.SELECT_JOIN_LIST_LINK, connection,
+				ColumnCache.getColumnCache().getLinkKeyFileds());
+	}
+	@Override
+	public List<String> getKeyFields(String role) {
+		return PermissionCache.getPermissionCache().getLinkKeyFileds(role);
 	}
 }

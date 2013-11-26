@@ -21,7 +21,7 @@ public class SearchEntityQueryDao extends AbstractSearchQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
+	public Map<String, Object> query(QueryParam param,
 			PageBean... pageParams) throws QueryException {
 		EntityQueryParam entityQueryParam = (EntityQueryParam) param;
 		SearchResult<EntityIndex> result = entityIndexService
@@ -34,7 +34,7 @@ public class SearchEntityQueryDao extends AbstractSearchQueryDao {
 		try {
 			connection = ds.getConnection();
 			Map<String, Object> entityMap = fuzzyQuery(connection, result,
-					selectSql, "$mul$entity", role);
+					selectSql, "$mul$entity");
 			if (entityMap != null) {
 				map = rdapConformance(map);
 				map.putAll(entityMap);

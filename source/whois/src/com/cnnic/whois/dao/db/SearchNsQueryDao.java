@@ -22,8 +22,8 @@ public class SearchNsQueryDao extends AbstractSearchQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
-			PageBean... pageParam) throws QueryException {
+	public Map<String, Object> query(QueryParam param, PageBean... pageParam)
+			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 		SearchCondition searchCondition = new SearchCondition(param.getQ());
@@ -41,7 +41,7 @@ public class SearchNsQueryDao extends AbstractSearchQueryDao {
 			String selectSql = WhoisUtil.SELECT_LIST_NAMESREVER + "'"
 					+ param.getQ() + "'";
 			Map<String, Object> nsMap = fuzzyQuery(connection, result,
-					selectSql, "$mul$nameServer", role);
+					selectSql, "$mul$nameServer");
 			if (nsMap != null) {
 				map = rdapConformance(map);
 				map.putAll(nsMap);
@@ -64,8 +64,8 @@ public class SearchNsQueryDao extends AbstractSearchQueryDao {
 	protected Map<String, Object> postHandleFieldsFuzzy(String keyName,
 			String format, Map<String, Object> map) {
 		Map<String, Object> map_IP = new LinkedHashMap<String, Object>();
-		Object IPAddressArray = map.get(WhoisUtil.getDisplayKeyName(
-				"IPV4_Addresses"));
+		Object IPAddressArray = map.get(WhoisUtil
+				.getDisplayKeyName("IPV4_Addresses"));
 		map_IP.put(WhoisUtil.IPV4PREFIX, IPAddressArray);
 		IPAddressArray = map.get(WhoisUtil.getDisplayKeyName("IPV6_Addresses"));
 		map_IP.put(WhoisUtil.IPV6PREFIX, IPAddressArray);

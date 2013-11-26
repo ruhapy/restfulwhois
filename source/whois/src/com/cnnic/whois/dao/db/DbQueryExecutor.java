@@ -59,11 +59,10 @@ public class DbQueryExecutor implements QueryExecutor {
 
 	@Override
 	public Map<String, Object> query(QueryType queryType, QueryParam param,
-			String role, PageBean... pageParam) throws QueryException,
-			RedirectExecption {
+			PageBean... pageParam) throws QueryException, RedirectExecption {
 		for (AbstractDbQueryDao queryDao : dbQueryDaos) {
 			if (queryDao.supportType(queryType)) {
-				return queryDao.query(param, role, pageParam);
+				return queryDao.query(param, pageParam);
 			}
 		}
 		return null;
@@ -85,5 +84,14 @@ public class DbQueryExecutor implements QueryExecutor {
 
 	public void setDbQueryDaos(List<AbstractDbQueryDao> dbQueryDaos) {
 		this.dbQueryDaos = dbQueryDaos;
+	}
+
+	public List<String> getKeyFields(QueryType queryType,String role) {
+		for (AbstractDbQueryDao queryDao : dbQueryDaos) {
+			if (queryDao.supportType(queryType)) {
+				return queryDao.getKeyFields(role);
+			}
+		}
+		return new ArrayList<String>();
 	}
 }

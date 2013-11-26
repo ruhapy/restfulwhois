@@ -10,15 +10,17 @@ import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
+import com.cnnic.whois.util.ColumnCache;
 import com.cnnic.whois.util.WhoisUtil;
 
+@Deprecated
 public class DelegationKeysQueryDao extends AbstractDbQueryDao {
 	public DelegationKeysQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
+	public Map<String, Object> query(QueryParam param, 
 			PageBean... page) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -28,8 +30,8 @@ public class DelegationKeysQueryDao extends AbstractDbQueryDao {
 			String selectSql = WhoisUtil.SELECT_LIST_DELEGATIONKEYS + "'"
 					+ param.getQ() + "'";
 			map = query(connection, selectSql,
-					permissionCache.getDelegationKeyFileds(role),
-					"$mul$delegationKeys", role);
+					ColumnCache.getColumnCache().getDelegationKeyFileds(),
+					"$mul$delegationKeys");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -62,9 +64,9 @@ public class DelegationKeysQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection) throws SQLException {
+			Connection connection) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_DELEGATIONKEYS, role, connection,
-				permissionCache.getDelegationKeyFileds(role));
+				WhoisUtil.SELECT_JOIN_LIST_DELEGATIONKEYS, connection,
+				ColumnCache.getColumnCache().getDelegationKeyFileds());
 	}
 }
