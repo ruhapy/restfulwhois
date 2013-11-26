@@ -146,13 +146,6 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 		return map;
 	}
 
-	private Map<String, Object> getAllDNREntity() throws QueryException {
-		String sql = GET_ALL_DNRENTITY;
-		List<String> keyFields = ColumnCache.getColumnCache()
-				.getDNREntityKeyFileds();
-		return getAllEntity(sql, keyFields);
-	}
-
 	private Map<String, Object> getAllRIREntity() throws QueryException {
 		String sql = GET_ALL_RIRENTITY;
 		List<String> keyFields = ColumnCache.getColumnCache()
@@ -160,7 +153,7 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 		return getAllEntity(sql, keyFields);
 	}
 
-	private Map<String, Object> getAllEntity(String sql, List<String> keyFields)
+	protected Map<String, Object> getAllEntity(String sql, List<String> keyFields)
 			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -184,18 +177,6 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 			}
 		}
 		return map;
-	}
-
-	@Override
-	public Map<String, Object> getAll() throws QueryException {
-		Map<String, Object> allDnrEntity = getAllDNREntity();
-		List<Map<String, Object>> mapList = new ArrayList<Map<String, Object>>();
-		getListFromMap(allDnrEntity, mapList);
-		Map<String, Object> allRirEntity = this.getAllRIREntity();
-		getListFromMap(allRirEntity, mapList);
-		Map<String, Object> result = new HashMap<String, Object>();
-		result.put(MAP_KEY, mapList.toArray());
-		return result;
 	}
 
 	private void getListFromMap(Map<String, Object> allEntity,

@@ -33,6 +33,7 @@ public class EntityQueryDao extends AbstractCacheQueryDao {
 
 	@Override
 	protected void initCache() {
-		super.initCacheWithOneKey("$mul$entity", "Handle");
+		super.initCacheWithOneKey("$mul$entity", "Handle",QueryType.DNRENTITY);
+		super.initCacheWithOneKey("$mul$entity", "Handle",QueryType.RIRENTITY);
 	}
 }

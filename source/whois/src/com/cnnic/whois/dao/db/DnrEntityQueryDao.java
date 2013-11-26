@@ -3,9 +3,11 @@ package com.cnnic.whois.dao.db;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryType;
+import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.ColumnCache;
 import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
@@ -23,7 +25,7 @@ public class DnrEntityQueryDao extends EntityQueryDao {
 
 	@Override
 	public boolean supportType(QueryType queryType) {
-		return false;
+		return QueryType.DNRENTITY.equals(queryType);
 	}
 
 	@Override
@@ -38,6 +40,13 @@ public class DnrEntityQueryDao extends EntityQueryDao {
 		return true;
 	}
 
+	@Override
+	public Map<String, Object> getAll() throws QueryException {
+		List<String> keyFields = ColumnCache.getColumnCache()
+				.getDNREntityKeyFileds();
+		return getAllEntity(GET_ALL_DNRENTITY, keyFields);
+	}
+	
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
 			Connection connection)
