@@ -15,13 +15,15 @@ import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class KeyDataQueryDao extends AbstractDbQueryDao {
+	public static final String GET_ALL_KEYDATA = "select * from keyData ";
+
 	public KeyDataQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param,
-			PageBean... page) throws QueryException {
+	public Map<String, Object> query(QueryParam param, PageBean... page)
+			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
@@ -29,9 +31,30 @@ public class KeyDataQueryDao extends AbstractDbQueryDao {
 			connection = ds.getConnection();
 			String selectSql = WhoisUtil.SELECT_LIST_KEYDATA + "'"
 					+ param.getQ() + "'";
-			map = query(connection, selectSql,
-					ColumnCache.getColumnCache().getKeyDataKeyFileds(),
-					"$mul$keyData");
+			map = query(connection, selectSql, ColumnCache.getColumnCache()
+					.getKeyDataKeyFileds(), "$mul$keyData");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new QueryException(e);
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException se) {
+				}
+			}
+		}
+		return map;
+	}
+
+	@Override
+	public Map<String, Object> getAll() throws QueryException {
+		Connection connection = null;
+		Map<String, Object> map = null;
+		try {
+			connection = ds.getConnection();
+			map = query(connection, GET_ALL_KEYDATA, ColumnCache
+					.getColumnCache().getKeyDataKeyFileds(), "$mul$keyData");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -78,11 +101,13 @@ public class KeyDataQueryDao extends AbstractDbQueryDao {
 	public Object querySpecificJoinTable(String key, String handle,
 			Connection connection) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_KEYDATA, connection,
-				ColumnCache.getColumnCache().getKeyDataKeyFileds());
+				WhoisUtil.SELECT_JOIN_LIST_KEYDATA, connection, ColumnCache
+						.getColumnCache().getKeyDataKeyFileds());
 	}
+
 	@Override
 	public List<String> getKeyFields(String role) {
-		return PermissionCache.getPermissionCache().getKeyDataMapKeyFileds(role);
+		return PermissionCache.getPermissionCache()
+				.getKeyDataMapKeyFileds(role);
 	}
 }

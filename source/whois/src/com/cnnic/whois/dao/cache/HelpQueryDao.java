@@ -1,15 +1,18 @@
 package com.cnnic.whois.dao.cache;
 
-import java.util.List;
 import java.util.Map;
+
+import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
+import com.cnnic.whois.execption.RedirectExecption;
 
 public class HelpQueryDao extends AbstractCacheQueryDao {
 	@Override
-	protected List<String> getCacheKeySplits(QueryParam param) {
-		return super.getHandleCacheKeySplits(param);
+	public Map<String, Object> query(QueryParam param, 
+			PageBean... pageParam) throws QueryException, RedirectExecption {
+		return dbQueryExecutor.query(QueryType.HELP, param, pageParam);
 	}
 
 	@Override
@@ -24,34 +27,11 @@ public class HelpQueryDao extends AbstractCacheQueryDao {
 
 	@Override
 	protected boolean needInitCache() {
-		return true;
+		return false;
 	}
-
+	@Deprecated
 	@Override
 	protected void initCache() {
-		try {
-			Map<String, Object> valuesMap = dbQueryExecutor.getAll(
-					QueryType.HELP, "root");
-			if (null == valuesMap) {
-				return;
-			}
-			if (null == valuesMap.get("$mul$notices")) {
-				setCache(valuesMap);
-				return;
-			}
-			Object[] values = (Object[]) valuesMap.get("$mul$notices");
-			for (Object entity : values) {
-				Map<String, Object> entityMap = (Map<String, Object>) entity;
-				setCache(entityMap);
-			}
-		} catch (QueryException e) {
-			e.printStackTrace();
-		}
-	}
-
-	private void setCache(Map<String, Object> entityMap) {
-		String key = super.getCacheKey(new QueryParam(entityMap
-				.get("noticesId").toString()));
-		super.setCache(key, entityMap);
+		super.initCacheWithOneKey("$mul$notices", "noticesId");
 	}
 }

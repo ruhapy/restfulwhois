@@ -23,8 +23,8 @@ public class DsDataQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param,
-			PageBean... page) throws QueryException {
+	public Map<String, Object> query(QueryParam param, PageBean... page)
+			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
@@ -32,8 +32,8 @@ public class DsDataQueryDao extends AbstractDbQueryDao {
 			connection = ds.getConnection();
 			String selectSql = WhoisUtil.SELECT_LIST_DSDATA + "'"
 					+ param.getQ() + "'";
-			map = query(connection, selectSql,
-					ColumnCache.getColumnCache().getDsDataKeyFileds(), "$mul$dsData");
+			map = query(connection, selectSql, ColumnCache.getColumnCache()
+					.getDsDataKeyFileds(), "$mul$dsData");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -61,14 +61,13 @@ public class DsDataQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> getAll(String role) throws QueryException {
+	public Map<String, Object> getAll() throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 		try {
 			connection = ds.getConnection();
-			map = query(connection, GET_ALL_DSDATA,
-					permissionCache.getDsDataMapKeyFileds(role), QUERY_KEY,
-					role);
+			map = query(connection, GET_ALL_DSDATA, ColumnCache
+					.getColumnCache().getDsDataKeyFileds(), QUERY_KEY);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -103,10 +102,10 @@ public class DsDataQueryDao extends AbstractDbQueryDao {
 	public Object querySpecificJoinTable(String key, String handle,
 			Connection connection) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_DSDATA, connection,
-				ColumnCache.getColumnCache().getDsDataKeyFileds());
+				WhoisUtil.SELECT_JOIN_LIST_DSDATA, connection, ColumnCache
+						.getColumnCache().getDsDataKeyFileds());
 	}
-	
+
 	@Override
 	public List<String> getKeyFields(String role) {
 		return PermissionCache.getPermissionCache().getDsDataMapKeyFileds(role);

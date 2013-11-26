@@ -15,6 +15,8 @@ import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class RemarksQueryDao extends AbstractDbQueryDao {
+	public static final String GET_ALL_REMARKS = "select * from remarks ";
+
 	public RemarksQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
@@ -31,6 +33,28 @@ public class RemarksQueryDao extends AbstractDbQueryDao {
 					+ param.getQ() + "'";
 			map = query(connection, selectSql, ColumnCache.getColumnCache()
 					.getRemarksKeyFileds(), "$mul$remarks");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new QueryException(e);
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException se) {
+				}
+			}
+		}
+		return map;
+	}
+
+	@Override
+	public Map<String, Object> getAll() throws QueryException {
+		Connection connection = null;
+		Map<String, Object> map = null;
+		try {
+			connection = ds.getConnection();
+			map = query(connection, GET_ALL_REMARKS, ColumnCache
+					.getColumnCache().getRemarksKeyFileds(), "$mul$remarks");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -82,6 +106,7 @@ public class RemarksQueryDao extends AbstractDbQueryDao {
 				WhoisUtil.SELECT_JOIN_LIST_REMARKS, connection, ColumnCache
 						.getColumnCache().getRemarksKeyFileds());
 	}
+
 	@Override
 	public List<String> getKeyFields(String role) {
 		return PermissionCache.getPermissionCache().getRemarksKeyFileds(role);

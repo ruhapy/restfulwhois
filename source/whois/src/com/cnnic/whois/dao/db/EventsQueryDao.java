@@ -22,8 +22,8 @@ public class EventsQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param,
-			PageBean... page) throws QueryException {
+	public Map<String, Object> query(QueryParam param, PageBean... page)
+			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
@@ -31,8 +31,8 @@ public class EventsQueryDao extends AbstractDbQueryDao {
 			connection = ds.getConnection();
 			String selectSql = WhoisUtil.SELECT_LIST_EVENTS + "'"
 					+ param.getQ() + "'";
-			map = query(connection, selectSql,
-					ColumnCache.getColumnCache().getEventsKeyFileds(), "$mul$events");
+			map = query(connection, selectSql, ColumnCache.getColumnCache()
+					.getEventsKeyFileds(), "$mul$events");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -48,14 +48,13 @@ public class EventsQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> getAll(String role) throws QueryException {
+	public Map<String, Object> getAll() throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 		try {
 			connection = ds.getConnection();
-			map = query(connection, GET_ALL_EVENTS,
-					permissionCache.getEventsKeyFileds(role), "$mul$events",
-					role);
+			map = query(connection, GET_ALL_EVENTS, ColumnCache
+					.getColumnCache().getEventsKeyFileds(), "$mul$events");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -90,10 +89,10 @@ public class EventsQueryDao extends AbstractDbQueryDao {
 	public Object querySpecificJoinTable(String key, String handle,
 			Connection connection) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_EVENTS, connection,
-				ColumnCache.getColumnCache().getEventsKeyFileds());
+				WhoisUtil.SELECT_JOIN_LIST_EVENTS, connection, ColumnCache
+						.getColumnCache().getEventsKeyFileds());
 	}
-	
+
 	@Override
 	public List<String> getKeyFields(String role) {
 		return PermissionCache.getPermissionCache().getEventsKeyFileds(role);

@@ -50,7 +50,7 @@ public class DnrDomainQueryDao extends AbstractDomainQueryDao {
 		return map;
 	}
 	@Override
-	public Map<String, Object> getAll(String role) throws QueryException {
+	public Map<String, Object> getAll() throws QueryException {
 		List<String> dnrKeyFields = ColumnCache.getColumnCache().getDNRDomainKeyFileds();
 		Map<String, Object> dnrDomains = queryBySql(GET_ALL_DNRDOMAIN,
 				dnrKeyFields);
