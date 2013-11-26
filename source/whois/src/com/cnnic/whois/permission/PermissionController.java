@@ -21,10 +21,11 @@ public class PermissionController {
 	}
 
 	public Map<String, Object> removeUnAuthedEntriesMap(
-			Map<String, Object> map, QueryType queryType, String role) {
+			Map<String, Object> map, String role) {
 		if (null == map) {
 			return map;
 		}
+		QueryType queryType = getQueryType(map);
 		List<String> dnrKeyFields = dbQueryExecutor.getKeyFields(queryType,
 				role);
 		Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
@@ -83,8 +84,7 @@ public class PermissionController {
 			removeUnAuthedEntriesJsonArray((JSONArray) object, role);
 		} else if (object instanceof Map) {
 			Map<String, Object> map = (Map<String, Object>) object;
-			QueryType queryType = getQueryType(map);
-			removeUnAuthedEntriesMap(map, queryType, role);
+			removeUnAuthedEntriesMap(map, role);
 		}
 	}
 
