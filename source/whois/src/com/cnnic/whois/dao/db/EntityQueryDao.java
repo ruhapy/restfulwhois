@@ -1,20 +1,16 @@
 package com.cnnic.whois.dao.db;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
-import com.cnnic.whois.bean.index.EntityIndex;
+import com.cnnic.whois.bean.index.Index;
 import com.cnnic.whois.execption.QueryException;
-import com.cnnic.whois.service.EntityIndexService;
 import com.cnnic.whois.service.index.SearchResult;
 import com.cnnic.whois.util.ColumnCache;
 import com.cnnic.whois.util.WhoisUtil;
@@ -23,8 +19,6 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 	private static final String MAP_KEY = "$mul$entity";
 	public static final String GET_ALL_DNRENTITY = "select * from DNREntity ";
 	public static final String GET_ALL_RIRENTITY = "select * from RIREntity ";
-	protected EntityIndexService entityIndexService = EntityIndexService
-			.getIndexService();
 
 	public EntityQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
@@ -33,14 +27,13 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 	@Override
 	public Map<String, Object> query(QueryParam param, PageBean... page)
 			throws QueryException {
-		SearchResult<EntityIndex> result = entityIndexService
-				.preciseQueryEntitiesByHandleOrName(param.getQ());
-		String selectSql = WhoisUtil.SELECT_LIST_RIRENTITY;
+		SearchResult<? extends Index> result = searchQueryExecutor
+				.query(QueryType.ENTITY, param, page);
 		Connection connection = null;
 		Map<String, Object> map = null;
 		try {
 			connection = ds.getConnection();
-			map = fuzzyQuery(connection, result, selectSql, MAP_KEY);
+			map = fuzzyQuery(connection, result, MAP_KEY);
 			map = rdapConformance(map);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -137,13 +130,6 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 		}
 		map = WhoisUtil.toVCard(map);
 		return map;
-	}
-
-	private Map<String, Object> getAllRIREntity() throws QueryException {
-		String sql = GET_ALL_RIRENTITY;
-		List<String> keyFields = ColumnCache.getColumnCache()
-				.getRIREntityKeyFileds();
-		return getAllEntity(sql, keyFields);
 	}
 
 	protected Map<String, Object> getAllEntity(String sql, List<String> keyFields)
