@@ -53,7 +53,7 @@ public class DnrEntityQueryDao extends EntityQueryDao {
 			throws SQLException {
 		return querySpecificJoinTable(key, handle,
 				WhoisUtil.SELECT_JOIN_LIST_JOINDNRENTITY, connection,
-				ColumnCache.getColumnCache().getRIREntityKeyFileds());
+				ColumnCache.getColumnCache().getDNREntityKeyFileds());
 	}
 	
 	@Override

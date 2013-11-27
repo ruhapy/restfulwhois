@@ -3,7 +3,6 @@ package com.cnnic.whois.dao.db;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
@@ -94,5 +93,15 @@ public class DbQueryExecutor implements QueryExecutor {
 			}
 		}
 		return new ArrayList<String>();
+	}
+
+	public Map<String, Object> formatValue(QueryType queryType,
+			Map<String, Object> map) {
+		for (AbstractDbQueryDao queryDao : dbQueryDaos) {
+			if (queryDao.supportType(queryType)) {
+				return queryDao.formatValue(map);
+			}
+		}
+		return map;
 	}
 }

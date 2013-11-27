@@ -118,31 +118,24 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 		return map;
 	}
 
-	protected Map<String, Object> postHandleFields(String keyName,
-			ResultSet results, Map<String, Object> map) throws SQLException {
-		// asevent
-		if (keyName.equals(WhoisUtil.JOINENTITESFILED)) {
-			String entityHandle = results.getString(WhoisUtil.HANDLE);
-			if (map.containsKey("events")) {
-				Map<String, Object> map_Events = new LinkedHashMap<String, Object>();
-				map_Events = (Map<String, Object>) map.get("events");
-				if (map_Events.containsKey("eventActor")) {
-					String eventactor = (String) map_Events.get("eventActor");
-					if (entityHandle.equals(eventactor)) {
-						map_Events.remove("eventActor");
-						List<Map<String, Object>> listEvents = new ArrayList<Map<String, Object>>();
-						listEvents.add(map_Events);
-						map.put("asEventActor", listEvents.toArray());
-						map.remove("events");
-					}
+	@Override
+	protected Map<String, Object> formatValue(Map<String, Object> map){
+		String entityHandle = (String) map.get(WhoisUtil.HANDLE);
+		if (map.containsKey("events")) {
+			Map<String, Object> map_Events = new LinkedHashMap<String, Object>();
+			map_Events = (Map<String, Object>) map.get("events");
+			if (map_Events.containsKey("eventActor")) {
+				String eventactor = (String) map_Events.get("eventActor");
+				if (entityHandle.equals(eventactor)) {
+					map_Events.remove("eventActor");
+					List<Map<String, Object>> listEvents = new ArrayList<Map<String, Object>>();
+					listEvents.add(map_Events);
+					map.put("asEventActor", listEvents.toArray());
+					map.remove("events");
 				}
 			}
 		}
-		// vcard format
-		if (keyName.equals(WhoisUtil.JOINENTITESFILED)
-				|| keyName.equals(WhoisUtil.MULTIPRXENTITY)) {
-			map = WhoisUtil.toVCard(map);
-		}
+		map = WhoisUtil.toVCard(map);
 		return map;
 	}
 

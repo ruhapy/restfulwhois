@@ -13,6 +13,7 @@ import redis.clients.jedis.Jedis;
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
+import com.cnnic.whois.dao.db.AbstractDbQueryDao;
 import com.cnnic.whois.dao.db.DbQueryExecutor;
 import com.cnnic.whois.dao.db.QueryDao;
 import com.cnnic.whois.execption.QueryException;
@@ -93,7 +94,10 @@ public abstract class AbstractCacheQueryDao implements QueryDao {
 			Object[] values = (Object[]) valuesMap.get(queryResultKey);
 			for (Object entity : values) {
 				Map<String, Object> entityMap = (Map<String, Object>) entity;
-				setCache(entityMap, key);
+				Map<String, Object> map = null;
+				map = AbstractDbQueryDao.rdapConformance(map);
+				map.putAll(entityMap);
+				setCache(map, key);
 			}
 			System.err.println("init cache,add " + getQueryType() + " size:"
 					+ values.length);
@@ -117,6 +121,7 @@ public abstract class AbstractCacheQueryDao implements QueryDao {
 
 	protected void setCache(String key, Map<String, Object> entityMap) {
 		String jsonStr = DataFormat.getJsonObject(entityMap).toString();
+		System.err.println(jsonStr);
 		cache.set(key, jsonStr);
 	}
 }

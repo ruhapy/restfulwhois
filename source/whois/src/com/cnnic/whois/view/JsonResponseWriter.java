@@ -14,7 +14,7 @@ public class JsonResponseWriter extends AbstractResponseWriter {
 
 	@Override
 	public String formatKey(String keyName) {
-		return formatKeyToCamelCase(keyName);
+		return formatKeyToCamelCaseIfNotJoinKey(keyName);
 	}
 
 	@Override
