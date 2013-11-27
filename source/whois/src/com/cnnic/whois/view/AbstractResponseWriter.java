@@ -3,10 +3,15 @@ package com.cnnic.whois.view;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.dao.db.AbstractDbQueryDao;
 import com.cnnic.whois.dao.db.DbQueryExecutor;
 import com.cnnic.whois.util.WhoisUtil;
+
 import net.sf.json.JSONArray;
 
 public abstract class AbstractResponseWriter implements ResponseWriter {
