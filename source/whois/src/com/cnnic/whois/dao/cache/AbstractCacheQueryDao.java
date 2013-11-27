@@ -12,6 +12,8 @@ import redis.clients.jedis.Jedis;
 
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
+import com.cnnic.whois.bean.QueryType;
+import com.cnnic.whois.dao.db.AbstractDbQueryDao;
 import com.cnnic.whois.dao.db.DbQueryExecutor;
 import com.cnnic.whois.dao.db.QueryDao;
 import com.cnnic.whois.execption.QueryException;
@@ -35,8 +37,8 @@ public abstract class AbstractCacheQueryDao implements QueryDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Map<String, Object> query(QueryParam param, 
-			PageBean... page) throws QueryException, RedirectExecption {
+	public Map<String, Object> query(QueryParam param, PageBean... page)
+			throws QueryException, RedirectExecption {
 		String cacheKey = getCacheKey(param);
 		return getMapAndConvertToJsonObject(cacheKey);
 	}
@@ -75,9 +77,13 @@ public abstract class AbstractCacheQueryDao implements QueryDao {
 	}
 
 	protected void initCacheWithOneKey(String queryResultKey, String key) {
+		initCacheWithOneKey(queryResultKey, key, getQueryType());
+	}
+
+	protected void initCacheWithOneKey(String queryResultKey, String key,
+			QueryType queryType) {
 		try {
-			Map<String, Object> valuesMap = dbQueryExecutor.getAll(
-					this.getQueryType(), "root");
+			Map<String, Object> valuesMap = dbQueryExecutor.getAll(queryType);
 			if (null == valuesMap) {
 				return;
 			}
@@ -88,10 +94,13 @@ public abstract class AbstractCacheQueryDao implements QueryDao {
 			Object[] values = (Object[]) valuesMap.get(queryResultKey);
 			for (Object entity : values) {
 				Map<String, Object> entityMap = (Map<String, Object>) entity;
-				setCache(entityMap, key);
+				Map<String, Object> map = null;
+				map = AbstractDbQueryDao.rdapConformance(map);
+				map.putAll(entityMap);
+				setCache(map, key);
 			}
-			System.err
-			.println("init cache,add "+getQueryType()+" size:" + values.length);
+			System.err.println("init cache,add " + getQueryType() + " size:"
+					+ values.length);
 		} catch (QueryException e) {
 			e.printStackTrace();
 		}
@@ -100,18 +109,19 @@ public abstract class AbstractCacheQueryDao implements QueryDao {
 	private void setCache(Map<String, Object> entityMap, String key) {
 		String cacheKey = getCacheKey(new QueryParam(entityMap.get(key)
 				.toString()));
-		System.err
-		.println("init cache,add "+getQueryType()+",key:" + cacheKey);
+		System.err.println("init cache,add " + getQueryType() + ",key:"
+				+ cacheKey);
 		setCache(cacheKey, entityMap);
 	}
 
 	@Override
-	public Map<String, Object> getAll(String role) throws QueryException {
+	public Map<String, Object> getAll() throws QueryException {
 		throw new UnsupportedOperationException();
 	}
 
 	protected void setCache(String key, Map<String, Object> entityMap) {
 		String jsonStr = DataFormat.getJsonObject(entityMap).toString();
+		System.err.println(jsonStr);
 		cache.set(key, jsonStr);
 	}
 }

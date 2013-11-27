@@ -2,11 +2,9 @@ package com.cnnic.whois.dao.cache;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
-import com.cnnic.whois.execption.QueryException;
 
 public class EntityQueryDao extends AbstractCacheQueryDao {
 	@Override
@@ -35,31 +33,7 @@ public class EntityQueryDao extends AbstractCacheQueryDao {
 
 	@Override
 	protected void initCache() {
-		try {
-			Map<String, Object> valuesMap = dbQueryExecutor.getAll(
-					QueryType.ENTITY, "root");
-			if (null == valuesMap) {
-				return;
-			}
-			if (null == valuesMap.get("$mul$entity")) {
-				setCache(valuesMap);
-				return;
-			}
-			Object[] values = (Object[]) valuesMap.get("$mul$entity");
-			for (Object entity : values) {
-				Map<String, Object> entityMap = (Map<String, Object>) entity;
-				setCache(entityMap);
-			}
-			System.err.println("init cache,add entities size:"+values.length);
-		} catch (QueryException e) {
-			e.printStackTrace();
-		}
-	}
-
-	private void setCache(Map<String, Object> entityMap) {
-		String key = super.getCacheKey(new QueryParam(entityMap.get("Handle")
-				.toString()));
-		System.err.println("init cache,add entity,key:"+key);
-		super.setCache(key, entityMap);
+		super.initCacheWithOneKey("$mul$entity", "Handle",QueryType.DNRENTITY);
+		super.initCacheWithOneKey("$mul$entity", "Handle",QueryType.RIRENTITY);
 	}
 }

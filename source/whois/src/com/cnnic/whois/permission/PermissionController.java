@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import net.sf.json.JSONArray;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.dao.db.AbstractDbQueryDao;
@@ -20,32 +21,50 @@ public class PermissionController {
 		return permissionController;
 	}
 
-	public Map<String, Object> removeUnAuthedEntriesMap(
-			Map<String, Object> map, QueryType queryType, String role) {
+	public Map<String, Object> removeUnAuthedEntries(
+			Map<String, Object> map, String role) {
 		if (null == map) {
 			return map;
 		}
+		Object[] multiObjs = getMultiObjs(map);
+		if(null != multiObjs){
+			removeUnAuthedEntriesObject(multiObjs, role);
+			return map;
+		}
+		return removeUnAuthedEntriesMap(map, role);
+	}
+	
+	private Map<String, Object> removeUnAuthedEntriesMap(
+			Map<String, Object> map, String role) {
+		if (null == map) {
+			return map;
+		}
+		QueryType queryType = getQueryType(map);
 		List<String> dnrKeyFields = dbQueryExecutor.getKeyFields(queryType,
 				role);
 		Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
 		List<String> keyFieldsWithoutPrefix = this.removeFieldPrefix(dnrKeyFields);
+		keyFieldsWithoutPrefix.add(WhoisUtil.RDAPCONFORMANCEKEY);
+		keyFieldsWithoutPrefix.add(AbstractDbQueryDao.QUERY_TYPE);
 		for (Iterator<Entry<String, Object>> it = map.entrySet().iterator(); it
 				.hasNext();) {
 			Entry<String, Object> entry = it.next();
 			if (keyFieldsWithoutPrefix.contains(entry.getKey())) {
 				resultMap.put(entry.getKey(), entry.getValue());
+				removeUnAuthedEntriesObject(entry.getValue(), role);
 			}
-		}
-		for (String field : dnrKeyFields) {
-			if (!field.startsWith(WhoisUtil.JOINFILEDPRX)) {
-				continue;
-			}
-			String joinEntityName = field.substring(WhoisUtil.JOINFILEDPRX
-					.length());
-			Object valueObj = map.get(joinEntityName);
-			removeUnAuthedEntriesObject(valueObj, role);
 		}
 		return resultMap;
+	}
+	private Object[] getMultiObjs(Map<String, Object> map){
+		for (Iterator<Entry<String, Object>> it = map.entrySet().iterator(); it
+				.hasNext();) {
+			Entry<String, Object> entry = it.next();
+			if (entry.getKey().startsWith(WhoisUtil.MULTIPRX)) {
+				return (Object[]) entry.getValue();
+			}
+		}
+		return null;
 	}
 
 	private List<String> removeFieldPrefix(List<String> fields) {
@@ -83,8 +102,9 @@ public class PermissionController {
 			removeUnAuthedEntriesJsonArray((JSONArray) object, role);
 		} else if (object instanceof Map) {
 			Map<String, Object> map = (Map<String, Object>) object;
-			QueryType queryType = getQueryType(map);
-			removeUnAuthedEntriesMap(map, queryType, role);
+			Map<String, Object> result = removeUnAuthedEntriesMap(map, role);
+			map.clear();
+			map.putAll(result);
 		}
 	}
 

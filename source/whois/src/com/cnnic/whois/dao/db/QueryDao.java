@@ -37,5 +37,5 @@ public interface QueryDao {
 	Map<String, Object> query(QueryParam param, PageBean... page)
 			throws QueryException, RedirectExecption;
 
-	Map<String, Object> getAll(String role) throws QueryException;
+	Map<String, Object> getAll() throws QueryException;
 }

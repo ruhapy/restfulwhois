@@ -22,8 +22,8 @@ public class ErrorMsgQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param,
-			PageBean... page) throws QueryException {
+	public Map<String, Object> query(QueryParam param, PageBean... page)
+			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 		try {
@@ -63,15 +63,14 @@ public class ErrorMsgQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> getAll(String role) throws QueryException {
+	public Map<String, Object> getAll() throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 		try {
 			connection = ds.getConnection();
 			Map<String, Object> errorMessageMap = query(connection,
-					GET_ALL_ERRORMESSAGE,
-					permissionCache.getErrorMessageKeyFileds(role),
-					"$mul$errormessage", role);
+					GET_ALL_ERRORMESSAGE, ColumnCache.getColumnCache()
+							.getErrorMessageKeyFileds(), "$mul$errormessage");
 			if (errorMessageMap != null) {
 				map = rdapConformance(map);
 				map.putAll(errorMessageMap);
@@ -111,8 +110,10 @@ public class ErrorMsgQueryDao extends AbstractDbQueryDao {
 			Connection connection) throws SQLException {
 		throw new UnsupportedOperationException();
 	}
+
 	@Override
 	public List<String> getKeyFields(String role) {
-		return PermissionCache.getPermissionCache().getErrorMessageKeyFileds(role);
+		return PermissionCache.getPermissionCache().getErrorMessageKeyFileds(
+				role);
 	}
 }

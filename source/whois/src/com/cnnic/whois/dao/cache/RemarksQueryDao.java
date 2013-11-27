@@ -1,9 +1,11 @@
 package com.cnnic.whois.dao.cache;
 
 import java.util.List;
+import java.util.Map;
 
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
+import com.cnnic.whois.execption.QueryException;
 
 public class RemarksQueryDao extends AbstractCacheQueryDao {
 	@Override

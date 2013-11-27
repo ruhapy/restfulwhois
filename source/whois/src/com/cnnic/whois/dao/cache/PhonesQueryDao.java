@@ -21,13 +21,13 @@ public class PhonesQueryDao extends AbstractCacheQueryDao {
 		return QueryType.PHONES.equals(queryType);
 	}
 
-	@Override
-	protected boolean needInitCache() {
-		return true;
-	}
-
-	@Override
-	protected void initCache() {
-		super.initCacheWithOneKey("$mul$phones", "phonesId");
-	}
+//	@Override
+//	protected boolean needInitCache() {
+//		return true;
+//	}
+//
+//	@Override
+//	protected void initCache() {
+//		super.initCacheWithOneKey("$mul$phones", "phonesId");
+//	}
 }
