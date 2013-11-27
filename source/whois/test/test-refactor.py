@@ -69,7 +69,7 @@ def sendAll(filePath, address1, address2):
             if(str(res2.data.lower()).find(testData.responseMark.lower()) > 0):
                 print "    " + address2 + "    data ok."
             else:
-                print "    " + address2 + "    invalid data:"+str(res2.data)
+                print "    " + address2 + "    invalid data:"#+str(res2.data)
         else:
             print "    no mark."
         print "-------------------------------------------------------------------------------------"
