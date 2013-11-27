@@ -98,7 +98,7 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 						map.put(field, resultsInfo);//a different format have different name;
 					}
 				}
-				map = postHandleFields(keyName, results, map);
+				map = postHandleFields(keyName, map);
 				list.add(map);
 			}
 			if (list.size() == 0){
@@ -145,7 +145,7 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 	}
 
 	protected Map<String, Object> postHandleFields(String keyName,
-			ResultSet results, Map<String, Object> map) throws SQLException {
+			Map<String, Object> map) throws SQLException {
 		return map;
 	}
 
@@ -207,7 +207,7 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 		return null;
 	}
 
-	protected Map<String, Object> rdapConformance(Map<String, Object> map){
+	public static Map<String, Object> rdapConformance(Map<String, Object> map){
 		if(map == null){
 			map = new LinkedHashMap<String, Object>();
 		}
@@ -219,6 +219,10 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 	
 	public List<String> getKeyFields(String role) {
 		throw new UnsupportedOperationException();
+	}
+	
+	protected Map<String, Object> formatValue(Map<String, Object> map){
+		return map;
 	}
 	
 	private void putQueryType(Map<String, Object> map){

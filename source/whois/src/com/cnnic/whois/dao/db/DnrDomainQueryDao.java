@@ -54,11 +54,7 @@ public class DnrDomainQueryDao extends AbstractDomainQueryDao {
 		List<String> dnrKeyFields = ColumnCache.getColumnCache().getDNRDomainKeyFileds();
 		Map<String, Object> dnrDomains = queryBySql(GET_ALL_DNRDOMAIN,
 				dnrKeyFields);
-		List<Map<String, Object>> mapList = new ArrayList<Map<String, Object>>();
-		getListFromMap(dnrDomains, mapList);
-		Map<String, Object> result = new HashMap<String, Object>();
-		result.put(QUERY_KEY, mapList.toArray());
-		return result;
+		return dnrDomains;
 	}
 
 	private void getListFromMap(Map<String, Object> allDnrEntity,

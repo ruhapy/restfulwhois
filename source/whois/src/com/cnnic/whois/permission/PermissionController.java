@@ -44,21 +44,15 @@ public class PermissionController {
 				role);
 		Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
 		List<String> keyFieldsWithoutPrefix = this.removeFieldPrefix(dnrKeyFields);
+		keyFieldsWithoutPrefix.add(WhoisUtil.RDAPCONFORMANCEKEY);
+		keyFieldsWithoutPrefix.add(AbstractDbQueryDao.QUERY_TYPE);
 		for (Iterator<Entry<String, Object>> it = map.entrySet().iterator(); it
 				.hasNext();) {
 			Entry<String, Object> entry = it.next();
 			if (keyFieldsWithoutPrefix.contains(entry.getKey())) {
 				resultMap.put(entry.getKey(), entry.getValue());
+				removeUnAuthedEntriesObject(entry.getValue(), role);
 			}
-		}
-		for (String field : dnrKeyFields) {
-			if (!field.startsWith(WhoisUtil.JOINFILEDPRX)) {
-				continue;
-			}
-			String joinEntityName = field.substring(WhoisUtil.JOINFILEDPRX
-					.length());
-			Object valueObj = map.get(joinEntityName);
-			removeUnAuthedEntriesObject(valueObj, role);
 		}
 		return resultMap;
 	}
@@ -108,7 +102,9 @@ public class PermissionController {
 			removeUnAuthedEntriesJsonArray((JSONArray) object, role);
 		} else if (object instanceof Map) {
 			Map<String, Object> map = (Map<String, Object>) object;
-			removeUnAuthedEntriesMap(map, role);
+			Map<String, Object> result = removeUnAuthedEntriesMap(map, role);
+			map.clear();
+			map.putAll(result);
 		}
 	}
 
