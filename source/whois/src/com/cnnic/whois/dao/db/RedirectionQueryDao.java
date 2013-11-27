@@ -11,9 +11,9 @@ import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
+import com.cnnic.whois.bean.RedirectionQueryParam;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
-import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class RedirectionQueryDao extends AbstractDbQueryDao {
@@ -23,20 +23,16 @@ public class RedirectionQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Map<String, Object> query(QueryParam param, PageBean... page)
-			throws QueryException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void queryRedirection(String tableName, String queryInfo)
 			throws QueryException, RedirectExecption {
 		Connection connection = null;
 		PreparedStatement stmt = null;
 		ResultSet results = null;
 		String selectSql = "";
-
-		if (tableName.equals(WhoisUtil.AUTNUM)) {
-			int queryPara = Integer.parseInt(queryInfo);
+		RedirectionQueryParam redirectionQueryParam = (RedirectionQueryParam)param;
+		String tableName = redirectionQueryParam.getTableName();
+		String queryInfo = redirectionQueryParam.getQ();
+		if (tableName .equals(WhoisUtil.AUTNUM)) {
+			int queryPara = Integer.parseInt(queryInfo );
 			selectSql = WhoisUtil.SELECT_URL_AUTNUM_EDIRECTION1 + queryPara
 					+ WhoisUtil.SELECT_URL_AUTNUM_EDIRECTION2 + queryPara;
 		} else {
@@ -63,16 +59,17 @@ public class RedirectionQueryDao extends AbstractDbQueryDao {
 				}
 			}
 		}
+		return null;
 	}
 
 	@Override
 	public QueryType getQueryType() {
-		return QueryType.NONE;
+		return QueryType.REDIRECTION;
 	}
 
 	@Override
 	public boolean supportType(QueryType queryType) {
-		return false;
+		return getQueryType().equals(queryType);
 	}
 
 	@Override

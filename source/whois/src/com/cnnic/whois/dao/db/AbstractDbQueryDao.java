@@ -88,7 +88,7 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 						String fliedName = getJoinFieldName(keyName);
 						String key = field.substring(WhoisUtil.JOINFILEDPRX.length());
 						Object value = queryJoinTable(field,
-								results.getString(fliedName), sql,
+								results.getString(fliedName),
 								connection);
 						if (value != null)
 							map.put(key, value);
@@ -165,7 +165,7 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 	 * @return Returns the schedule information content
 	 * @throws SQLException
 	 */
-	public Object queryJoinTable(String key, String handle, String sql,
+	public Object queryJoinTable(String key, String handle,
 			Connection connection) throws SQLException {
 		String keyWithoutJoinPrefix = key.substring(WhoisUtil.JOINFILEDPRX.length());
 		QueryJoinType joinType = QueryJoinType.getQueryJoinType(keyWithoutJoinPrefix);

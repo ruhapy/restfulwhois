@@ -9,8 +9,7 @@ import java.util.Map;
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
-import com.cnnic.whois.bean.index.NameServerIndex;
-import com.cnnic.whois.bean.index.SearchCondition;
+import com.cnnic.whois.bean.index.Index;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.index.SearchResult;
 import com.cnnic.whois.util.WhoisUtil;
@@ -26,22 +25,13 @@ public class SearchNsQueryDao extends AbstractSearchQueryDao {
 			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
-		SearchCondition searchCondition = new SearchCondition(param.getQ());
 		PageBean page = pageParam[0];
-		int startPage = page.getCurrentPage() - 1;
-		startPage = startPage >= 0 ? startPage : 0;
-		int start = startPage * page.getMaxRecords();
-		searchCondition.setStart(start);
-		searchCondition.setRow(page.getMaxRecords());
-		SearchResult<NameServerIndex> result = nameServerIndexService
-				.queryNameServers(searchCondition);
-		page.setRecordsCount(Long.valueOf(result.getTotalResults()).intValue());
+		SearchResult<? extends Index> result = searchQueryExecutor
+				.query(QueryType.NAMESERVER, param, page);
 		try {
 			connection = ds.getConnection();
-			String selectSql = WhoisUtil.SELECT_LIST_NAMESREVER + "'"
-					+ param.getQ() + "'";
 			Map<String, Object> nsMap = fuzzyQuery(connection, result,
-					selectSql, "$mul$nameServer");
+					"$mul$nameServer");
 			if (nsMap != null) {
 				map = rdapConformance(map);
 				map.putAll(nsMap);
