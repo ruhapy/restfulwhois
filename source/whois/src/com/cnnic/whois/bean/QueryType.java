@@ -10,7 +10,7 @@ public enum QueryType {
 			"entitySearch"), DELETATIONKEY("delegationKey"), ERRORMSG(
 			"errorMsg"), SEARCHDOMAIN("fuzzyDomain"), SEARCHENTITY(
 			"fuzzyEntity"), SEARCHNS("fuzzyNs"), IPREDIRECTION("ipRedirection"), REDIRECTION(
-			"redirection");
+			"redirection"),PUBLICIDS("publicIds");
 	private String name;
 
 	public static QueryType getQueryType(String name) {

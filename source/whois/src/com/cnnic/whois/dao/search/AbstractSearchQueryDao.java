@@ -1,5 +1,6 @@
 package com.cnnic.whois.dao.search;
 
+import java.lang.reflect.ParameterizedType;
 import java.net.MalformedURLException;
 import java.util.List;
 
@@ -50,11 +51,13 @@ public abstract class AbstractSearchQueryDao<T> implements SearchQueryDao {
 		return searchResult;
 	}
 
+	@SuppressWarnings("unchecked")
 	private void setSearchResult(SearchResult<T> searchResult,
 			QueryResponse queryResponse) {
 		searchResult.setSearchTime(queryResponse.getElapsedTime() / 1000.0D);
 		searchResult.setTotalResults(queryResponse.getResults().getNumFound());
-		List indexes = queryResponse.getBeans(searchResult.getClass());
+		Class<T> entityClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]; 
+		List indexes = queryResponse.getBeans(entityClass);
 		searchResult.setResultList(indexes);
 	}
 }
