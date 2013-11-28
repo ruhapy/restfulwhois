@@ -1090,7 +1090,7 @@ public class WhoisUtil {
 				Set<String> key = ((Map) phones).keySet();
 				List<Object> nameList = new ArrayList<Object>();
 				for (String name : key) {
-					if("queryType".equals(name)||name.endsWith("Id")){
+					if(isNotEntityField(name)){
 						continue;
 					}
 					Object values = ((Map) phones).get(name);
@@ -1127,6 +1127,9 @@ public class WhoisUtil {
 					Set<String> key = ((Map) phonesObject).keySet();
 					List<Object> nameList = new ArrayList<Object>();
 					for (String name : key) {
+						if(isNotEntityField(name)){
+							continue;
+						}
 						Object values = ((Map) phonesObject).get(name);
 						if (isArray(values)) {
 							String typeName = "";
@@ -1249,6 +1252,10 @@ public class WhoisUtil {
 		Resultlist.add(list);
 		map.put("vcardArray", Resultlist.toArray());
 		return map;
+	}
+
+	private static boolean isNotEntityField(String name) {
+		return QUERY_JOIN_TYPE.equals(name)||QUERY_TYPE.equals(name)||name.endsWith("Id");
 	}
 
 	private static boolean isArray(Object object) {
