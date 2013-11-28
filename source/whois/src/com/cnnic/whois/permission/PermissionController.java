@@ -6,10 +6,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import net.sf.json.JSONArray;
 import com.cnnic.whois.bean.QueryType;
-import com.cnnic.whois.dao.db.AbstractDbQueryDao;
 import com.cnnic.whois.dao.db.DbQueryExecutor;
 import com.cnnic.whois.util.WhoisUtil;
 
@@ -45,7 +43,8 @@ public class PermissionController {
 		Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
 		List<String> keyFieldsWithoutPrefix = this.removeFieldPrefix(dnrKeyFields);
 		keyFieldsWithoutPrefix.add(WhoisUtil.RDAPCONFORMANCEKEY);
-		keyFieldsWithoutPrefix.add(AbstractDbQueryDao.QUERY_TYPE);
+		keyFieldsWithoutPrefix.add(WhoisUtil.QUERY_TYPE);
+		keyFieldsWithoutPrefix.add(WhoisUtil.QUERY_JOIN_TYPE);
 		for (Iterator<Entry<String, Object>> it = map.entrySet().iterator(); it
 				.hasNext();) {
 			Entry<String, Object> entry = it.next();
@@ -85,7 +84,7 @@ public class PermissionController {
 	}
 
 	private QueryType getQueryType(Map<String, Object> map) {
-		Object queryTypeObj = map.get(AbstractDbQueryDao.QUERY_TYPE);
+		Object queryTypeObj = map.get(WhoisUtil.QUERY_TYPE);
 		if (null != queryTypeObj) {
 			return QueryType.getQueryType((String) queryTypeObj);
 		}

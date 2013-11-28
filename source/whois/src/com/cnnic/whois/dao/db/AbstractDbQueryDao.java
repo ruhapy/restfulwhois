@@ -22,7 +22,6 @@ import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
 
 public abstract class AbstractDbQueryDao implements QueryDao{
-	public static final String QUERY_TYPE = "queryType";
 	//	private static AbstractDbQueryDao queryDAO = new AbstractDbQueryDao();
 	protected DataSource ds;
 	protected PermissionCache permissionCache = PermissionCache
@@ -91,7 +90,7 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 								results.getString(fliedName),
 								connection);
 						if (value != null)
-							map.put(key, value);
+							map.put(key, value);//map or map-list
 					} else {
 						preHandleNormalField(keyName, results, map, field);
 						resultsInfo = results.getObject(field) == null ? "": results.getObject(field);
@@ -172,11 +171,23 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 		QueryType queryType = getQueryType();
 		for (AbstractDbQueryDao dbQueryDao : dbQueryDaos) {
 			if (dbQueryDao.supportJoinType(queryType, joinType)) {
-				return dbQueryDao.querySpecificJoinTable(key, handle,
+				Object result = dbQueryDao.querySpecificJoinTable(key, handle,
 						connection);
+				if(result instanceof Map){
+					addQueryJoinTypeEntry(joinType, result);
+				}else if(result instanceof Object[]){
+					for(Object obj:(Object[])result){
+						addQueryJoinTypeEntry(joinType, obj);
+					}
+				}
+				return result;
 			}
 		}
 		return null;
+	}
+	private void addQueryJoinTypeEntry(QueryJoinType joinType, Object result) {
+		Map map = (Map)result;
+		map.put("queryJoinType", joinType.getName());
 	}
 
 	/**
@@ -229,6 +240,6 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 		if(map == null){
 			return;
 		}
-		map.put(QUERY_TYPE, getQueryType().getName());
+		map.put(WhoisUtil.QUERY_TYPE, getQueryType().getName());
 	}
 }

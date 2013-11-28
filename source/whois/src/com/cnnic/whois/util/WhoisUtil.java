@@ -18,6 +18,8 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.QueryService;
 
 public class WhoisUtil {
+	public static final String QUERY_TYPE = "queryType";
+	public static final String QUERY_JOIN_TYPE = "queryJoinType";
 	public static final String BLANKSPACE = "    ";
 	
 	public static final String FUZZY_DOMAINS = "domains";
@@ -161,7 +163,8 @@ public class WhoisUtil {
 //	public static final String[] JOIN_FIELDS_WITH_CAMEL_STYLE = new String[]{"postalAddress","nameServer","publicIds"
 //		,"secureDNS","dsData","keyData","delegationKeys"};
 	public static final List<String> JOIN_FIELDS_WITH_CAMEL_STYLE = Arrays.asList(new String[]{"postalAddress","nameServer","publicIds"
-			,"secureDNS","dsData","keyData","delegationKeys","ipAddresses","rdapConformance","vcardArray"});
+			,"secureDNS","dsData","keyData","delegationKeys","ipAddresses","rdapConformance","vcardArray"
+			,"asEventActor"});
 	
 	public static final String VALUEARRAYPRX = "'~'";
 	public static final String HANDLE = "Handle";
@@ -1087,6 +1090,9 @@ public class WhoisUtil {
 				Set<String> key = ((Map) phones).keySet();
 				List<Object> nameList = new ArrayList<Object>();
 				for (String name : key) {
+					if("queryType".equals(name)||name.endsWith("Id")){
+						continue;
+					}
 					Object values = ((Map) phones).get(name);
 					if (isArray(values)) {
 						String typeName = "";
@@ -1097,7 +1103,8 @@ public class WhoisUtil {
 						} else if (name.equals(getDisplayKeyName("Mobile"))) {
 							typeName = "{\"type\":\"cell\"}";
 						}
-						for (String valueName : (String[]) values) {
+						String[] valuesArray = parseStringArray(values);
+						for (String valueName : valuesArray) {
 							List<Object> nameListArray = new ArrayList<Object>();
 							nameListArray.add("tel");
 							nameListArray.add(typeName);

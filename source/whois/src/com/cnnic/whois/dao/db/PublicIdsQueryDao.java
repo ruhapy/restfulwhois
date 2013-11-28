@@ -22,18 +22,18 @@ public class PublicIdsQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public QueryType getQueryType() {
-		return QueryType.NONE;
+		return QueryType.PUBLICIDS;
 	}
 
 	@Override
 	public boolean supportType(QueryType queryType) {
-		return false;
+		return getQueryType().equals(queryType);
 	}
 
 	@Override
 	public Map<String, Object> query(QueryParam param, PageBean... page)
 			throws QueryException {
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
