@@ -15,13 +15,15 @@ import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class LinksQueryDao extends AbstractDbQueryDao {
+	public static final String GET_ALL_LINK = "select * from link ";
+
 	public LinksQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, 
-			PageBean... page) throws QueryException {
+	public Map<String, Object> query(QueryParam param, PageBean... page)
+			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
@@ -29,8 +31,30 @@ public class LinksQueryDao extends AbstractDbQueryDao {
 			connection = ds.getConnection();
 			String selectSql = WhoisUtil.SELECT_LIST_LINK + "'" + param.getQ()
 					+ "'";
-			map = query(connection, selectSql,
-					ColumnCache.getColumnCache().getLinkKeyFileds(), "$mul$link");
+			map = query(connection, selectSql, ColumnCache.getColumnCache()
+					.getLinkKeyFileds(), "$mul$link");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new QueryException(e);
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException se) {
+				}
+			}
+		}
+		return map;
+	}
+
+	@Override
+	public Map<String, Object> getAll() throws QueryException {
+		Connection connection = null;
+		Map<String, Object> map = null;
+		try {
+			connection = ds.getConnection();
+			map = query(connection, GET_ALL_LINK, ColumnCache.getColumnCache()
+					.getLinkKeyFileds(), "$mul$link");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -65,9 +89,10 @@ public class LinksQueryDao extends AbstractDbQueryDao {
 	public Object querySpecificJoinTable(String key, String handle,
 			Connection connection) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_LINK, connection,
-				ColumnCache.getColumnCache().getLinkKeyFileds());
+				WhoisUtil.SELECT_JOIN_LIST_LINK, connection, ColumnCache
+						.getColumnCache().getLinkKeyFileds());
 	}
+
 	@Override
 	public List<String> getKeyFields(String role) {
 		return PermissionCache.getPermissionCache().getLinkKeyFileds(role);

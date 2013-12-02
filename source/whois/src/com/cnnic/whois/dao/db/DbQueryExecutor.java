@@ -3,7 +3,6 @@ package com.cnnic.whois.dao.db;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
@@ -22,17 +21,16 @@ public class DbQueryExecutor implements QueryExecutor {
 
 	private void init() {
 		dbQueryDaos.add(new AsQueryDao(dbQueryDaos));
-		dbQueryDaos.add(new DelegationKeysQueryDao(dbQueryDaos));
+//		dbQueryDaos.add(new DelegationKeysQueryDao(dbQueryDaos));
 		dbQueryDaos.add(new DnrDomainQueryDao(dbQueryDaos));
 		dbQueryDaos.add(new DnrEntityQueryDao(dbQueryDaos));
-		dbQueryDaos.add(new AbstractDomainQueryDao(dbQueryDaos) {
-		});// for getAll
 		dbQueryDaos.add(new DsDataQueryDao(dbQueryDaos));
 		dbQueryDaos.add(new EntityQueryDao(dbQueryDaos));
 		dbQueryDaos.add(new ErrorMsgQueryDao(dbQueryDaos));
 		dbQueryDaos.add(new EventsQueryDao(dbQueryDaos));
 		dbQueryDaos.add(new SearchDomainQueryDao(dbQueryDaos));
 		dbQueryDaos.add(new SearchEntityQueryDao(dbQueryDaos));
+		dbQueryDaos.add(new SearchNsQueryDao(dbQueryDaos));
 		dbQueryDaos.add(new HelpQueryDao(dbQueryDaos));
 		dbQueryDaos.add(new IpQueryDao(dbQueryDaos));// TODO:
 		dbQueryDaos.add(new IpRedirectionQueryDao(dbQueryDaos));
@@ -43,7 +41,7 @@ public class DbQueryExecutor implements QueryExecutor {
 		dbQueryDaos.add(new PhonesQueryDao(dbQueryDaos));
 		dbQueryDaos.add(new PostalAddressQueryDao(dbQueryDaos));
 		dbQueryDaos.add(new PublicIdsQueryDao(dbQueryDaos));
-		dbQueryDaos.add(new RefirectionQueryDao(dbQueryDaos));
+		dbQueryDaos.add(new RedirectionQueryDao(dbQueryDaos));
 		dbQueryDaos.add(new RegistrarQueryDao(dbQueryDaos));
 		dbQueryDaos.add(new RemarksQueryDao(dbQueryDaos));
 		dbQueryDaos.add(new RirDomainQueryDao(dbQueryDaos));
@@ -68,11 +66,11 @@ public class DbQueryExecutor implements QueryExecutor {
 		return null;
 	}
 
-	public Map<String, Object> getAll(QueryType queryType, String role)
+	public Map<String, Object> getAll(QueryType queryType)
 			throws QueryException {
 		for (AbstractDbQueryDao queryDao : dbQueryDaos) {
 			if (queryDao.supportType(queryType)) {
-				return queryDao.getAll(role);
+				return queryDao.getAll();
 			}
 		}
 		return null;
@@ -86,12 +84,22 @@ public class DbQueryExecutor implements QueryExecutor {
 		this.dbQueryDaos = dbQueryDaos;
 	}
 
-	public List<String> getKeyFields(QueryType queryType,String role) {
+	public List<String> getKeyFields(QueryType queryType, String role) {
 		for (AbstractDbQueryDao queryDao : dbQueryDaos) {
 			if (queryDao.supportType(queryType)) {
 				return queryDao.getKeyFields(role);
 			}
 		}
 		return new ArrayList<String>();
+	}
+
+	public Map<String, Object> formatValue(QueryType queryType,
+			Map<String, Object> map) {
+		for (AbstractDbQueryDao queryDao : dbQueryDaos) {
+			if (queryDao.supportType(queryType)) {
+				return queryDao.formatValue(map);
+			}
+		}
+		return map;
 	}
 }

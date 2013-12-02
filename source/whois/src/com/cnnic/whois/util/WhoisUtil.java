@@ -7,14 +7,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONArray;
 
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.QueryService;
 
 public class WhoisUtil {
+	public static final String QUERY_TYPE = "queryType";
+	public static final String QUERY_JOIN_TYPE = "queryJoinType";
 	public static final String BLANKSPACE = "    ";
 	
 	public static final String FUZZY_DOMAINS = "domains";
@@ -155,6 +160,12 @@ public class WhoisUtil {
 	public static final String JOINDSDATA = JOINFILEDPRX + "dsData";
 	public static final String JOINKEYDATA = JOINFILEDPRX + "keyData";
 	public static final String JOINDALEGATIONKEYS = JOINFILEDPRX + "delegationKeys";
+//	public static final String[] JOIN_FIELDS_WITH_CAMEL_STYLE = new String[]{"postalAddress","nameServer","publicIds"
+//		,"secureDNS","dsData","keyData","delegationKeys"};
+	public static final List<String> JOIN_FIELDS_WITH_CAMEL_STYLE = Arrays.asList(new String[]{"postalAddress","nameServer","publicIds"
+			,"secureDNS","dsData","keyData","delegationKeys","ipAddresses","rdapConformance","vcardArray"
+			,"asEventActor"});
+	
 	public static final String VALUEARRAYPRX = "'~'";
 	public static final String HANDLE = "Handle";
 	public static final String LINEBREAK = "<br/>";
@@ -808,8 +819,8 @@ public class WhoisUtil {
 		firstNameList.add("4.0");
 		list.add(firstNameList);
 		if (entityNames != null) {
-			if (entityNames instanceof String[]) {
-				String[] namesArray = (String[]) entityNames;
+			if (isArray(entityNames)) {
+				String[] namesArray = parseStringArray(entityNames);
 				for (String names : namesArray) {
 					List<Object> nameList = new ArrayList<Object>();
 					nameList.add("fn");
@@ -830,8 +841,8 @@ public class WhoisUtil {
 		}
 		
 		if (Bday != null) {
-			if (Bday instanceof String[]) {
-				String[] BdayArray = (String[]) Bday;
+			if (isArray(Bday)) {
+				String[] BdayArray = parseStringArray(Bday);
 				for (String BdayEle : BdayArray) {
 					List<Object> BdayList = new ArrayList<Object>();
 					BdayList.add("bday");
@@ -852,8 +863,8 @@ public class WhoisUtil {
 		}
 		
 		if (Anniversary != null) {
-			if (Anniversary instanceof String[]) {
-				String[] AnniversaryArray = (String[]) Anniversary;
+			if (isArray(Anniversary)) {
+				String[] AnniversaryArray = parseStringArray(Anniversary);
 				for (String AnniversaryEle : AnniversaryArray) {
 					List<Object> AnniversaryList = new ArrayList<Object>();
 					AnniversaryList.add("anniversary");
@@ -874,8 +885,8 @@ public class WhoisUtil {
 		}
 		
 		if (Gender != null) {
-			if (Gender instanceof String[]) {
-				String[] GenderArray = (String[]) Gender;
+			if (isArray(Gender)) {
+				String[] GenderArray = parseStringArray(Gender);
 				for (String GenderEle : GenderArray) {
 					List<Object> GenderList = new ArrayList<Object>();
 					GenderList.add("gender");
@@ -896,8 +907,8 @@ public class WhoisUtil {
 		}
 		
 		if (Kind != null) {
-			if (Kind instanceof String[]) {
-				String[] KindArray = (String[]) Kind;
+			if (isArray(Kind)) {
+				String[] KindArray = parseStringArray(Kind);
 				for (String KindEle : KindArray) {
 					List<Object> KindList = new ArrayList<Object>();
 					KindList.add("kind");
@@ -1062,7 +1073,7 @@ public class WhoisUtil {
 		}
 		;
 		if (emails != null) {
-			String[] namesArray = (String[]) emails;
+			String[] namesArray = parseStringArray(emails);//(String[]) emails;
 			for (String names : namesArray) {
 				List<Object> nameList = new ArrayList<Object>();
 				nameList.add("email");
@@ -1079,8 +1090,11 @@ public class WhoisUtil {
 				Set<String> key = ((Map) phones).keySet();
 				List<Object> nameList = new ArrayList<Object>();
 				for (String name : key) {
+					if(isNotEntityField(name)){
+						continue;
+					}
 					Object values = ((Map) phones).get(name);
-					if (values instanceof String[]) {
+					if (isArray(values)) {
 						String typeName = "";
 						if (name.equals(getDisplayKeyName("Office"))) {
 							typeName = "{\"type\":\"work\"}";
@@ -1089,7 +1103,8 @@ public class WhoisUtil {
 						} else if (name.equals(getDisplayKeyName("Mobile"))) {
 							typeName = "{\"type\":\"cell\"}";
 						}
-						for (String valueName : (String[]) values) {
+						String[] valuesArray = parseStringArray(values);
+						for (String valueName : valuesArray) {
 							List<Object> nameListArray = new ArrayList<Object>();
 							nameListArray.add("tel");
 							nameListArray.add(typeName);
@@ -1112,8 +1127,11 @@ public class WhoisUtil {
 					Set<String> key = ((Map) phonesObject).keySet();
 					List<Object> nameList = new ArrayList<Object>();
 					for (String name : key) {
+						if(isNotEntityField(name)){
+							continue;
+						}
 						Object values = ((Map) phonesObject).get(name);
-						if (values instanceof String[]) {
+						if (isArray(values)) {
 							String typeName = "";
 							if (name.equals(getDisplayKeyName("Office"))) {
 								typeName = "{\"type\":\"work\"}";
@@ -1144,8 +1162,8 @@ public class WhoisUtil {
 		}
 		
 		if (Geo != null) {
-			if (Geo instanceof String[]) {
-				String[] GeoArray = (String[]) Geo;
+			if (isArray(Geo)) {
+				String[] GeoArray = parseStringArray(Geo);
 				for (String GeoEle : GeoArray) {
 					List<Object> GeoList = new ArrayList<Object>();
 					GeoList.add("geo");
@@ -1166,8 +1184,8 @@ public class WhoisUtil {
 		}
 		
 		if (Key != null) {
-			if (Key instanceof String[]) {
-				String[] KeyArray = (String[]) Key;
+			if (isArray(Key)) {
+				String[] KeyArray = parseStringArray(Key);
 				for (String KeyEle : KeyArray) {
 					List<Object> KeyList = new ArrayList<Object>();
 					KeyList.add("key");
@@ -1188,8 +1206,8 @@ public class WhoisUtil {
 		}
 		
 		if (Tz != null) {
-			if (Tz instanceof String[]) {
-				String[] TzArray = (String[]) Tz;
+			if (isArray(Tz)) {
+				String[] TzArray = parseStringArray(Tz);
 				for (String TzEle : TzArray) {
 					List<Object> TzList = new ArrayList<Object>();
 					TzList.add("tz");
@@ -1210,8 +1228,8 @@ public class WhoisUtil {
 		}
 		
 		if (Url != null) {
-			if (Url instanceof String[]) {
-				String[] UrlArray = (String[]) Url;
+			if (isArray(Url)) {
+				String[] UrlArray = parseStringArray(Url);
 				for (String UrlEle : UrlArray) {
 					List<Object> UrlList = new ArrayList<Object>();
 					UrlList.add("url");
@@ -1234,6 +1252,28 @@ public class WhoisUtil {
 		Resultlist.add(list);
 		map.put("vcardArray", Resultlist.toArray());
 		return map;
+	}
+
+	private static boolean isNotEntityField(String name) {
+		return QUERY_JOIN_TYPE.equals(name)||QUERY_TYPE.equals(name)||name.endsWith("Id");
+	}
+
+	private static boolean isArray(Object object) {
+		return object instanceof String[] || object instanceof JSONArray;
+	}
+	
+	private static String[] parseStringArray(Object object){
+		if(object instanceof JSONArray){
+			JSONArray jsonArray = (JSONArray) object;
+			String[] result = new String[jsonArray.size()];
+			for(int i=0;i<jsonArray.size();i++){
+				result[i] = (String)jsonArray.get(i);
+			}
+			return result;
+		}else if(isArray(object)){
+			return (String[])object;
+		}
+		throw new IllegalArgumentException("param is not an array");
 	}
 	public static String getDisplayKeyName(String name) {
 		return name;

@@ -5,17 +5,15 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import com.cnnic.whois.bean.EntityQueryParam;
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
-import com.cnnic.whois.bean.index.EntityIndex;
+import com.cnnic.whois.bean.index.Index;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.index.SearchResult;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class SearchEntityQueryDao extends AbstractSearchQueryDao {
-
 	public SearchEntityQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
@@ -23,18 +21,14 @@ public class SearchEntityQueryDao extends AbstractSearchQueryDao {
 	@Override
 	public Map<String, Object> query(QueryParam param,
 			PageBean... pageParams) throws QueryException {
-		EntityQueryParam entityQueryParam = (EntityQueryParam) param;
-		SearchResult<EntityIndex> result = entityIndexService
-				.fuzzyQueryEntitiesByHandleAndName(
-						entityQueryParam.getFuzzyQueryParamName(),
-						entityQueryParam.getQ(), pageParams[0]);
-		String selectSql = WhoisUtil.SELECT_LIST_RIRENTITY;
+		SearchResult<? extends Index> result = searchQueryExecutor
+				.query(QueryType.ENTITY, param, pageParams[0]);
 		Connection connection = null;
 		Map<String, Object> map = null;
 		try {
 			connection = ds.getConnection();
 			Map<String, Object> entityMap = fuzzyQuery(connection, result,
-					selectSql, "$mul$entity");
+					 "$mul$entity");
 			if (entityMap != null) {
 				map = rdapConformance(map);
 				map.putAll(entityMap);

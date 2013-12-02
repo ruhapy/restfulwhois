@@ -10,11 +10,13 @@ import java.util.Map;
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.bean.index.Index;
+import com.cnnic.whois.dao.search.SearchQueryExecutor;
 import com.cnnic.whois.service.QueryService;
 import com.cnnic.whois.service.index.SearchResult;
 import com.cnnic.whois.util.WhoisUtil;
 
 public abstract class AbstractSearchQueryDao extends AbstractDbQueryDao{
+	protected SearchQueryExecutor searchQueryExecutor = SearchQueryExecutor.getExecutor();
 	public Object querySpecificJoinTable(String key, String handle,
 			Connection connection)
 			throws SQLException{
@@ -24,9 +26,7 @@ public abstract class AbstractSearchQueryDao extends AbstractDbQueryDao{
 	public AbstractSearchQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
-//	public static AbstractDbQueryDao getQueryDAO() {
-//		return queryDAO;
-//	}
+
 	@Override
 	protected boolean supportJoinType(QueryType queryType,
 			QueryJoinType queryJoinType) {
@@ -40,7 +40,7 @@ public abstract class AbstractSearchQueryDao extends AbstractDbQueryDao{
 	}
 	
 	protected Map<String, Object> fuzzyQuery(Connection connection, SearchResult<? extends Index> domains,
-			String selectSql,String keyName)
+			String keyName)
 			throws SQLException {
 			List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 			for(Index index:domains.getResultList()){
@@ -65,14 +65,14 @@ public abstract class AbstractSearchQueryDao extends AbstractDbQueryDao{
 					} else if (field.startsWith(WhoisUtil.JOINFILEDPRX)) {
 						String key = field.substring(WhoisUtil.JOINFILEDPRX.length());
 						Object value = queryJoinTable(field,
-								index.getHandle(), selectSql,
+								index.getHandle(),
 								connection);
 						if (value != null)
 							map.put(key, value);
 					} else {
 						resultsInfo = index.getPropValue(field);
 						resultsInfo = resultsInfo==null?"":resultsInfo;
-						CharSequence id = "id";
+//						CharSequence id = "id";
 //						if(!keyName.equals(WhoisUtil.JOINPUBLICIDS) && field.substring(field.length() - 2).equals(id) && !format.equals("application/html")){
 //							continue;
 //						}else{
@@ -118,6 +118,6 @@ public abstract class AbstractSearchQueryDao extends AbstractDbQueryDao{
 		if(map == null){
 			return;
 		}
-		map.put(QUERY_TYPE, index.getDocType());
+		map.put(WhoisUtil.QUERY_TYPE, index.getDocType());
 	}
 }

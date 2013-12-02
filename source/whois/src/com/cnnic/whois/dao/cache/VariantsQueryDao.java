@@ -5,7 +5,7 @@ import java.util.List;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 
-public class VarientsQueryDao extends AbstractCacheQueryDao {
+public class VariantsQueryDao extends AbstractCacheQueryDao {
 	@Override
 	protected List<String> getCacheKeySplits(QueryParam param) {
 		return super.getHandleCacheKeySplits(param);

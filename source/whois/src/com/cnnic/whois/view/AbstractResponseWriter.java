@@ -4,8 +4,12 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import net.sf.json.JSONArray;
+import com.cnnic.whois.bean.QueryType;
+import com.cnnic.whois.dao.db.DbQueryExecutor;
+import com.cnnic.whois.util.WhoisUtil;
 
 public abstract class AbstractResponseWriter implements ResponseWriter {
+	private DbQueryExecutor dbQueryExecutor = DbQueryExecutor.getExecutor();
 
 	abstract protected String formatKey(String keyName);
 
@@ -17,7 +21,8 @@ public abstract class AbstractResponseWriter implements ResponseWriter {
 
 	protected boolean isUnusedEntry(Entry<String, Object> entry) {
 		String key = entry.getKey();
-		boolean endwithId = key.substring(key.length() - 2).equals("id");
+		boolean endwithId = key.substring(key.length() - 2).toLowerCase()
+				.equals("id");
 		if (endwithId) {
 			return true;
 		}
@@ -28,9 +33,16 @@ public abstract class AbstractResponseWriter implements ResponseWriter {
 		if (null == map) {
 			return null;
 		}
+		QueryType queryType = getQueryType(map);
+		if (null != queryType) {
+			dbQueryExecutor.formatValue(queryType, map);
+		}
 		Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
 		for (Map.Entry<String, Object> entry : map.entrySet()) {
 			if (null == entry.getValue()) {
+				continue;
+			}
+			if (isQueryTypeEntry(entry)) {
 				continue;
 			}
 			if (isUnusedEntry(entry)) {
@@ -41,6 +53,20 @@ public abstract class AbstractResponseWriter implements ResponseWriter {
 			resultMap.put(formatedKey, value);
 		}
 		return resultMap;
+	}
+
+	private boolean isQueryTypeEntry(Entry<String, Object> entry) {
+		String key = entry.getKey();
+		return WhoisUtil.QUERY_TYPE.equals(key)
+				|| WhoisUtil.QUERY_JOIN_TYPE.equals(key);
+	}
+
+	private QueryType getQueryType(Map<String, Object> map) {
+		Object queryTypeObj = map.get(WhoisUtil.QUERY_TYPE);
+		if (null != queryTypeObj) {
+			return QueryType.getQueryType((String) queryTypeObj);
+		}
+		return null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -60,7 +86,7 @@ public abstract class AbstractResponseWriter implements ResponseWriter {
 
 	private Object formatJSONArray(JSONArray object) {
 		JSONArray result = new JSONArray();
-		for(int i=0;i<object.size();i++){
+		for (int i = 0; i < object.size(); i++) {
 			Object formatedObj = formatObject(object.get(i));
 			result.add(formatedObj);
 		}
@@ -75,6 +101,13 @@ public abstract class AbstractResponseWriter implements ResponseWriter {
 			i++;
 		}
 		return result;
+	}
+
+	protected String formatKeyToCamelCaseIfNotJoinKey(String keyName) {
+		if (WhoisUtil.JOIN_FIELDS_WITH_CAMEL_STYLE.contains(keyName)) {
+			return keyName;
+		}
+		return this.formatKeyToCamelCase(keyName);
 	}
 
 	protected String formatKeyToCamelCase(String keyName) {

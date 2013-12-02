@@ -10,9 +10,7 @@ import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
-import com.cnnic.whois.bean.index.DomainIndex;
 import com.cnnic.whois.bean.index.Index;
-import com.cnnic.whois.dao.search.SearchQueryExecutor;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.service.index.SearchResult;
@@ -20,7 +18,6 @@ import com.cnnic.whois.util.ColumnCache;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class DomainQueryDao extends AbstractSearchQueryDao {
-	SearchQueryExecutor searchQueryExecutor = SearchQueryExecutor.getExecutor();
 	public static final String GET_ALL_DNRDOMAIN = "select * from DNRDomain";
 	public static final String GET_ALL_RIRDOMAIN = "select * from RIRDomain";
 	public static final String QUERY_KEY = "$mul$domains";
@@ -55,9 +52,8 @@ public class DomainQueryDao extends AbstractSearchQueryDao {
 		Connection connection = null;
 		try {
 			connection = ds.getConnection();
-			String sql = "to delete";// TODO:delete
 			Map<String, Object> domainMap = super.fuzzyQuery(connection,
-					result, sql, "$mul$domains");
+					result, "$mul$domains");
 			if (domainMap != null) {
 				map = rdapConformance(map);
 				map.putAll(domainMap);
@@ -149,11 +145,11 @@ public class DomainQueryDao extends AbstractSearchQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> getAll(String role) throws QueryException {
-		List<String> dnrKeyFields = permissionCache.getDNRDomainKeyFileds(role);
+	public Map<String, Object> getAll() throws QueryException {
+		List<String> dnrKeyFields = ColumnCache.getColumnCache().getDNRDomainKeyFileds();
 		Map<String, Object> dnrDomains = queryBySql(GET_ALL_DNRDOMAIN,
 				dnrKeyFields);
-		List<String> rirKeyFields = permissionCache.getRIRDomainKeyFileds(role);
+		List<String> rirKeyFields = ColumnCache.getColumnCache().getRIRDomainKeyFileds();
 		Map<String, Object> rirDomains = queryBySql(GET_ALL_RIRDOMAIN,
 				rirKeyFields);
 		Map<String, Object> result = new HashMap<String, Object>();

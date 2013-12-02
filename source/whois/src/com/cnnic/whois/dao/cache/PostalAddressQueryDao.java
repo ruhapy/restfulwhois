@@ -21,13 +21,13 @@ public class PostalAddressQueryDao extends AbstractCacheQueryDao {
 		return QueryType.POSTALADDRESS.equals(queryType);
 	}
 
-	@Override
-	protected boolean needInitCache() {
-		return true;
-	}
-
-	@Override
-	protected void initCache() {
-		super.initCacheWithOneKey("$mul$postalAddress", "postalAddressId");
-	}
+//	@Override
+//	protected boolean needInitCache() {
+//		return true;
+//	}
+//
+//	@Override
+//	protected void initCache() {
+//		super.initCacheWithOneKey("$mul$postalAddress", "postalAddressId");
+//	}
 }

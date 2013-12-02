@@ -36,7 +36,7 @@ public class RegistrarQueryDao extends AbstractDbQueryDao {
 			String selectSql = WhoisUtil.SELECT_LIST_VARIANTS + "'" + queryInfo
 					+ "'";
 			map = query(connection, selectSql, ColumnCache.getColumnCache()
-					.getRegistrarKeyFileds(), "$mul$variants", format);
+					.getRegistrarKeyFileds(), "$mul$variants");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);

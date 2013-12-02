@@ -22,7 +22,6 @@ import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
 
 public abstract class AbstractDbQueryDao implements QueryDao{
-	public static final String QUERY_TYPE = "queryType";
 	//	private static AbstractDbQueryDao queryDAO = new AbstractDbQueryDao();
 	protected DataSource ds;
 	protected PermissionCache permissionCache = PermissionCache
@@ -37,7 +36,7 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 			Connection connection)
 			throws SQLException ;
 	@Override
-	public Map<String, Object> getAll(String role)
+	public Map<String, Object> getAll()
 			throws QueryException {
 		throw new UnsupportedOperationException();
 	}
@@ -58,33 +57,6 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 		}
 	}
 
-	/**
-	 * Get QueryDAO objects
-	 * 
-	 * @return QueryDAO objects
-	 */
-//	public static AbstractDbQueryDao getQueryDAO() {
-//		return queryDAO;
-//	}
-	
-	/**
-	 * According to the table field collections and SQL to obtain the
-	 * corresponding data information
-	 * 
-	 * @param connection
-	 * @param sql
-	 * @param keyFlieds
-	 * @param keyName
-	 * @param role
-	 * @return map collection
-	 * @throws SQLException
-	 */
-	protected Map<String, Object> query(Connection connection, String sql,
-			List<String> keyFields, String keyName, String format)
-			throws SQLException {
-		Map<String, Object> result = query(connection,sql,keyFields,keyName);
-		return result;
-	}
 	protected Map<String, Object> query(Connection connection, String sql,
 			List<String> keyFlieds, String keyName)
 			throws SQLException {
@@ -115,17 +87,17 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 						String fliedName = getJoinFieldName(keyName);
 						String key = field.substring(WhoisUtil.JOINFILEDPRX.length());
 						Object value = queryJoinTable(field,
-								results.getString(fliedName), sql,
+								results.getString(fliedName),
 								connection);
 						if (value != null)
-							map.put(key, value);
+							map.put(key, value);//map or map-list
 					} else {
 						preHandleNormalField(keyName, results, map, field);
 						resultsInfo = results.getObject(field) == null ? "": results.getObject(field);
 						map.put(field, resultsInfo);//a different format have different name;
 					}
 				}
-				map = postHandleFields(keyName, results, map);
+				map = postHandleFields(keyName, map);
 				list.add(map);
 			}
 			if (list.size() == 0){
@@ -172,7 +144,7 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 	}
 
 	protected Map<String, Object> postHandleFields(String keyName,
-			ResultSet results, Map<String, Object> map) throws SQLException {
+			Map<String, Object> map) throws SQLException {
 		return map;
 	}
 
@@ -192,18 +164,30 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 	 * @return Returns the schedule information content
 	 * @throws SQLException
 	 */
-	public Object queryJoinTable(String key, String handle, String sql,
+	public Object queryJoinTable(String key, String handle,
 			Connection connection) throws SQLException {
 		String keyWithoutJoinPrefix = key.substring(WhoisUtil.JOINFILEDPRX.length());
 		QueryJoinType joinType = QueryJoinType.getQueryJoinType(keyWithoutJoinPrefix);
 		QueryType queryType = getQueryType();
 		for (AbstractDbQueryDao dbQueryDao : dbQueryDaos) {
 			if (dbQueryDao.supportJoinType(queryType, joinType)) {
-				return dbQueryDao.querySpecificJoinTable(key, handle,
+				Object result = dbQueryDao.querySpecificJoinTable(key, handle,
 						connection);
+				if(result instanceof Map){
+					addQueryJoinTypeEntry(joinType, result);
+				}else if(result instanceof Object[]){
+					for(Object obj:(Object[])result){
+						addQueryJoinTypeEntry(joinType, obj);
+					}
+				}
+				return result;
 			}
 		}
 		return null;
+	}
+	private void addQueryJoinTypeEntry(QueryJoinType joinType, Object result) {
+		Map map = (Map)result;
+		map.put("queryJoinType", joinType.getName());
 	}
 
 	/**
@@ -234,7 +218,7 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 		return null;
 	}
 
-	protected Map<String, Object> rdapConformance(Map<String, Object> map){
+	public static Map<String, Object> rdapConformance(Map<String, Object> map){
 		if(map == null){
 			map = new LinkedHashMap<String, Object>();
 		}
@@ -248,10 +232,14 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 		throw new UnsupportedOperationException();
 	}
 	
+	protected Map<String, Object> formatValue(Map<String, Object> map){
+		return map;
+	}
+	
 	private void putQueryType(Map<String, Object> map){
 		if(map == null){
 			return;
 		}
-		map.put(QUERY_TYPE, getQueryType().getName());
+		map.put(WhoisUtil.QUERY_TYPE, getQueryType().getName());
 	}
 }

@@ -3,6 +3,7 @@ package com.cnnic.whois.dao.db;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -85,7 +86,7 @@ public class IpQueryDao extends AbstractDbQueryDao {
 		return map;
 	}
 
-	protected void preHandleNormalField(String keyName, String format,
+	protected void preHandleNormalField(String keyName,
 			ResultSet results, Map<String, Object> map, String field)
 			throws SQLException {
 		if (keyName.equals(WhoisUtil.MULTIPRXIP)
@@ -119,12 +120,8 @@ public class IpQueryDao extends AbstractDbQueryDao {
 						endAddress = WhoisUtil.longtoipV4(Long
 								.parseLong(endLowAddress));
 					}
-					map.put(WhoisUtil
-							.getDisplayKeyName("Start_Address", format),
-							startAddress);// a different fromat have different
-											// name;
-					map.put(WhoisUtil.getDisplayKeyName("End_Address", format),
-							endAddress);
+					map.put("Start_Address",startAddress);
+					map.put("End_Address",endAddress);
 				}
 			}
 		}
@@ -153,6 +150,11 @@ public class IpQueryDao extends AbstractDbQueryDao {
 	}
 	@Override
 	public List<String> getKeyFields(String role) {
-		return PermissionCache.getPermissionCache().getIPKeyFileds(role);
+		List<String> cacheFields = PermissionCache.getPermissionCache()
+				.getIPKeyFileds(role);
+		List<String> result = new ArrayList<String>(cacheFields);
+		result.add("Start_Address");
+		result.add("End_Address");
+		return result;
 	}
 }

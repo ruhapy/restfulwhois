@@ -12,7 +12,7 @@ import com.cnnic.whois.bean.IpQueryParam;
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
-import com.cnnic.whois.dao.CacheQueryDAO;
+import com.cnnic.whois.bean.RedirectionQueryParam;
 import com.cnnic.whois.dao.QueryDAO;
 import com.cnnic.whois.dao.QueryEngine;
 import com.cnnic.whois.execption.QueryException;
@@ -23,7 +23,6 @@ import com.cnnic.whois.util.WhoisUtil;
 public class QueryService {
 	private static QueryService queryService = new QueryService();
 	private QueryDAO queryDAO = QueryDAO.getQueryDAO();
-	private CacheQueryDAO cache = CacheQueryDAO.getQueryDAO();
 	private QueryEngine queryEngine = QueryEngine.getEngine();
 	public static int MAX_SIZE_FUZZY_QUERY = WhoisProperties
 			.getMaxSizeFuzzyQuery();
@@ -177,7 +176,7 @@ public class QueryService {
 			String queryPara, String role, String format, PageBean page)
 			throws QueryException, SQLException {
 		try {
-			Map map = queryEngine.query(QueryType.SEARCHDOMAIN, 
+			Map map = queryEngine.query(QueryType.SEARCHENTITY, 
 					new EntityQueryParam(queryPara,fuzzyQueryParamName), role, format,page);
 			if (map == null) {
 				return queryError("404", role, format);
@@ -305,16 +304,17 @@ public class QueryService {
 		}
 	}
 
+	@Deprecated
 	public Map<String, Object> queryRegistrar(String queryPara, String role,
 			boolean isJoinTable, String format) throws QueryException {
-		Map map = this.queryDAO.queryRegistrar(queryPara, role, isJoinTable,
-				format);
+//		Map map = this.queryDAO.queryRegistrar(queryPara, role, isJoinTable,
+//				format);
+//
+//		if (map == null) {
+//			return queryError("404", role, format);
+//		}
 
-		if (map == null) {
-			return queryError("404", role, format);
-		}
-
-		return map;
+		return null;
 	}
 
 	public Map<String, Object> queryRemarks(String queryPara, String role,
@@ -367,6 +367,7 @@ public class QueryService {
 
 	private void getRedirectionURL(String queryType, String queryPara)
 			throws QueryException, RedirectExecption {
-		this.queryDAO.queryRedirection(queryType, queryPara);
+		queryEngine.query(QueryType.REDIRECTION, 
+				new RedirectionQueryParam(queryType,queryPara), null, null);
 	}
 }
