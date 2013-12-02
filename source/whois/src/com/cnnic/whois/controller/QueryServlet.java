@@ -25,6 +25,7 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.service.QueryService;
 import com.cnnic.whois.util.DataFormat;
+import com.cnnic.whois.util.WhoisProperties;
 import com.cnnic.whois.util.WhoisUtil;
 import com.cnnic.whois.util.validate.ValidateUtils;
 
@@ -170,14 +171,23 @@ public class QueryServlet extends HttpServlet {
 		String format = getFormatCookie(request);
 		String role = WhoisUtil.getUserRole(request);
 		
+		queryInfo = queryInfo.toLowerCase();
+		if (queryInfo.startsWith(WhoisProperties.getRdapUrl()+"/")) {
+			queryInfo = queryInfo.substring(WhoisProperties.getRdapUrl().length()+1);
+		}
+		
 		if(queryInfo.indexOf("/") != -1){
-			if(StringUtils.isNotBlank(queryPara)){// domains/xxx?name=z*.cn
-				map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
-				processRespone(request, response, map);
-				return;
-			}
+
+//			if(StringUtils.isNotBlank(queryPara)){// domains/xxx?name=z*.cn
+//				map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+//				processRespone(request, response, map);
+//				return;
+//			}
+			
+			// query Object Type
 			queryType = queryInfo.substring(0, queryInfo.indexOf("/"));
 			queryPara = queryInfo.substring(queryInfo.indexOf("/") + 1); //get the parameters from the request scope and parse
+
 		}else{
 			queryType = queryInfo;
 			//map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
