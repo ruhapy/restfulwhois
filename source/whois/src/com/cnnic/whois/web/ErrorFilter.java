@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.DataFormat;
+import com.cnnic.whois.util.WhoisProperties;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class ErrorFilter implements Filter {
@@ -81,6 +82,14 @@ public class ErrorFilter implements Filter {
 				format = "application/html";
 				WhoisUtil.clearFormatCookie(request, response);
 			}
+			
+			// disregard .well-known/rdap
+			queryInfo = queryInfo.toLowerCase();
+			if (queryInfo.startsWith(WhoisProperties.getRdapUrl()+"/")) {
+				System.err.println(queryInfo);
+				queryInfo = queryInfo.substring(WhoisProperties.getRdapUrl().length()+1);
+			}
+			
 			if(queryInfo.indexOf("/") != -1){				
 				queryType = queryInfo.substring(0, queryInfo.indexOf("/"));
 			}else{
