@@ -1,5 +1,6 @@
-﻿<%@page import="net.sf.json.JSONObject"%>
+﻿<%@ page import="net.sf.json.JSONObject"%>
 <%@ page import="java.security.Principal"%>
+<%@ page import="com.cnnic.whois.util.WhoisProperties"%>
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"
 	contentType="text/html; charset=utf-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -60,7 +61,7 @@
 				queryFormat = (String)request.getAttribute("queryFormat");
 			}
 		%>
-		<input type="hidden" value='<%=request.getContextPath()%>'
+		<input type="hidden" value='<%=request.getContextPath()+"/"+WhoisProperties.getRdapUrl()%>'
 			id="pathUrl" />
 		<div id="wrapper">
 			<div id="header">
@@ -71,7 +72,7 @@
 					<li class="one">
 						<dl>
 							<dt>
-								<a href="<%=request.getContextPath()%>/help">Help</a>
+								<a href="<%=request.getContextPath()+"/"+WhoisProperties.getRdapUrl()%>/help">Help</a>
 							</dt>
 						</dl>
 					</li>

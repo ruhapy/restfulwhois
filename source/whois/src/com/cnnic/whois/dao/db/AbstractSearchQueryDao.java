@@ -118,6 +118,6 @@ public abstract class AbstractSearchQueryDao extends AbstractDbQueryDao{
 		if(map == null){
 			return;
 		}
-		map.put(QUERY_TYPE, index.getDocType());
+		map.put(WhoisUtil.QUERY_TYPE, index.getDocType());
 	}
 }

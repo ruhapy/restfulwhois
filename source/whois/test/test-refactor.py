@@ -53,8 +53,8 @@ def sendAll(filePath, address1, address2):
         testData = getTestData(line)
         res1 = send(testData, address1)
         res2 = send(testData, address2)
-        if(str(res1.status) == testData.responseStatus):
-            print "    " + address1 + "    status ok."
+        if(res1.data == res2.data):
+            print "    " + "match"
         else:
             print "    " + address1 + "    invalid status:"+str(res1.status)
         if(str(res2.status) == testData.responseStatus):
@@ -72,7 +72,8 @@ def sendAll(filePath, address1, address2):
                 print "    " + address2 + "    invalid data:"#+str(res2.data)
         else:
             print "    no mark."
+
         print "-------------------------------------------------------------------------------------"
 # data-search.csv    data-query.csv
 #218.241.108.82:8080    localhost:8080
-sendAll("data-search.csv", "218.241.108.82:8080", "localhost:8080")
+sendAll("data-query.csv", "localhost:8888", "localhost:8080")
