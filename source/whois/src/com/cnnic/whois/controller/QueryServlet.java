@@ -20,13 +20,11 @@ import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.service.QueryService;
-import com.cnnic.whois.util.DataFormat;
 import com.cnnic.whois.util.WhoisProperties;
 import com.cnnic.whois.util.WhoisUtil;
 import com.cnnic.whois.util.validate.ValidateUtils;
 import com.cnnic.whois.view.FormatType;
 import com.cnnic.whois.view.ViewResolver;
-
 
 public class QueryServlet extends HttpServlet {
 	private static Long MIN_AS_NUM = 0L;
@@ -393,6 +391,14 @@ public class QueryServlet extends HttpServlet {
 		return "handle";
 	}
 
+	/**
+	 * Query help type
+	 * 
+	 * @param queryPara
+	 * @param role
+	 * @return map collection
+	 * @throws QueryException
+	 */
 	private Map<String, Object> processQueryHelp(String queryPara, String role, String format) throws QueryException {
 		QueryService queryService = QueryService.getQueryService();
 		if(!queryPara.equals("")){
@@ -707,6 +713,7 @@ public class QueryServlet extends HttpServlet {
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryRegistrar(queryPara, role, true, format);
 	}
+	
 	/**
 	 * Query Remarks type
 	 * 

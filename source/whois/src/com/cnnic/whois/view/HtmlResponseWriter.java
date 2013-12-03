@@ -1,7 +1,6 @@
 package com.cnnic.whois.view;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -36,7 +35,6 @@ public class HtmlResponseWriter extends AbstractResponseWriter {
 		Map<String, Object> htmlMap = new LinkedHashMap<String, Object>();
 		htmlMap.putAll(map);
 		
-		PrintWriter out = response.getWriter();
 		String errorCode = "200"; 
 		
 		request.setAttribute("queryFormat", format);
@@ -64,7 +62,7 @@ public class HtmlResponseWriter extends AbstractResponseWriter {
 			if(key.startsWith(WhoisUtil.MULTIPRX)){
 				multiKey = key;
 			}
-		}
+		}		
 		if(multiKey != null){
 			Object jsonObj = map.get(multiKey);
 			map.remove(multiKey);

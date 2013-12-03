@@ -3,7 +3,9 @@ package com.cnnic.whois.view;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import net.sf.json.JSONArray;
+
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.dao.db.DbQueryExecutor;
 import com.cnnic.whois.util.WhoisUtil;

@@ -76,7 +76,6 @@ public class JsonResponseWriter extends AbstractResponseWriter {
 			default:
 				map.put(multiKey.substring(WhoisUtil.MULTIPRX.length()), jsonObj);
 			}
-			
 		}
 		
 		response.setHeader("Content-Type", format);
