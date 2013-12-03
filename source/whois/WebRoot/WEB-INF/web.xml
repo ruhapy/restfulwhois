@@ -30,6 +30,8 @@
 	</filter>
 	<filter-mapping>
 		<filter-name>WhoisFilter</filter-name>
+		<url-pattern>/.well-known/rdap/*</url-pattern>
+		<!-- 
 		<url-pattern>/ip/*</url-pattern>
 		<url-pattern>/domain/*</url-pattern>
 		<url-pattern>/entity/*</url-pattern>
@@ -49,7 +51,7 @@
 		<url-pattern>/keyData/*</url-pattern>
 		<url-pattern>/domains</url-pattern>
 		<url-pattern>/nameservers</url-pattern>
-		<url-pattern>/entities</url-pattern>	
+		<url-pattern>/entities</url-pattern>  -->	
 	</filter-mapping>
 	
 	<servlet>
@@ -59,7 +61,8 @@
 
 	<servlet-mapping>
 		<servlet-name>queryServlet</servlet-name>
-		<url-pattern>/ip/*</url-pattern>
+		<url-pattern>/.well-known/rdap/*</url-pattern>
+<!-- 	<url-pattern>/ip/*</url-pattern>
 		<url-pattern>/domain/*</url-pattern>
 		<url-pattern>/entity/*</url-pattern>
 		<url-pattern>/autnum/*</url-pattern>
@@ -81,7 +84,7 @@
 		<url-pattern>/entities</url-pattern>
 		<url-pattern>/domains/*</url-pattern>
 		<url-pattern>/nameservers/*</url-pattern>
-		<url-pattern>/entities/*</url-pattern>
+		<url-pattern>/entities/*</url-pattern>  -->
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>cacheServlet</servlet-name>
