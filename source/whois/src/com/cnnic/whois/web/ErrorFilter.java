@@ -18,6 +18,7 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.DataFormat;
 import com.cnnic.whois.util.WhoisProperties;
 import com.cnnic.whois.util.WhoisUtil;
+import com.cnnic.whois.view.FormatType;
 
 public class ErrorFilter implements Filter {
 
@@ -53,20 +54,19 @@ public class ErrorFilter implements Filter {
 		CharSequence opera = "opera";   
 		if (format == null && (userAgent.contains(ie) || userAgent.contains(firefox) ||
 				userAgent.contains(chrome) || userAgent.contains(safiri) || userAgent.contains(opera)))
-			format = "application/html";
+			format = FormatType.HTML.getName();
 		if (format == null){
 			format = request.getHeader("Accept");	
 			if (format == null){
-				format = "application/json";
+				format = FormatType.JSON.getName();
 			}
 
 			CharSequence sqhtml = "html";			
 			if(format.contains(sqhtml))
-				format = "application/html";
+				format = FormatType.HTML.getName();
 		}
-		if(format == null || !(format.equals("application/html") || format.equals("application/json") || format.equals("application/xml") || format.endsWith("application/rdap+json")
-				|| format.equals("application/text") || format.equals("application/rdap+json;application/json"))){
-			format = "application/html";
+		if(format == null || !( FormatType.getFormatType(format).isNotNoneFormat())){
+			format = FormatType.HTML.getName();
 		}
 		
 		String queryInfo = "";
@@ -79,7 +79,7 @@ public class ErrorFilter implements Filter {
 			
 			if(queryInfo.equals("") && (userAgent.contains(ie) || userAgent.contains(firefox) ||
 					userAgent.contains(chrome) || userAgent.contains(safiri) || userAgent.contains(opera))){
-				format = "application/html";
+				format = FormatType.HTML.getName();
 				WhoisUtil.clearFormatCookie(request, response);
 			}
 			
@@ -105,8 +105,7 @@ public class ErrorFilter implements Filter {
 		// TODO Auto-generated method stub
 
 	}
-	
-	
+		
 	private boolean isLegalType(String queryType){
 		if(queryType.equals(WhoisUtil.FUZZY_DOMAINS) ||
 				queryType.equals(WhoisUtil.FUZZY_NAMESERVER) ||
@@ -126,9 +125,12 @@ public class ErrorFilter implements Filter {
 			return false;
 		}
 	}
+	
 	private void displayErrorMessage(HttpServletRequest request, HttpServletResponse response, FilterChain chain, 
 			String format, String queryType, String role) throws IOException, ServletException{
-		if(format.equals("application/html")){
+		FormatType formatType = FormatType.getFormatType(format);
+		
+		if(formatType.isHtmlFormat()){
 			chain.doFilter(request, response);
 		}else {
 			request.setCharacterEncoding("utf-8");
@@ -145,19 +147,19 @@ public class ErrorFilter implements Filter {
 			PrintWriter out = response.getWriter();
 			request.setAttribute("queryFormat", format);
 			response.setHeader("Access-Control-Allow-Origin", "*");
-			if(format.equals("application/json") || format.equals("application/rdap+json") || format.equals("application/rdap+json;application/json")){
+			if(formatType.isJsonFormat()){
 				if(isLegalType(queryType)){
 					chain.doFilter(request, response);
 				}else{
-					response.setHeader("Content-Type", "application/json");
+					response.setHeader("Content-Type", format);
 					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);//400 or 404
 					out.print(DataFormat.getJsonObject(map));
 				}
-			}else if(format.equals("application/xml")){
+			}else if(formatType.isXmlFormat()){
 				if(isLegalType(queryType)){
 					chain.doFilter(request, response);
 				}else{
-					response.setHeader("Content-Type", "application/xml");
+					response.setHeader("Content-Type", format);
 					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 					out.write(DataFormat.getXmlString(map));
 				}
@@ -165,7 +167,7 @@ public class ErrorFilter implements Filter {
 				if(isLegalType(queryType)){
 					chain.doFilter(request, response);
 				}else{
-					response.setHeader("Content-Type", "text/plain");
+					response.setHeader("Content-Type", formatType.TEXTPLAIN.getName());
 					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 					out.write(DataFormat.getPresentation(map));
 				}

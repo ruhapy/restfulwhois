@@ -9,7 +9,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.cnnic.whois.util.DataFormat;
+import net.sf.json.JSONObject;
+
 import com.cnnic.whois.util.WhoisUtil;
 
 public class JsonResponseWriter extends AbstractResponseWriter {
@@ -79,7 +80,7 @@ public class JsonResponseWriter extends AbstractResponseWriter {
 		}
 		
 		response.setHeader("Content-Type", format);
-		out.print(DataFormat.getJsonObject(map));
+		out.print(JSONObject.fromObject(map));
 	}
 
 	@Override

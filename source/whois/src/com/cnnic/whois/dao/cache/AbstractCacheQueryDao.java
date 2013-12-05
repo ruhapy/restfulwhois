@@ -26,7 +26,7 @@ public abstract class AbstractCacheQueryDao implements QueryDao {
 			.getExecutor();
 	private static Jedis cache = new Jedis(WhoisProperties.getCacheIp(),
 			Integer.valueOf(WhoisProperties.getCachePort()));
-
+    
 	public AbstractCacheQueryDao() {
 		super();
 		init();
@@ -65,7 +65,7 @@ public abstract class AbstractCacheQueryDao implements QueryDao {
 		if (StringUtils.isBlank(cacheObj)) {
 			return null;
 		}
-		return DataFormat.fromObject(cacheObj);
+		return JSONObject.fromObject(cacheObj);
 	}
 
 	protected boolean needInitCache() {
@@ -120,7 +120,7 @@ public abstract class AbstractCacheQueryDao implements QueryDao {
 	}
 
 	protected void setCache(String key, Map<String, Object> entityMap) {
-		String jsonStr = DataFormat.getJsonObject(entityMap).toString();
+		String jsonStr = JSONObject.fromObject(entityMap).toString();
 		System.err.println(jsonStr);
 		cache.set(key, jsonStr);
 	}

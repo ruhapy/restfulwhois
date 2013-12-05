@@ -120,4 +120,10 @@ public abstract class AbstractResponseWriter implements ResponseWriter {
 		}
 		return keyName;
 	}
+	
+	protected String delTrim(String data) {
+		if (data.startsWith("$mul$"))
+			return data.substring("$mul$".length());
+		return data.replaceAll(" ", "");
+	}
 }

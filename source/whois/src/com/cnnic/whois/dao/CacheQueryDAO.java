@@ -11,7 +11,6 @@ import org.apache.commons.lang.StringUtils;
 import redis.clients.jedis.Jedis;
 
 import com.cnnic.whois.execption.QueryException;
-import com.cnnic.whois.util.DataFormat;
 import com.cnnic.whois.util.WhoisProperties;
 import com.cnnic.whois.util.WhoisUtil;
 
@@ -40,8 +39,8 @@ public class CacheQueryDAO {
 		Map map = new HashMap();
 		map.put("child", childMap);
 		map.put("username", "asdf");
-		redis.set("hash", DataFormat.getJsonObject(map).toString());
-		JSONObject obj = DataFormat.fromObject(redis.get("hash"));
+		redis.set("hash", JSONObject.fromObject(map).toString());
+		JSONObject obj = JSONObject.fromObject(redis.get("hash"));
 		System.err.println();
 	}
 
@@ -50,7 +49,7 @@ public class CacheQueryDAO {
 		if (StringUtils.isBlank(cacheObj)) {
 			return null;
 		}
-		return DataFormat.fromObject(cacheObj);
+		return JSONObject.fromObject(cacheObj);
 	}
 
 	public Map<String, Object> queryDoamin(String domainName, String role,
@@ -65,7 +64,7 @@ public class CacheQueryDAO {
 	}
 
 	public void setDomainMap(String key, Map<String, Object> domainInfo) {
-		cache.set(key, DataFormat.getJsonObject(domainInfo).toString());
+		cache.set(key, JSONObject.fromObject(domainInfo).toString());
 	}
 
 	private Map<String, Object> rdapConformance(Map<String, Object> map) {

@@ -22,6 +22,7 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.DataFormat;
 import com.cnnic.whois.util.WhoisProperties;
 import com.cnnic.whois.util.WhoisUtil;
+import com.cnnic.whois.view.FormatType;
 
 public class WhoisFilter implements Filter {
 
@@ -77,20 +78,19 @@ public class WhoisFilter implements Filter {
 		CharSequence opera = "opera";
 		if (format == null && (userAgent.contains(ie) || userAgent.contains(firefox) ||
 				userAgent.contains(chrome) || userAgent.contains(safiri) || userAgent.contains(opera)))
-			format = "application/html";
+			format = FormatType.HTML.getName();
 		if (format == null){
 			format = request.getHeader("Accept"); 
 			if (format == null){
-				format = "application/json";
+				format = FormatType.JSON.getName();
 			}
 
 			CharSequence sqhtml = "html";			
 			if(format.contains(sqhtml))
-				format = "application/html";
+				format = FormatType.HTML.getName();
 		}
-		if(format == null || !(format.equals("application/html") || format.equals("application/json") 
-				|| format.equals("application/rdap+json")|| format.equals("application/xml"))){
-			format = "application/html";
+		if(format == null || !( FormatType.getFormatType(format).isNotNoneFormat())){
+			format = FormatType.HTML.getName();
 		}
 		String queryInfo = "";
 		String queryType = "";
@@ -102,7 +102,7 @@ public class WhoisFilter implements Filter {
 			
 			if(queryInfo.equals("") && (userAgent.contains(ie) || userAgent.contains(firefox) ||
 					userAgent.contains(chrome) || userAgent.contains(safiri) || userAgent.contains(opera))){
-				format = "application/html";
+				format = FormatType.HTML.getName();
 				WhoisUtil.clearFormatCookie(request, response);
 			}
 			if(queryInfo.indexOf("/") != -1){				
@@ -110,9 +110,10 @@ public class WhoisFilter implements Filter {
 			}
 		}
 		
+		FormatType formatType = FormatType.getFormatType(format);
+		
 		if (isQueryOverTime) {
 			chain.doFilter(request, response);
-			
 		} else {
 			request.setCharacterEncoding("utf-8");
 			response.setCharacterEncoding("utf-8");
@@ -130,16 +131,16 @@ public class WhoisFilter implements Filter {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			response.setStatus(429);
 			
-			if(format.equals("application/html")){
+			if(formatType.isHtmlFormat()){
 				response.sendError(429);
-			}else if(format.equals("application/json") || format.equals("application/rdap+json") || format.equals("application/rdap+json;application/json")){
-				response.setHeader("Content-Type", "application/json");
+			}else if(formatType.isJsonFormat()){
+				response.setHeader("Content-Type", format);
 				out.print(DataFormat.getJsonObject(map));
-			}else if(format.equals("application/xml")){
-				response.setHeader("Content-Type", "application/xml");
+			}else if(formatType.isXmlFormat()){
+				response.setHeader("Content-Type", format);
 				out.write(DataFormat.getXmlString(map));
 			}else{
-				response.setHeader("Content-Type", "text/plain");
+				response.setHeader("Content-Type", formatType.TEXTPLAIN.getName());
 				out.write(DataFormat.getPresentation(map));
 			}
 		}

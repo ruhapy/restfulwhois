@@ -79,4 +79,4 @@ def sendAll(filePath, address1, address2):
         print "-------------------------------------------------------------------------------------"
 # data-search.csv    data-query.csv
 #218.241.108.82:8080    localhost:8080
-sendAll("data-search.csv", "218.241.108.82:8080", "localhost:8080")
+sendAll("data-query.csv", "218.241.108.82:8080", "localhost:8080")

@@ -11,7 +11,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.cnnic.whois.util.DataFormat;
+import net.sf.json.JSONObject;
+
 import com.cnnic.whois.util.WhoisUtil;
 
 public class HtmlResponseWriter extends AbstractResponseWriter {
@@ -74,7 +75,7 @@ public class HtmlResponseWriter extends AbstractResponseWriter {
 				htmlMap.remove(WhoisUtil.RDAPCONFORMANCEKEY);
 			if(htmlMap.containsKey(WhoisUtil.SEARCH_RESULTS_TRUNCATED_EKEY))
 				htmlMap.remove(WhoisUtil.SEARCH_RESULTS_TRUNCATED_EKEY);
-			request.setAttribute("JsonObject", DataFormat.getJsonObject(htmlMap));
+			request.setAttribute("JsonObject", JSONObject.fromObject(htmlMap));
 			RequestDispatcher rdsp = request.getRequestDispatcher("/index.jsp");
 			response.setContentType(format);
 			rdsp.forward(request, response); 
@@ -90,6 +91,6 @@ public class HtmlResponseWriter extends AbstractResponseWriter {
 
 	@Override
 	public boolean support(FormatType formatType) {
-		return FormatType.HTML.equals(formatType);
+		return null != formatType && formatType.isHtmlFormat();
 	}
 }

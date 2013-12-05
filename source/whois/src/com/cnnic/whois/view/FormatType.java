@@ -20,11 +20,27 @@ public enum FormatType {
 		return this.equals(JSON) || this.equals(RDAPANDJSON)
 				|| this.equals(RDAPORJSON);
 	}
-
-	public boolean isJsonOrXmlFormat() {
-		return isJsonFormat() || this.equals(XML);
+	
+	public boolean isXmlFormat() {
+		return this.equals(XML);
 	}
 
+	public boolean isJsonOrXmlFormat() {
+		return isJsonFormat() || isXmlFormat();
+	}
+	
+	public boolean isHtmlFormat() {
+		return this.equals(HTML);
+	}
+	
+	public boolean isTextFormat() {
+		return this.equals(TEXTPLAIN);
+	}
+
+	public boolean isNotNoneFormat() {
+		return isJsonOrXmlFormat() || isHtmlFormat() || isTextFormat();
+	}
+	
 	private FormatType(String name) {
 		this.name = name;
 	}
