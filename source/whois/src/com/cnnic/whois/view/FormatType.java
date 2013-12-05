@@ -38,7 +38,7 @@ public enum FormatType {
 	}
 
 	public boolean isNotNoneFormat() {
-		return isJsonOrXmlFormat() || isHtmlFormat() || isTextFormat();
+		return (isJsonOrXmlFormat() || isHtmlFormat() || isTextFormat());
 	}
 	
 	private FormatType(String name) {

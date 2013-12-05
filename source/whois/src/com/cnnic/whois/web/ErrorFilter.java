@@ -65,7 +65,7 @@ public class ErrorFilter implements Filter {
 			if(format.contains(sqhtml))
 				format = FormatType.HTML.getName();
 		}
-		if(format == null || !( FormatType.getFormatType(format).isNotNoneFormat())){
+		if(format == null || !((FormatType.getFormatType(format)).isNotNoneFormat())){
 			format = FormatType.HTML.getName();
 		}
 		
