@@ -10,7 +10,6 @@ import org.apache.commons.lang.StringUtils;
 
 import redis.clients.jedis.Jedis;
 
-import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.dao.db.AbstractDbQueryDao;
@@ -37,7 +36,7 @@ public abstract class AbstractCacheQueryDao implements QueryDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Map<String, Object> query(QueryParam param, PageBean... page)
+	public Map<String, Object> query(QueryParam param)
 			throws QueryException, RedirectExecption {
 		String cacheKey = getCacheKey(param);
 		return getMapAndConvertToJsonObject(cacheKey);

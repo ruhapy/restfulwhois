@@ -22,7 +22,7 @@ public abstract class AbstractDomainQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, PageBean... page)
+	public Map<String, Object> query(QueryParam param)
 			throws QueryException, RedirectExecption {
 		throw new UnsupportedOperationException();
 	}
