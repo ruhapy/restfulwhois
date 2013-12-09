@@ -2,6 +2,7 @@ package com.cnnic.whois.bean.index;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.apache.solr.client.solrj.beans.Field;
 
 public class EntityIndex implements Index {
@@ -76,7 +77,7 @@ public class EntityIndex implements Index {
 
 	@Field("url")
 	private String url;
-	private Map<String, String> propValueMap = new HashMap();
+	private Map<String, Object> propValueMap = new HashMap<String, Object>();
 
 	public boolean isDnrEntity() {
 		return DNRENTITY_TYPE.equals(this.docType);
