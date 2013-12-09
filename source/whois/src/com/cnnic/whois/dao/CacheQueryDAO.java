@@ -35,9 +35,9 @@ public class CacheQueryDAO {
 
 	public static void main(String[] args) {
 		Jedis redis = new Jedis("218.241.106.159", 6379);
-		Map childMap = new HashMap();
+		Map<String, Object> childMap = new HashMap<String, Object>();
 		childMap.put("child", "childV");
-		Map map = new HashMap();
+		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("child", childMap);
 		map.put("username", "asdf");
 		redis.set("hash", DataFormat.getJsonObject(map).toString());

@@ -64,7 +64,7 @@ public class PageTag extends TagSupport {
 
 		HttpServletRequest request = (HttpServletRequest) this.pageContext
 				.getRequest();
-		Map paramMap = new HashMap(request.getParameterMap());
+		Map<String, Object> paramMap = new HashMap<String, Object>(request.getParameterMap());
 		paramMap.remove(getPageName());
 		if (!this.maxRecordConfigurable) {
 			paramMap.remove(getViewAll());
