@@ -9,8 +9,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.json.JSONObject;
-
 import com.cnnic.whois.util.WhoisUtil;
 
 public class JsonResponseWriter extends AbstractResponseWriter {
@@ -80,7 +78,7 @@ public class JsonResponseWriter extends AbstractResponseWriter {
 		}
 		
 		response.setHeader("Content-Type", format);
-		out.print(JSONObject.fromObject(map));
+		out.print(getJsonObject(map));
 	}
 
 	@Override

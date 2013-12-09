@@ -11,7 +11,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.cnnic.whois.util.DataFormat;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class TextResponseWriter extends AbstractResponseWriter {

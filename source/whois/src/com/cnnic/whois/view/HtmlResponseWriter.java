@@ -11,8 +11,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.json.JSONObject;
-
 import com.cnnic.whois.util.WhoisUtil;
 
 public class HtmlResponseWriter extends AbstractResponseWriter {
@@ -75,7 +73,7 @@ public class HtmlResponseWriter extends AbstractResponseWriter {
 				htmlMap.remove(WhoisUtil.RDAPCONFORMANCEKEY);
 			if(htmlMap.containsKey(WhoisUtil.SEARCH_RESULTS_TRUNCATED_EKEY))
 				htmlMap.remove(WhoisUtil.SEARCH_RESULTS_TRUNCATED_EKEY);
-			request.setAttribute("JsonObject", JSONObject.fromObject(htmlMap));
+			request.setAttribute("JsonObject", getJsonObject(htmlMap));
 			RequestDispatcher rdsp = request.getRequestDispatcher("/index.jsp");
 			response.setContentType(format);
 			rdsp.forward(request, response); 

@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.dao.db.DbQueryExecutor;
@@ -119,6 +120,18 @@ public abstract class AbstractResponseWriter implements ResponseWriter {
 			keyName += names[i];
 		}
 		return keyName;
+	}
+	
+	protected JSONObject getJsonObject(Map<String, Object> responMap) {
+		return JSONObject.fromObject(responMap);
+	}
+	
+	protected JSONArray getJsonArray(Object responMap) {
+		return JSONArray.fromObject(responMap);
+	}
+	
+	protected JSONObject fromObject(String json) {
+		return JSONObject.fromObject(json);
 	}
 	
 	protected String delTrim(String data) {

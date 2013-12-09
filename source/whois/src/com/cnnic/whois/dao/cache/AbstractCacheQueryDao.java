@@ -18,7 +18,6 @@ import com.cnnic.whois.dao.db.DbQueryExecutor;
 import com.cnnic.whois.dao.db.QueryDao;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
-import com.cnnic.whois.util.DataFormat;
 import com.cnnic.whois.util.WhoisProperties;
 
 public abstract class AbstractCacheQueryDao implements QueryDao {
