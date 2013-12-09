@@ -6,11 +6,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.FilterChain;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.cnnic.whois.util.DataFormat;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class HtmlResponseWriter extends AbstractResponseWriter {
@@ -73,7 +75,7 @@ public class HtmlResponseWriter extends AbstractResponseWriter {
 				htmlMap.remove(WhoisUtil.RDAPCONFORMANCEKEY);
 			if(htmlMap.containsKey(WhoisUtil.SEARCH_RESULTS_TRUNCATED_EKEY))
 				htmlMap.remove(WhoisUtil.SEARCH_RESULTS_TRUNCATED_EKEY);
-			request.setAttribute("JsonObject", getJsonObject(htmlMap));
+			request.setAttribute("JsonObject", DataFormat.getJsonObject(htmlMap));
 			RequestDispatcher rdsp = request.getRequestDispatcher("/index.jsp");
 			response.setContentType(format);
 			rdsp.forward(request, response); 
@@ -82,6 +84,22 @@ public class HtmlResponseWriter extends AbstractResponseWriter {
 		}
 	}
 
+	public void displayErrorMessage(HttpServletRequest request, HttpServletResponse response, FilterChain chain, 
+			String format, String queryType, String role) throws IOException, ServletException{
+		chain.doFilter(request, response);
+	}
+	
+	public void displayOverTimeMessage(HttpServletRequest request, HttpServletResponse response, 
+			String format, String role) throws IOException, ServletException{
+		request.setCharacterEncoding("utf-8");
+		response.setCharacterEncoding("utf-8");
+		
+		request.setAttribute("queryFormat", format);
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		response.setStatus(429);
+		response.sendError(429);
+	}
+	
 	@Override
 	protected boolean isUnusedEntry(Entry<String, Object> entry) {
 		return false;

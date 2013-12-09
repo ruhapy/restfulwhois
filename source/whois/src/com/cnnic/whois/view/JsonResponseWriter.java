@@ -3,12 +3,16 @@ package com.cnnic.whois.view;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.cnnic.whois.execption.QueryException;
+import com.cnnic.whois.util.DataFormat;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class JsonResponseWriter extends AbstractResponseWriter {
@@ -78,9 +82,56 @@ public class JsonResponseWriter extends AbstractResponseWriter {
 		}
 		
 		response.setHeader("Content-Type", format);
-		out.print(getJsonObject(map));
+		out.print(DataFormat.getJsonObject(map));
 	}
 
+	public void displayErrorMessage(HttpServletRequest request, HttpServletResponse response, FilterChain chain, 
+			String format, String queryType, String role) throws IOException, ServletException{
+		request.setCharacterEncoding("utf-8");
+		response.setCharacterEncoding("utf-8");
+		
+		Map<String, Object> map = new LinkedHashMap<String, Object>();
+		
+		try {
+			map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+		} catch (QueryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		PrintWriter out = response.getWriter();
+		request.setAttribute("queryFormat", format);
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		
+		if(isLegalType(queryType)){
+			chain.doFilter(request, response);
+		}else{
+			response.setHeader("Content-Type", format);
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);//400 or 404
+			out.print(DataFormat.getJsonObject(map));
+		}
+	}
+	
+	public void displayOverTimeMessage(HttpServletRequest request, HttpServletResponse response,  
+			String format, String role) throws IOException, ServletException{
+		request.setCharacterEncoding("utf-8");
+		response.setCharacterEncoding("utf-8");
+		
+		Map<String, Object> map = new LinkedHashMap<String, Object>();
+		
+		try {
+			map = WhoisUtil.processError(WhoisUtil.RATELIMITECODE, role, format);
+		} catch (QueryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		PrintWriter out = response.getWriter();
+		request.setAttribute("queryFormat", format);
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		response.setStatus(429);
+		response.setHeader("Content-Type", format);
+		out.print(DataFormat.getJsonObject(map));
+	}
+	
 	@Override
 	public boolean support(FormatType formatType) {
 		return null != formatType && formatType.isJsonFormat();

@@ -3,13 +3,19 @@ package com.cnnic.whois.view;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class XmlResponseWriter extends AbstractResponseWriter {
@@ -82,11 +88,59 @@ public class XmlResponseWriter extends AbstractResponseWriter {
 		out.write(getXMLFromMap(map, 0));
 	}
 
+	public void displayErrorMessage(HttpServletRequest request, HttpServletResponse response, FilterChain chain, 
+			String format, String queryType, String role) throws IOException, ServletException{
+		request.setCharacterEncoding("utf-8");
+		response.setCharacterEncoding("utf-8");
+		
+		Map<String, Object> map = new LinkedHashMap<String, Object>();
+		
+		try {
+			map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+		} catch (QueryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		PrintWriter out = response.getWriter();
+		request.setAttribute("queryFormat", format);
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		
+		if(isLegalType(queryType)){
+			chain.doFilter(request, response);
+		}else{
+			response.setHeader("Content-Type", format);
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			out.write(getXMLFromMap(map, 0));
+		}
+	}
+	
+	public void displayOverTimeMessage(HttpServletRequest request, HttpServletResponse response, 
+			String format, String role) throws IOException, ServletException{
+		request.setCharacterEncoding("utf-8");
+		response.setCharacterEncoding("utf-8");
+		
+		Map<String, Object> map = new LinkedHashMap<String, Object>();
+		
+		try {
+			map = WhoisUtil.processError(WhoisUtil.RATELIMITECODE, role, format);
+		} catch (QueryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		PrintWriter out = response.getWriter();
+		request.setAttribute("queryFormat", format);
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		response.setStatus(429);
+		response.setHeader("Content-Type", format);
+		out.write(getXMLFromMap(map, 0));
+	}
+	
 	@Override
 	public boolean support(FormatType formatType) {
 		return null != formatType && formatType.isXmlFormat();
 	}
 	
+	@SuppressWarnings("unchecked")
 	protected String getXMLFromMap(Map<String, Object> map, int iMode) {
 		StringBuffer sb = new StringBuffer();
 
@@ -111,7 +165,7 @@ public class XmlResponseWriter extends AbstractResponseWriter {
 				sb.append(getXMLFromMap((Map<String, Object>) map.get(key),
 						iMode + 1));
 				sb.append("</" + delTrim(key) + ">\n");
-			} else if (map.get(key) instanceof Object[]) {
+			}else if (map.get(key) instanceof Object[]) {
 				sb.append("<" + delTrim(key) + ">\n");
 				for (Object obj : (Object[]) map.get(key)) {
 					int count = ((Object[]) map.get(key)).length;
@@ -132,25 +186,29 @@ public class XmlResponseWriter extends AbstractResponseWriter {
 					}
 				}
 				sb.append("</" + delTrim(key) + ">\n");
-			} else if (map.get(key) instanceof List) {
+			}else if (map.get(key) instanceof List) {
+				System.out.println("list: " + map.get(key).getClass());
+				System.out.println("list: " + map.get(key));
 				String[] values = ((List<String>) map.get(key)).get(0).split(",");
 				for (String value : values) {
 					sb.append("<" + delTrim(key) + ">\n");
 					sb.append(value);
 					sb.append("</" + delTrim(key) + ">\n");
 				}
-
-			} else {
+			}else {
 				sb.append("<" + delTrim(key) + ">\n");
 				sb.append(map.get(key));
 				sb.append("</" + delTrim(key) + ">\n");
 			}
 		}
-		if (0 == iMode)
+		
+		if (0 == iMode) {
 			sb.append("</root>\n");
+		}
 		return sb.toString();
 	}
 	
+	@SuppressWarnings("unchecked")
 	protected String getXMLFromVcard(Object VcardData) {
 		StringBuffer sb = new StringBuffer();
 		Object [] VcardValueArray = (Object [])VcardData;
@@ -167,6 +225,7 @@ public class XmlResponseWriter extends AbstractResponseWriter {
 		return sb.toString();
 	}
 	
+	@SuppressWarnings("unchecked")
 	protected StringBuffer toVCardXml(List<String> vcard) {
 		StringBuffer sb = new StringBuffer();		
 		for (int i = 0; i < vcard.size(); i++) {
@@ -183,101 +242,38 @@ public class XmlResponseWriter extends AbstractResponseWriter {
 				keyName = "Gender";
 			} else if (vcard.get(i).equals("kind")) {
 				keyName = "Kind";
-			} else if (vcard.get(i).equals("lang")) {
-				keyName = "Lang";
-				String keyNameFront = "";
-				String Attribute = vcard.get(1);
-				String [] AttributeList;
-				Attribute = Attribute.replace("{", "");
-				Attribute = Attribute.replace("}", "");
-				AttributeList = Attribute.split(":");
-				keyNameFront = keyName + " " + AttributeList[0].replace("\"", "") + "=" + AttributeList[1];
-				i = i + 3;
-				sb.append("<" + keyNameFront + ">\n");
-				sb.append("<" + vcard.get(2)+ ">\n");
-				sb.append(vcard.get(i));
-				sb.append("</" + vcard.get(2)+ ">\n");
-				sb.append("</" + keyName + ">\n");
-				continue;		
-			} else if (vcard.get(i).equals("org")) {
-				keyName = "Org";
-				String keyNameFront = "";
-				String Attribute = vcard.get(1);
-				String [] AttributeList;
-				Attribute = Attribute.replace("{", "");
-				Attribute = Attribute.replace("}", "");
-				AttributeList = Attribute.split(":");
-				keyNameFront = keyName + " " + AttributeList[0].replace("\"", "") + "=" + AttributeList[1];
-				i = i + 3;
-				sb.append("<" + keyNameFront + ">\n");
-				sb.append("<" + vcard.get(2)+ ">\n");
-				sb.append(vcard.get(i));
-				sb.append("</" + vcard.get(2)+ ">\n");
-				sb.append("</" + keyName + ">\n");
-				continue;
 			} else if (vcard.get(i).equals("title")) {
 				keyName = "Title";
 			} else if (vcard.get(i).equals("role")) {
 				keyName = "Role";
-			} else if (vcard.get(i).equals("adr")) {
-				keyName = "Adr";
-				String keyNameFront = "";
-				String Attribute = vcard.get(1);
-				String [] AttributeList;
-				Attribute = Attribute.replace("{", "");
-				Attribute = Attribute.replace("}", "");
-				AttributeList = Attribute.split(":");
-				keyNameFront = keyName + " " + AttributeList[0].replace("\"", "") + "=" + AttributeList[1];
-				i = i + 3;
-				
-				Object Value = vcard.get(3);
-				List<String> ValueList = (List<String>)Value; 
-				for (int k = 0; k < ValueList.size(); k++){
-					sb.append("<" + keyNameFront + ">\n");					
-					sb.append("<" + vcard.get(2)+ ">\n");
-					sb.append(ValueList.get(k));
-					sb.append("</" + vcard.get(2)+ ">\n");
-					sb.append("</" + keyName + ">\n");
-				}
-				continue;				
-			} else if (vcard.get(i).equals("geo")) {
-				keyName = "Geo";
-				String keyNameFront = "";
-				String Attribute = vcard.get(1);
-				String [] AttributeList;
-				Attribute = Attribute.replace("{", "");
-				Attribute = Attribute.replace("}", "");
-				AttributeList = Attribute.split(":");
-				keyNameFront = keyName + " " + AttributeList[0].replace("\"", "") + "=" + AttributeList[1];
-				i = i + 3;
-				sb.append("<" + keyNameFront + ">\n");
-				sb.append("<" + vcard.get(2)+ ">\n");
-				sb.append(vcard.get(i));
-				sb.append("</" + vcard.get(2)+ ">\n");
-				sb.append("</" + keyName + ">\n");
-				continue;
-			}  else if (vcard.get(i).equals("key")) {
-				keyName = "Key";
-				String keyNameFront = "";
-				String Attribute = vcard.get(1);
-				String [] AttributeList;
-				Attribute = Attribute.replace("{", "");
-				Attribute = Attribute.replace("}", "");
-				AttributeList = Attribute.split(":");
-				keyNameFront = keyName + " " + AttributeList[0].replace("\"", "") + "=" + AttributeList[1];
-				i = i + 3;
-				sb.append("<" + keyNameFront + ">\n");
-				sb.append("<" + vcard.get(2)+ ">\n");
-				sb.append(vcard.get(i));
-				sb.append("</" + vcard.get(2)+ ">\n");
-				sb.append("</" + keyName + ">\n");
-				continue;
 			} else if (vcard.get(i).equals("tz")) {
 				keyName = "Tz";
 			} else if (vcard.get(i).equals("url")) {
 				keyName = "Url";
 			} else if (vcard.get(i).equals("email")) {
 				keyName = "Email";
+			} else if (vcard.get(i).equals("lang")) {
+				keyName = keyNameFront(vcard, "Lang");
+			} else if (vcard.get(i).equals("org")) {
+				keyName = keyNameFront(vcard, "Org");
+			} else if (vcard.get(i).equals("geo")) {
+				keyName = keyNameFront(vcard, "Geo");
+			} else if (vcard.get(i).equals("key")) {
+				keyName = keyNameFront(vcard, "Key");
+			}else if (vcard.get(i).equals("adr")) {
+				keyName = keyNameFront(vcard, "Adr");
+				
+				i = i + 3;
+				Object Value = vcard.get(3);
+				List<String> ValueList = (List<String>)Value; 
+				for (int k = 0; k < ValueList.size(); k++){
+					sb.append("<" + keyName + ">\n");					
+					sb.append("<" + vcard.get(2)+ ">\n");
+					sb.append(ValueList.get(k));
+					sb.append("</" + vcard.get(2)+ ">\n");
+					sb.append("</" + keyName + ">\n");
+				}
+				continue;				
 			} else if (vcard.get(i).equals("tel")) {
 				if (vcard.get(i + 1).indexOf("work") != -1) {
 					keyName = "Office";
@@ -290,6 +286,7 @@ public class XmlResponseWriter extends AbstractResponseWriter {
 					keyName = "phonesId";
 				}
 			}
+			
 			i = i + 3;
 			sb.append("<" + keyName + ">\n");
 			sb.append("<" + vcard.get(2)+ ">\n");
@@ -298,5 +295,16 @@ public class XmlResponseWriter extends AbstractResponseWriter {
 			sb.append("</" + keyName + ">\n");
 		}
 		return sb;
+	}
+	
+	protected String keyNameFront(List<String> vcard, String keyName) {
+		String keyNameFront = "";
+		String Attribute = vcard.get(1);
+		String [] AttributeList;
+		Attribute = Attribute.replace("{", "");
+		Attribute = Attribute.replace("}", "");
+		AttributeList = Attribute.split(":");
+		keyNameFront = keyName + " " + AttributeList[0].replace("\"", "") + "=" + AttributeList[1];
+		return keyNameFront;
 	}
 }

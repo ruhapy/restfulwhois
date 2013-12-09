@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,6 +47,26 @@ public class ViewResolver {
 		for (ResponseWriter writer : responseWriters) {
 			if (writer.support(formatType)) {
 				writer.writeResponse(request, response, map, formatType.getName(), queryType);
+			}
+		}
+	}
+	
+	public void displayErrorMessage(HttpServletRequest request, HttpServletResponse response, 
+			FilterChain chain, FormatType formatType, String queryType, String role) 
+					throws IOException, ServletException{
+		for (ResponseWriter writer : responseWriters) {
+			if (writer.support(formatType)) {
+				writer.displayErrorMessage(request, response, chain, formatType.getName(), queryType, role);
+			}
+		}
+	}
+	
+	public void displayOverTimeMessage(HttpServletRequest request, HttpServletResponse response, 
+			FormatType formatType, String role) 
+					throws IOException, ServletException{
+		for (ResponseWriter writer : responseWriters) {
+			if (writer.support(formatType)) {
+				writer.displayOverTimeMessage(request, response, formatType.getName(), role);
 			}
 		}
 	}

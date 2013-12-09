@@ -18,6 +18,7 @@ import com.cnnic.whois.dao.db.DbQueryExecutor;
 import com.cnnic.whois.dao.db.QueryDao;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
+import com.cnnic.whois.util.DataFormat;
 import com.cnnic.whois.util.WhoisProperties;
 
 public abstract class AbstractCacheQueryDao implements QueryDao {
@@ -25,7 +26,7 @@ public abstract class AbstractCacheQueryDao implements QueryDao {
 			.getExecutor();
 	private static Jedis cache = new Jedis(WhoisProperties.getCacheIp(),
 			Integer.valueOf(WhoisProperties.getCachePort()));
-    
+
 	public AbstractCacheQueryDao() {
 		super();
 		init();
@@ -64,7 +65,7 @@ public abstract class AbstractCacheQueryDao implements QueryDao {
 		if (StringUtils.isBlank(cacheObj)) {
 			return null;
 		}
-		return JSONObject.fromObject(cacheObj);
+		return DataFormat.fromObject(cacheObj);
 	}
 
 	protected boolean needInitCache() {
@@ -119,7 +120,7 @@ public abstract class AbstractCacheQueryDao implements QueryDao {
 	}
 
 	protected void setCache(String key, Map<String, Object> entityMap) {
-		String jsonStr = JSONObject.fromObject(entityMap).toString();
+		String jsonStr = DataFormat.getJsonObject(entityMap).toString();
 		System.err.println(jsonStr);
 		cache.set(key, jsonStr);
 	}

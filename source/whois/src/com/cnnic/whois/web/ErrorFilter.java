@@ -1,9 +1,6 @@
 package com.cnnic.whois.web;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -14,11 +11,10 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.cnnic.whois.execption.QueryException;
-import com.cnnic.whois.util.DataFormat;
 import com.cnnic.whois.util.WhoisProperties;
 import com.cnnic.whois.util.WhoisUtil;
 import com.cnnic.whois.view.FormatType;
+import com.cnnic.whois.view.ViewResolver;
 
 public class ErrorFilter implements Filter {
 
@@ -105,73 +101,11 @@ public class ErrorFilter implements Filter {
 		// TODO Auto-generated method stub
 
 	}
-		
-	private boolean isLegalType(String queryType){
-		if(queryType.equals(WhoisUtil.FUZZY_DOMAINS) ||
-				queryType.equals(WhoisUtil.FUZZY_NAMESERVER) ||
-				queryType.equals(WhoisUtil.FUZZY_ENTITIES) ||
-				queryType.equals(WhoisUtil.IP) ||
-				queryType.equals(WhoisUtil.DMOAIN) ||
-				queryType.equals(WhoisUtil.ENTITY) ||
-				queryType.equals(WhoisUtil.AUTNUM) ||
-				queryType.equals(WhoisUtil.NAMESERVER) ||
-				queryType.equals(WhoisUtil.HELP) ||
-				
-				queryType.equals(WhoisUtil.SEARCHDOMAIN)	//search functions of domain
-				){
-			return true;
-		}
-		else{
-			return false;
-		}
-	}
 	
 	private void displayErrorMessage(HttpServletRequest request, HttpServletResponse response, FilterChain chain, 
 			String format, String queryType, String role) throws IOException, ServletException{
+		ViewResolver viewResolver = ViewResolver.getResolver();	
 		FormatType formatType = FormatType.getFormatType(format);
-		
-		if(formatType.isHtmlFormat()){
-			chain.doFilter(request, response);
-		}else {
-			request.setCharacterEncoding("utf-8");
-			response.setCharacterEncoding("utf-8");
-			
-			Map<String, Object> map = new LinkedHashMap<String, Object>();
-			
-			try {
-				map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
-			} catch (QueryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			PrintWriter out = response.getWriter();
-			request.setAttribute("queryFormat", format);
-			response.setHeader("Access-Control-Allow-Origin", "*");
-			if(formatType.isJsonFormat()){
-				if(isLegalType(queryType)){
-					chain.doFilter(request, response);
-				}else{
-					response.setHeader("Content-Type", format);
-					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);//400 or 404
-					out.print(DataFormat.getJsonObject(map));
-				}
-			}else if(formatType.isXmlFormat()){
-				if(isLegalType(queryType)){
-					chain.doFilter(request, response);
-				}else{
-					response.setHeader("Content-Type", format);
-					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-					out.write(DataFormat.getXmlString(map));
-				}
-			}else{
-				if(isLegalType(queryType)){
-					chain.doFilter(request, response);
-				}else{
-					response.setHeader("Content-Type", formatType.TEXTPLAIN.getName());
-					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-					out.write(DataFormat.getPresentation(map));
-				}
-			}
-		}
+		viewResolver.displayErrorMessage(request, response, chain, formatType, queryType, role); 
 	}
 }

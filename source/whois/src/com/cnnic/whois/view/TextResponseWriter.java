@@ -4,13 +4,16 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class TextResponseWriter extends AbstractResponseWriter {
@@ -71,11 +74,59 @@ public class TextResponseWriter extends AbstractResponseWriter {
 			out.write(getPresentationFromMap(map, 0));
 	}
 
+	public void displayErrorMessage(HttpServletRequest request, HttpServletResponse response, FilterChain chain, 
+			String format, String queryType, String role) throws IOException, ServletException{
+		request.setCharacterEncoding("utf-8");
+		response.setCharacterEncoding("utf-8");
+		
+		Map<String, Object> map = new LinkedHashMap<String, Object>();
+		
+		try {
+			map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+		} catch (QueryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		PrintWriter out = response.getWriter();
+		request.setAttribute("queryFormat", format);
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		
+		if(isLegalType(queryType)){
+			chain.doFilter(request, response);
+		}else{
+			response.setHeader("Content-Type", format);
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			out.write(getPresentationFromMap(map, 0));
+		}
+	}
+	
+	public void displayOverTimeMessage(HttpServletRequest request, HttpServletResponse response, 
+			String format, String role) throws IOException, ServletException{
+		request.setCharacterEncoding("utf-8");
+		response.setCharacterEncoding("utf-8");
+		
+		Map<String, Object> map = new LinkedHashMap<String, Object>();
+		
+		try {
+			map = WhoisUtil.processError(WhoisUtil.RATELIMITECODE, role, format);
+		} catch (QueryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		PrintWriter out = response.getWriter();
+		request.setAttribute("queryFormat", format);
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		response.setStatus(429);
+		response.setHeader("Content-Type", format);
+		out.write(getPresentationFromMap(map, 0));
+	}
+	
 	@Override
 	public boolean support(FormatType formatType) {
 		return FormatType.TEXTPLAIN.equals(formatType);
 	}
 	
+	@SuppressWarnings("unchecked")
 	protected String getPresentationFromMap(Map<String, Object> map, int iMode) {
 		StringBuffer sb = new StringBuffer();
 
@@ -87,19 +138,15 @@ public class TextResponseWriter extends AbstractResponseWriter {
 
 		while (iterr.hasNext()) {
 			String key = (String) iterr.next();
-
+			for(int i = 0; i < iMode; i++){
+				sb.append(WhoisUtil.BLANKSPACE);
+			}
+			
 			if (map.get(key) instanceof Map) {
-				for(int i = 0; i < iMode; i++){
-					sb.append(WhoisUtil.BLANKSPACE);
-				}
 				sb.append(delTrim(key) + ":\n");
 				sb.append(getPresentationFromMap(
-						(Map<String, Object>) map.get(key), iMode + 1));
-				
-			} else if (map.get(key) instanceof Object[]) {
-				for(int i = 0; i < iMode; i++){
-					sb.append(WhoisUtil.BLANKSPACE);
-				}
+						(Map<String, Object>) map.get(key), iMode + 1));	
+			}else if (map.get(key) instanceof Object[]) {
 				sb.append(delTrim(key) + ":\n");
 				for (Object obj : (Object[]) map.get(key)) {
 					if (obj instanceof Map) {
@@ -111,43 +158,47 @@ public class TextResponseWriter extends AbstractResponseWriter {
 								sb.append(WhoisUtil.BLANKSPACE);
 							}
 							if (key.equals("vcardArray")){
-								if (!(obj instanceof ArrayList)){
-									sb.append(WhoisUtil.BLANKSPACE);
-									sb.append(obj + "\n");
-								}else{									
-									List<List<Object>> listVcard = new ArrayList<List<Object>>();
-									listVcard = (ArrayList<List<Object>>)obj;
-									for (int m = 0; m < listVcard.size(); m++){
-										List<Object> listElement;
-										listElement = listVcard.get(m);
-										if (listElement.get(0).equals("adr")){
-											List<List<Object>> listAdr = new ArrayList<List<Object>>();
-											listAdr = (ArrayList<List<Object>>)listElement.get(3);
-											sb.append(WhoisUtil.BLANKSPACE + WhoisUtil.BLANKSPACE);
-											sb.append("adr:"+listAdr.get(0));
-											for (int n = 1; n < listAdr.size(); n++){
-												sb.append("," + listAdr.get(n));
-											}
-											sb.append("\n");
-											continue;
-										}
-										sb.append(WhoisUtil.BLANKSPACE + WhoisUtil.BLANKSPACE);
-										sb.append(listElement.get(0) + ":" + listElement.get(3) +"\n");
-									}
-								}								
-							} else {
+								sb.append(getPresentationFromVcard(obj));								
+							}else {
 								sb.append(obj + "\n");
-							}
-							
+							}	
 						}
 					}
 				}
-			} else {
-				for(int i = 0; i < iMode; i++){
-					sb.append(WhoisUtil.BLANKSPACE);
-				}
+			}else {
 				sb.append(delTrim(key) + ":");
 				sb.append(map.get(key) + "\n");
+			}
+		}
+		return sb.toString();
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected String getPresentationFromVcard(Object VcardData) {
+		StringBuffer sb = new StringBuffer();
+		
+		if (!(VcardData instanceof ArrayList)){
+			sb.append(WhoisUtil.BLANKSPACE);
+			sb.append(VcardData + "\n");
+		}else{									
+			List<List<Object>> listVcard = new ArrayList<List<Object>>();
+			listVcard = (ArrayList<List<Object>>)VcardData;
+			for (int m = 0; m < listVcard.size(); m++){
+				List<Object> listElement;
+				listElement = listVcard.get(m);
+				if (listElement.get(0).equals("adr")){
+					List<List<Object>> listAdr = new ArrayList<List<Object>>();
+					listAdr = (ArrayList<List<Object>>)listElement.get(3);
+					sb.append(WhoisUtil.BLANKSPACE + WhoisUtil.BLANKSPACE);
+					sb.append("adr:"+listAdr.get(0));
+					for (int n = 1; n < listAdr.size(); n++){
+						sb.append("," + listAdr.get(n));
+					}
+					sb.append("\n");
+					continue;
+				}
+				sb.append(WhoisUtil.BLANKSPACE + WhoisUtil.BLANKSPACE);
+				sb.append(listElement.get(0) + ":" + listElement.get(3) +"\n");
 			}
 		}
 		return sb.toString();

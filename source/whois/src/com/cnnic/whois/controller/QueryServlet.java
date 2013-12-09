@@ -152,8 +152,8 @@ public class QueryServlet extends HttpServlet {
 	 */
 	private void processRequest(HttpServletRequest request,
 			HttpServletResponse response) throws IOException, ServletException, QueryException, SQLException {
-
 		Map<String, Object> map = null;
+		
 		char[] n = request.getRequestURI().toCharArray();
 		byte[] b = new byte[n.length];
         for (int i = 0; i < n.length; i++) {
@@ -161,6 +161,7 @@ public class QueryServlet extends HttpServlet {
         }
         String str = new String(b, "UTF-8"); 
 		String queryInfo = str.substring(request.getContextPath().length() + 1);
+		
 		String queryType = "";
 		String queryPara = "";
 		
@@ -171,15 +172,7 @@ public class QueryServlet extends HttpServlet {
 		if (queryInfo.startsWith(WhoisProperties.getRdapUrl()+"/")) {
 			queryInfo = queryInfo.substring(WhoisProperties.getRdapUrl().length()+1);
 		}
-		
 		if(queryInfo.indexOf("/") != -1){
-//			if(StringUtils.isNotBlank(queryPara)){// domains/xxx?name=z*.cn
-//				map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
-//				processRespone(request, response, map, -1);
-//				return;
-//			}
-			
-			// query Object Type
 			queryType = queryInfo.substring(0, queryInfo.indexOf("/"));
 			queryPara = queryInfo.substring(queryInfo.indexOf("/") + 1); //get the parameters from the request scope and parse
 
@@ -187,17 +180,20 @@ public class QueryServlet extends HttpServlet {
 			queryType = queryInfo;
 			//map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
 		}
+		
 		boolean isFuzzyQuery = ValidateUtils.isFuzzyQueryType(queryType);
 		if(isFuzzyQuery){
 			queryPara = getFuzzyQueryString(request,queryType);
 			queryType = ValidateUtils.convertFuzzyQueryType(queryType);
 		}
 		request.setAttribute("queryType", queryType);
-		int typeIndex = Arrays.binarySearch(WhoisUtil.queryTypes, queryType); //according to the type of the parameter type query
+		
 		PageBean page = getPageParam(request);
 		if(isFuzzyQuery && isJsonOrXmlFormat(request)){
 			page.setMaxRecords(QueryService.MAX_SIZE_FUZZY_QUERY);//json/xml set max size
 		}
+		
+		int typeIndex = Arrays.binarySearch(WhoisUtil.queryTypes, queryType); //according to the type of the parameter type query
 		try {
 			switch (typeIndex) {
 			case 0:
@@ -275,12 +271,10 @@ public class QueryServlet extends HttpServlet {
 			request.setAttribute("queryPara", WhoisUtil.toChineseUrl(queryParaInput));
 		} catch (RedirectExecption re) {
 			String redirectUrl = re.getRedirectURL(); //to capture to exception of rediectionException and redirect
-			
-			if (!(redirectUrl.endsWith("/")))
+			if (!(redirectUrl.endsWith("/"))) {
 				redirectUrl += "/";
-			
+			}
 			response.setStatus(301);
-			
 			response.setHeader("Accept", format);
 			response.setHeader("Location", redirectUrl + queryPara);
 			response.setHeader("Connection", "close");
@@ -290,6 +284,7 @@ public class QueryServlet extends HttpServlet {
 			this.log(e.getMessage(), e);
 			map = WhoisUtil.processError(WhoisUtil.ERRORCODE, role, format);
 		}
+		
 		if(isFuzzyQuery && isJsonOrXmlFormat(request)){
 			processRespone(request, response, map, typeIndex);
 		}else{
@@ -334,8 +329,7 @@ public class QueryServlet extends HttpServlet {
 	}
 
 	private String addPrefixBeforeParaIfEntityFuzzy(boolean isFuzzyQuery,
-			HttpServletRequest request,
-			String queryPara, int typeIndex) {
+			HttpServletRequest request, String queryPara, int typeIndex) {
 		if(typeIndex != 3){//only handle entity type
 			return queryPara;
 		}
@@ -391,6 +385,43 @@ public class QueryServlet extends HttpServlet {
 		return "handle";
 	}
 
+	private Map<String, String> parseQueryParameter(String queryParameter) {
+		Map<String, String> map = new HashMap<String, String>();
+		if (StringUtils.isEmpty(queryParameter)) {
+			return map;
+		}
+		int index = queryParameter.lastIndexOf("=");
+		int pos = queryParameter.length();
+		while (index != -1) {
+			String value = queryParameter.substring(index + 1, pos);
+			pos = index;
+			index = queryParameter.lastIndexOf("&", index);
+			String keyName = queryParameter.substring(index + 1, pos);
+			pos = index;
+			index = queryParameter.lastIndexOf("=", pos);
+			map.put(keyName, value);
+		}
+		return map;
+	}
+	
+	/**
+	 * Returned in response to the corresponding data according to the type of
+	 * request types
+	 * 
+	 * @param request
+	 * @param response
+	 * @param map
+	 * @throws IOException
+	 * @throws ServletException
+	 */
+	private void processRespone(HttpServletRequest request,
+			HttpServletResponse response, Map<String, Object> map, int queryType)
+			throws IOException, ServletException {		
+		ViewResolver viewResolver = ViewResolver.getResolver();
+		String format = getFormatCookie(request);
+		viewResolver.writeResponse(FormatType.getFormatType(format), request, response, map, queryType);
+	}
+	
 	/**
 	 * Query help type
 	 * 
@@ -537,6 +568,14 @@ public class QueryServlet extends HttpServlet {
 			return "entityNames";
 		}
 		return fuzzyQueryParamName;
+	}
+	
+	private boolean isInvalidEntityStr(String parm) {
+//		String strReg = "^[@\\w\\-\\.\\_\\* \u4E00-\u9FFF]*$";
+//		if (parm.equals("") || parm == null)
+//			return false;
+//		return parm.matches(strReg);
+		return StringUtils.isNotBlank(parm);
 	}
 
 	/**
@@ -746,52 +785,6 @@ public class QueryServlet extends HttpServlet {
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryEvents(queryPara, role, format);
-	}
-	
-	private boolean isInvalidEntityStr(String parm) {
-//		String strReg = "^[@\\w\\-\\.\\_\\* \u4E00-\u9FFF]*$";
-//		if (parm.equals("") || parm == null)
-//			return false;
-//		return parm.matches(strReg);
-		return StringUtils.isNotBlank(parm);
-	}
-
-	/**
-	 * Returned in response to the corresponding data according to the type of
-	 * request types
-	 * 
-	 * @param request
-	 * @param response
-	 * @param map
-	 * @throws IOException
-	 * @throws ServletException
-	 */
-	private void processRespone(HttpServletRequest request,
-			HttpServletResponse response, Map<String, Object> map, int queryType)
-			throws IOException, ServletException {		
-		ViewResolver viewResolver = ViewResolver.getResolver();
-		String format = getFormatCookie(request);
-		viewResolver.writeResponse(FormatType.getFormatType(format), request, response, map, queryType);
-	
-	}
-
-	public static Map<String, String> parseQueryParameter(String queryParameter) {
-		Map<String, String> map = new HashMap<String, String>();
-		if (StringUtils.isEmpty(queryParameter)) {
-			return map;
-		}
-		int index = queryParameter.lastIndexOf("=");
-		int pos = queryParameter.length();
-		while (index != -1) {
-			String value = queryParameter.substring(index + 1, pos);
-			pos = index;
-			index = queryParameter.lastIndexOf("&", index);
-			String keyName = queryParameter.substring(index + 1, pos);
-			pos = index;
-			index = queryParameter.lastIndexOf("=", pos);
-			map.put(keyName, value);
-		}
-		return map;
 	}
 
 	/**

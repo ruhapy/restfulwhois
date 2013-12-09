@@ -1,11 +1,6 @@
 package com.cnnic.whois.web;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -13,16 +8,13 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import com.cnnic.whois.execption.QueryException;
-import com.cnnic.whois.util.DataFormat;
 import com.cnnic.whois.util.WhoisProperties;
 import com.cnnic.whois.util.WhoisUtil;
 import com.cnnic.whois.view.FormatType;
+import com.cnnic.whois.view.ViewResolver;
 
 public class WhoisFilter implements Filter {
 
@@ -93,7 +85,6 @@ public class WhoisFilter implements Filter {
 			format = FormatType.HTML.getName();
 		}
 		String queryInfo = "";
-		String queryType = "";
 		
 		String path = request.getRequestURI();
 		
@@ -105,44 +96,12 @@ public class WhoisFilter implements Filter {
 				format = FormatType.HTML.getName();
 				WhoisUtil.clearFormatCookie(request, response);
 			}
-			if(queryInfo.indexOf("/") != -1){				
-				queryType = queryInfo.substring(0, queryInfo.indexOf("/"));
-			}
 		}
-		
-		FormatType formatType = FormatType.getFormatType(format);
-		
+				
 		if (isQueryOverTime) {
 			chain.doFilter(request, response);
 		} else {
-			request.setCharacterEncoding("utf-8");
-			response.setCharacterEncoding("utf-8");
-			
-			Map<String, Object> map = new LinkedHashMap<String, Object>();
-			
-			try {
-				map = WhoisUtil.processError(WhoisUtil.RATELIMITECODE, role, format);
-			} catch (QueryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			PrintWriter out = response.getWriter();
-			request.setAttribute("queryFormat", format);
-			response.setHeader("Access-Control-Allow-Origin", "*");
-			response.setStatus(429);
-			
-			if(formatType.isHtmlFormat()){
-				response.sendError(429);
-			}else if(formatType.isJsonFormat()){
-				response.setHeader("Content-Type", format);
-				out.print(DataFormat.getJsonObject(map));
-			}else if(formatType.isXmlFormat()){
-				response.setHeader("Content-Type", format);
-				out.write(DataFormat.getXmlString(map));
-			}else{
-				response.setHeader("Content-Type", formatType.TEXTPLAIN.getName());
-				out.write(DataFormat.getPresentation(map));
-			}
+			displayOverTimeMessage(request, response, format, role);
 		}
 	}
 	
@@ -157,6 +116,13 @@ public class WhoisFilter implements Filter {
 
 	}
 
+	private void displayOverTimeMessage(HttpServletRequest request, HttpServletResponse response, 
+			String format, String role) throws IOException, ServletException{
+		ViewResolver viewResolver = ViewResolver.getResolver();	
+		FormatType formatType = FormatType.getFormatType(format);
+		viewResolver.displayOverTimeMessage(request, response, formatType, role); 
+	}
+	
 	/**
 	 * Control call this method when the number of queries in a certain period
 	 * of time
@@ -172,7 +138,6 @@ public class WhoisFilter implements Filter {
 			WhoisUtil.queryRemoteIPMap.put(userIp, accessTime);
 			return true;
 		} else {
-		
 			long time = accessTime - WhoisUtil.queryRemoteIPMap.get(userIp);
 			boolean isOverTime = true;
 			
