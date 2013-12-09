@@ -3,7 +3,9 @@ package com.cnnic.whois.view;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import net.sf.json.JSONArray;
+
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.dao.db.DbQueryExecutor;
 import com.cnnic.whois.util.WhoisUtil;
@@ -117,5 +119,31 @@ public abstract class AbstractResponseWriter implements ResponseWriter {
 			keyName += names[i];
 		}
 		return keyName;
+	}
+	
+	protected String delTrim(String data) {
+		if (data.startsWith("$mul$"))
+			return data.substring("$mul$".length());
+		return data.replaceAll(" ", "");
+	}
+	
+	protected boolean isLegalType(String queryType){
+		if(queryType.equals(WhoisUtil.FUZZY_DOMAINS) ||
+				queryType.equals(WhoisUtil.FUZZY_NAMESERVER) ||
+				queryType.equals(WhoisUtil.FUZZY_ENTITIES) ||
+				queryType.equals(WhoisUtil.IP) ||
+				queryType.equals(WhoisUtil.DMOAIN) ||
+				queryType.equals(WhoisUtil.ENTITY) ||
+				queryType.equals(WhoisUtil.AUTNUM) ||
+				queryType.equals(WhoisUtil.NAMESERVER) ||
+				queryType.equals(WhoisUtil.HELP) ||
+				
+				queryType.equals(WhoisUtil.SEARCHDOMAIN)	//search functions of domain
+				){
+			return true;
+		}
+		else{
+			return false;
+		}
 	}
 }
