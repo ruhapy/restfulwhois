@@ -13,9 +13,6 @@ import com.cnnic.whois.util.ColumnCache;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class RegistrarQueryDao extends AbstractDbQueryDao {
-	public RegistrarQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
 
 	/**
 	 * Connect to the database query variant information

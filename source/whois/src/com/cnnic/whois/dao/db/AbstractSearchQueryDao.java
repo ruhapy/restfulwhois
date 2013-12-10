@@ -22,10 +22,6 @@ public abstract class AbstractSearchQueryDao extends AbstractDbQueryDao{
 			throws SQLException{
 		throw new UnsupportedOperationException();
 	}
-	
-	public AbstractSearchQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
 
 	@Override
 	protected boolean supportJoinType(QueryType queryType,

@@ -19,10 +19,6 @@ import com.cnnic.whois.util.WhoisUtil;
 public class HelpQueryDao extends AbstractDbQueryDao {
 	public static final String GET_ALL_HELP = "select * from notices ";
 
-	public HelpQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
-
 	@Override
 	public Map<String, Object> query(QueryParam param) throws QueryException {
 		Connection connection = null;

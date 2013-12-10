@@ -17,9 +17,6 @@ import com.cnnic.whois.util.WhoisUtil;
 
 @Repository
 public class PhonesQueryDao extends AbstractDbQueryDao {
-	public PhonesQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
 
 	@Override
 	public Map<String, Object> query(QueryParam param) throws QueryException {

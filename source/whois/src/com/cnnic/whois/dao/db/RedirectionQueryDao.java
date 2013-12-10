@@ -18,9 +18,6 @@ import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.util.WhoisUtil;
 @Repository
 public class RedirectionQueryDao extends AbstractDbQueryDao {
-	public RedirectionQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
 
 	@Override
 	public Map<String, Object> query(QueryParam param)

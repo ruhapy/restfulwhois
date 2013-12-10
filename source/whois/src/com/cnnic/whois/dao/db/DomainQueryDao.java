@@ -24,10 +24,6 @@ public class DomainQueryDao extends AbstractSearchQueryDao {
 	public static final String GET_ALL_RIRDOMAIN = "select * from RIRDomain";
 	public static final String QUERY_KEY = "$mul$domains";
 
-	public DomainQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
-
 	@Override
 	public Map<String, Object> query(QueryParam param) throws QueryException, RedirectExecption {
 		if (param.isFuzzyQ()) {

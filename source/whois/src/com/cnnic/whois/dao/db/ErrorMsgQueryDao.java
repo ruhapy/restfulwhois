@@ -18,10 +18,6 @@ import com.cnnic.whois.util.WhoisUtil;
 public class ErrorMsgQueryDao extends AbstractDbQueryDao {
 	public static final String GET_ALL_ERRORMESSAGE = "select * from errormessage ";
 
-	public ErrorMsgQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
-
 	@Override
 	public Map<String, Object> query(QueryParam param)
 			throws QueryException {

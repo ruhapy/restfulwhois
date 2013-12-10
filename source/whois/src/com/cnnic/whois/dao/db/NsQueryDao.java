@@ -21,10 +21,6 @@ import com.cnnic.whois.util.WhoisUtil;
 public class NsQueryDao extends AbstractDbQueryDao {
 	public static final String GET_ALL_NAMESREVER = "select * from nameServer ";
 
-	public NsQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
-
 	public Map<String, Object> query(QueryParam param) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;

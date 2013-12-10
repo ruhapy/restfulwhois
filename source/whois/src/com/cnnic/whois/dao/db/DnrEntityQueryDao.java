@@ -16,10 +16,6 @@ import com.cnnic.whois.util.WhoisUtil;
 @Repository
 public class DnrEntityQueryDao extends EntityQueryDao {
 
-	public DnrEntityQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
-
 	@Override
 	public QueryType getQueryType() {
 		return QueryType.DNRENTITY;

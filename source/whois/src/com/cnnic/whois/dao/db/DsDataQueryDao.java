@@ -19,10 +19,6 @@ public class DsDataQueryDao extends AbstractDbQueryDao {
 	public static final String GET_ALL_DSDATA = "select * from dsData";
 	private static final String QUERY_KEY = "$mul$dsData";
 
-	public DsDataQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
-
 	@Override
 	public Map<String, Object> query(QueryParam param)
 			throws QueryException {

@@ -19,10 +19,6 @@ import com.cnnic.whois.util.WhoisUtil;
 public class RemarksQueryDao extends AbstractDbQueryDao {
 	public static final String GET_ALL_REMARKS = "select * from remarks ";
 
-	public RemarksQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
-
 	@Override
 	public Map<String, Object> query(QueryParam param) throws QueryException {
 		Connection connection = null;

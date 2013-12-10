@@ -18,9 +18,6 @@ import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.util.WhoisUtil;
 @Repository
 public class IpRedirectionQueryDao extends AbstractDbQueryDao {
-	public IpRedirectionQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
 
 	@Override
 	public Map<String, Object> query(QueryParam param) throws QueryException, RedirectExecption {

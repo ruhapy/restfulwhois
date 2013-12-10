@@ -18,10 +18,6 @@ import com.cnnic.whois.util.WhoisUtil;
 public class EventsQueryDao extends AbstractDbQueryDao {
 	public static final String GET_ALL_EVENTS = "select * from events ";
 
-	public EventsQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
-
 	@Override
 	public Map<String, Object> query(QueryParam param)
 			throws QueryException {

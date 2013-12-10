@@ -20,9 +20,6 @@ import com.cnnic.whois.util.WhoisUtil;
 
 @Repository
 public class IpQueryDao extends AbstractDbQueryDao {
-	public IpQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
 
 	@Override
 	public Map<String, Object> query(QueryParam param) throws QueryException {

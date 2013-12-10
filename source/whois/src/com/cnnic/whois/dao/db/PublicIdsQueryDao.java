@@ -18,10 +18,6 @@ import com.cnnic.whois.util.WhoisUtil;
 @Repository
 public class PublicIdsQueryDao extends AbstractDbQueryDao {
 
-	public PublicIdsQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
-
 	@Override
 	public QueryType getQueryType() {
 		return QueryType.PUBLICIDS;
