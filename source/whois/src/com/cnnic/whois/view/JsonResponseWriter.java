@@ -11,10 +11,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.stereotype.Component;
+
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.DataFormat;
 import com.cnnic.whois.util.WhoisUtil;
-
+@Component
 public class JsonResponseWriter extends AbstractResponseWriter {
 	private static JsonResponseWriter writer = new JsonResponseWriter();
 

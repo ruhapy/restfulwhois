@@ -12,9 +12,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.stereotype.Component;
+
 import com.cnnic.whois.util.DataFormat;
 import com.cnnic.whois.util.WhoisUtil;
-
+@Component
 public class HtmlResponseWriter extends AbstractResponseWriter {
 	private static HtmlResponseWriter writer = new HtmlResponseWriter();
 

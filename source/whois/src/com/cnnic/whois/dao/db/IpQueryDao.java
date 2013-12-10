@@ -7,8 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.stereotype.Repository;
+
 import com.cnnic.whois.bean.IpQueryParam;
-import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
@@ -17,14 +18,11 @@ import com.cnnic.whois.util.ColumnCache;
 import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
 
+@Repository
 public class IpQueryDao extends AbstractDbQueryDao {
-	public IpQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param,
-			PageBean... page) throws QueryException {
+	public Map<String, Object> query(QueryParam param) throws QueryException {
 		IpQueryParam ipParam = (IpQueryParam) param;
 		long startHighAddr = ipParam.getStartHighAddr();
 		long endHighAddr = ipParam.getEndHighAddr();
@@ -86,9 +84,8 @@ public class IpQueryDao extends AbstractDbQueryDao {
 		return map;
 	}
 
-	protected void preHandleNormalField(String keyName,
-			ResultSet results, Map<String, Object> map, String field)
-			throws SQLException {
+	protected void preHandleNormalField(String keyName, ResultSet results,
+			Map<String, Object> map, String field) throws SQLException {
 		if (keyName.equals(WhoisUtil.MULTIPRXIP)
 				&& field.equals("StartLowAddress")) {
 			if ((map.get("Start Address") == null && map.get("End Address") == null)
@@ -120,8 +117,8 @@ public class IpQueryDao extends AbstractDbQueryDao {
 						endAddress = WhoisUtil.longtoipV4(Long
 								.parseLong(endLowAddress));
 					}
-					map.put("Start_Address",startAddress);
-					map.put("End_Address",endAddress);
+					map.put("Start_Address", startAddress);
+					map.put("End_Address", endAddress);
 				}
 			}
 		}
@@ -148,6 +145,7 @@ public class IpQueryDao extends AbstractDbQueryDao {
 			Connection connection) throws SQLException {
 		throw new UnsupportedOperationException();
 	}
+
 	@Override
 	public List<String> getKeyFields(String role) {
 		List<String> cacheFields = PermissionCache.getPermissionCache()

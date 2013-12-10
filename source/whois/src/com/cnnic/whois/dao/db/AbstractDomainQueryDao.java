@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
@@ -16,10 +15,6 @@ public abstract class AbstractDomainQueryDao extends AbstractDbQueryDao {
 	public static final String GET_ALL_DNRDOMAIN = "select * from DNRDomain";
 	public static final String GET_ALL_RIRDOMAIN = "select * from RIRDomain";
 	public static final String QUERY_KEY = "$mul$domains";
-
-	public AbstractDomainQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
 
 	@Override
 	public Map<String, Object> query(QueryParam param)

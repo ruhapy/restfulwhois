@@ -10,34 +10,5 @@
 	<util:properties id="whoisproperties" location="classpath:whois.properties" />
 	<context:property-placeholder location="classpath:*.properties" />
 	<context:component-scan base-package="com.cnnic" />
-	<bean id="cacheQueryDaos" name="cacheQueryDaos" class="java.util.ArrayList">
-		<constructor-arg>
-			<list>
-				<ref bean="asQueryDao" />
-				<ref bean="dnrDomainQueryDao" />
-				<ref bean="dsDataQueryDao" />
-				<ref bean="entityQueryDao" />
-				<ref bean="errorMsgQueryDao" />
-				<ref bean="eventsQueryDao" />
-				<ref bean="searchDomainQueryDao" />
-				<ref bean="searchEntityQueryDao" />
-				<ref bean="searchNsQueryDao" />
-				<ref bean="helpQueryDao" />
-				<ref bean="ipQueryDao" />
-				<ref bean="ipRedirectionQueryDao" />
-				<ref bean="keyDataQueryDao" />
-				<ref bean="linksQueryDao" />
-				<ref bean="noticesQueryDao" />
-				<ref bean="nsQueryDao" />
-				<ref bean="phonesQueryDao" />
-				<ref bean="postalAddressQueryDao" />
-				<ref bean="redirectionQueryDao" />
-				<ref bean="remarksQueryDao" />
-				<ref bean="rirDomainQueryDao" />
-				<ref bean="secureDnsQueryDao" />
-				<ref bean="variantsQueryDao" />
-			</list>
-		</constructor-arg>
-	</bean>
 	<import resource="spring-servlet.xml" />
 </beans>

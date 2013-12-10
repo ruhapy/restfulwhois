@@ -25,10 +25,10 @@ public class DomainQueryDao extends AbstractSearchQueryDao<DomainIndex> {
 	}
 
 	@Override
-	public SearchResult<DomainIndex> query(QueryParam param,
-			PageBean... pageParam) throws QueryException {
+	public SearchResult<DomainIndex> query(QueryParam param)
+			throws QueryException {
 		DomainQueryParam domainQueryParam = (DomainQueryParam) param;
-		PageBean page = pageParam[0];
+		PageBean page = param.getPage();
 		String queryStr = "ldhName:" + domainQueryParam.getDomainPuny()
 				+ " OR unicodeName:" + domainQueryParam.getQ();
 		SearchResult<DomainIndex> result = query(queryStr, page);

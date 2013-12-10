@@ -7,7 +7,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import com.cnnic.whois.bean.PageBean;
+import org.springframework.stereotype.Repository;
+
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
@@ -15,14 +16,11 @@ import com.cnnic.whois.bean.RedirectionQueryParam;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.util.WhoisUtil;
-
+@Repository
 public class RedirectionQueryDao extends AbstractDbQueryDao {
-	public RedirectionQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, PageBean... page)
+	public Map<String, Object> query(QueryParam param)
 			throws QueryException, RedirectExecption {
 		Connection connection = null;
 		PreparedStatement stmt = null;

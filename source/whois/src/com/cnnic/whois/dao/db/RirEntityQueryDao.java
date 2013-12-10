@@ -14,10 +14,6 @@ import com.cnnic.whois.util.WhoisUtil;
 
 public class RirEntityQueryDao extends EntityQueryDao {
 
-	public RirEntityQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
-
 	@Override
 	public QueryType getQueryType() {
 		return QueryType.RIRENTITY;

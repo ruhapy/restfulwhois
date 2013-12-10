@@ -8,7 +8,7 @@ import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
-@Repository
+@Repository("cacheHelpQueryDao")
 public class HelpQueryDao extends AbstractCacheQueryDao {
 	@Override
 	public Map<String, Object> query(QueryParam param) throws QueryException, RedirectExecption {

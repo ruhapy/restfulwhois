@@ -5,7 +5,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import com.cnnic.whois.bean.PageBean;
+import org.springframework.stereotype.Repository;
+
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
@@ -14,16 +15,12 @@ import com.cnnic.whois.util.ColumnCache;
 import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
 
+@Repository
 public class HelpQueryDao extends AbstractDbQueryDao {
 	public static final String GET_ALL_HELP = "select * from notices ";
 
-	public HelpQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
-
 	@Override
-	public Map<String, Object> query(QueryParam param, PageBean... page)
-			throws QueryException {
+	public Map<String, Object> query(QueryParam param) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 		try {

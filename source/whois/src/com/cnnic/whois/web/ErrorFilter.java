@@ -11,6 +11,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.web.context.ContextLoader;
+
 import com.cnnic.whois.util.WhoisProperties;
 import com.cnnic.whois.util.WhoisUtil;
 import com.cnnic.whois.view.FormatType;
@@ -104,7 +106,7 @@ public class ErrorFilter implements Filter {
 	
 	private void displayErrorMessage(HttpServletRequest request, HttpServletResponse response, FilterChain chain, 
 			String format, String queryType, String role) throws IOException, ServletException{
-		ViewResolver viewResolver = ViewResolver.getResolver();	
+		ViewResolver viewResolver = (ViewResolver) ContextLoader.getCurrentWebApplicationContext().getBean("viewResolver");
 		FormatType formatType = FormatType.getFormatType(format);
 		viewResolver.displayErrorMessage(request, response, chain, formatType, queryType, role); 
 	}

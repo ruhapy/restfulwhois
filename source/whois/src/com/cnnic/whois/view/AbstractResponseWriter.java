@@ -4,6 +4,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import net.sf.json.JSONArray;
 
 import com.cnnic.whois.bean.QueryType;
@@ -11,7 +13,8 @@ import com.cnnic.whois.dao.db.DbQueryExecutor;
 import com.cnnic.whois.util.WhoisUtil;
 
 public abstract class AbstractResponseWriter implements ResponseWriter {
-	private DbQueryExecutor dbQueryExecutor = DbQueryExecutor.getExecutor();
+	@Autowired
+	private DbQueryExecutor dbQueryExecutor ;
 
 	abstract protected String formatKey(String keyName);
 

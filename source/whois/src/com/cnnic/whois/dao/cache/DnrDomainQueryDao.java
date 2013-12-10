@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.dao.db.AbstractDomainQueryDao;
-@Repository
+@Repository("cacheDnrDomainQueryDao")
 public class DnrDomainQueryDao extends AbstractCacheQueryDao {
 	@Override
 	protected List<String> getCacheKeySplits(QueryParam param) {

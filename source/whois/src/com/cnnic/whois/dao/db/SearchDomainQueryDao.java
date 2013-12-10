@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.stereotype.Repository;
+
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
@@ -12,20 +14,16 @@ import com.cnnic.whois.bean.index.Index;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.index.SearchResult;
 
+//@Repository("db.searchDomainQueryDao")
 public class SearchDomainQueryDao extends AbstractSearchQueryDao {
 
-	public SearchDomainQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
-
 	@Override
-	public Map<String, Object> query(QueryParam param, PageBean... pageParam)
-			throws QueryException {
+	public Map<String, Object> query(QueryParam param) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
-		PageBean page = pageParam[0];
-		SearchResult<? extends Index> result = searchQueryExecutor
-				.query(QueryType.DOMAIN, param, page);
+		PageBean page = param.getPage();
+		SearchResult<? extends Index> result = searchQueryExecutor.query(
+				QueryType.DOMAIN, param);
 		if (result.getResultList().size() == 0) {
 			return map;
 		}

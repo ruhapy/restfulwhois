@@ -12,6 +12,8 @@ import java.util.Map;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
@@ -26,9 +28,7 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 	protected DataSource ds;
 	protected PermissionCache permissionCache = PermissionCache
 			.getPermissionCache();
-	protected DomainIndexService domainIndexService = DomainIndexService.getIndexService();
-	protected NameServerIndexService nameServerIndexService = NameServerIndexService.getIndexService();
-	protected EntityIndexService entityIndexService = EntityIndexService.getIndexService();
+	@Autowired
 	protected List<AbstractDbQueryDao> dbQueryDaos;
 	protected abstract boolean supportJoinType(QueryType queryType,
 			QueryJoinType queryJoinType);
@@ -45,9 +45,8 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 	 * 
 	 * @throws IllegalStateException
 	 */
-	public AbstractDbQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
+	public AbstractDbQueryDao() {
 		super();
-		this.dbQueryDaos = dbQueryDaos;
 		try {
 			InitialContext ctx = new InitialContext();
 			ds = (DataSource) ctx.lookup(WhoisUtil.JNDI_NAME);

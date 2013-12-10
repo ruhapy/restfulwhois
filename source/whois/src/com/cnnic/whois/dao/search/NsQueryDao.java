@@ -1,6 +1,5 @@
 package com.cnnic.whois.dao.search;
 
-import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.bean.index.NameServerIndex;
@@ -24,10 +23,10 @@ public class NsQueryDao extends AbstractSearchQueryDao<NameServerIndex> {
 	}
 
 	@Override
-	public SearchResult<NameServerIndex> query(QueryParam param,
-			PageBean... pageParam) throws QueryException {
-		PageBean page = pageParam[0];
-		SearchResult<NameServerIndex> result = query(param.getQ(), page);
+	public SearchResult<NameServerIndex> query(QueryParam param)
+			throws QueryException {
+		SearchResult<NameServerIndex> result = query(param.getQ(),
+				param.getPage());
 		return result;
 	}
 }
