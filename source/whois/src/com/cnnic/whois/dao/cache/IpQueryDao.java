@@ -2,18 +2,18 @@ package com.cnnic.whois.dao.cache;
 
 import java.util.Map;
 
-import com.cnnic.whois.bean.PageBean;
+import org.springframework.stereotype.Repository;
+
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
-
+@Repository("cacheIpQueryDao")
 public class IpQueryDao extends AbstractCacheQueryDao {
 
 	@Override
-	public Map<String, Object> query(QueryParam param,
-			PageBean... pageParam) throws QueryException, RedirectExecption {
-		return dbQueryExecutor.query(QueryType.IP, param, pageParam);
+	public Map<String, Object> query(QueryParam param) throws QueryException, RedirectExecption {
+		return dbQueryExecutor.query(QueryType.IP, param);
 	}
 
 	@Override

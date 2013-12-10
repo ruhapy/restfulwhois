@@ -2,10 +2,8 @@ package com.cnnic.whois.dao.db;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
 
-import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.bean.index.Index;
@@ -13,22 +11,19 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.index.SearchResult;
 import com.cnnic.whois.util.WhoisUtil;
 
+//@Repository("db.searchEntityQueryDao")
 public class SearchEntityQueryDao extends AbstractSearchQueryDao {
-	public SearchEntityQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param,
-			PageBean... pageParams) throws QueryException {
-		SearchResult<? extends Index> result = searchQueryExecutor
-				.query(QueryType.ENTITY, param, pageParams[0]);
+	public Map<String, Object> query(QueryParam param) throws QueryException {
+		SearchResult<? extends Index> result = searchQueryExecutor.query(
+				QueryType.ENTITY, param);
 		Connection connection = null;
 		Map<String, Object> map = null;
 		try {
 			connection = ds.getConnection();
 			Map<String, Object> entityMap = fuzzyQuery(connection, result,
-					 "$mul$entity");
+					"$mul$entity");
 			if (entityMap != null) {
 				map = rdapConformance(map);
 				map.putAll(entityMap);

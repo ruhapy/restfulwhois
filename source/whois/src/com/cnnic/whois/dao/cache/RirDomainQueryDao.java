@@ -3,10 +3,12 @@ package com.cnnic.whois.dao.cache;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.dao.db.AbstractDomainQueryDao;
-
+@Repository("cacheRirDomainQueryDao")
 public class RirDomainQueryDao extends AbstractCacheQueryDao {
 	@Override
 	protected List<String> getCacheKeySplits(QueryParam param) {

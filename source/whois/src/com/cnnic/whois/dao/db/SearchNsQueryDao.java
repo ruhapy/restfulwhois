@@ -3,7 +3,6 @@ package com.cnnic.whois.dao.db;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.cnnic.whois.bean.PageBean;
@@ -14,20 +13,16 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.index.SearchResult;
 import com.cnnic.whois.util.WhoisUtil;
 
+//@Repository("db.searchNsQueryDao")
 public class SearchNsQueryDao extends AbstractSearchQueryDao {
 
-	public SearchNsQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
-
 	@Override
-	public Map<String, Object> query(QueryParam param, PageBean... pageParam)
-			throws QueryException {
+	public Map<String, Object> query(QueryParam param) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
-		PageBean page = pageParam[0];
-		SearchResult<? extends Index> result = searchQueryExecutor
-				.query(QueryType.NAMESERVER, param, page);
+		PageBean page = param.getPage();
+		SearchResult<? extends Index> result = searchQueryExecutor.query(
+				QueryType.NAMESERVER, param);
 		try {
 			connection = ds.getConnection();
 			Map<String, Object> nsMap = fuzzyQuery(connection, result,

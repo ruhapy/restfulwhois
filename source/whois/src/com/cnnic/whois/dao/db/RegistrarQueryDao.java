@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
@@ -14,9 +13,6 @@ import com.cnnic.whois.util.ColumnCache;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class RegistrarQueryDao extends AbstractDbQueryDao {
-	public RegistrarQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
 
 	/**
 	 * Connect to the database query variant information
@@ -64,8 +60,7 @@ public class RegistrarQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, PageBean... page)
-			throws QueryException {
+	public Map<String, Object> query(QueryParam param) throws QueryException {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -29,12 +29,12 @@ public class EntityQueryDao extends AbstractSearchQueryDao<EntityIndex> {
 	}
 
 	@Override
-	public SearchResult<EntityIndex> query(QueryParam param,
-			PageBean... pageParams) throws QueryException {
+	public SearchResult<EntityIndex> query(QueryParam param)
+			throws QueryException {
 		EntityQueryParam entityQueryParam = (EntityQueryParam) param;
 		SearchResult<EntityIndex> result = fuzzyQueryEntitiesByHandleAndName(
 				entityQueryParam.getFuzzyQueryParamName(),
-				entityQueryParam.getQ(), pageParams[0]);
+				entityQueryParam.getQ(), param.getPage());
 		return result;
 	}
 

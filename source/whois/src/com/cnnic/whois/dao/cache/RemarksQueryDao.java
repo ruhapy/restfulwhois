@@ -1,12 +1,12 @@
 package com.cnnic.whois.dao.cache;
 
 import java.util.List;
-import java.util.Map;
+
+import org.springframework.stereotype.Repository;
 
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
-import com.cnnic.whois.execption.QueryException;
-
+@Repository("cacheRemarksQueryDao")
 public class RemarksQueryDao extends AbstractCacheQueryDao {
 	@Override
 	protected List<String> getCacheKeySplits(QueryParam param) {

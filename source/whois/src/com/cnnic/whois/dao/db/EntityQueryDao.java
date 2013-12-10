@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import com.cnnic.whois.bean.PageBean;
+
+import org.springframework.stereotype.Repository;
+
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.bean.index.Index;
@@ -14,21 +16,17 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.index.SearchResult;
 import com.cnnic.whois.util.ColumnCache;
 import com.cnnic.whois.util.WhoisUtil;
-
+@Repository
 public class EntityQueryDao extends AbstractSearchQueryDao {
 	private static final String MAP_KEY = "$mul$entity";
 	public static final String GET_ALL_DNRENTITY = "select * from DNREntity ";
 	public static final String GET_ALL_RIRENTITY = "select * from RIREntity ";
 
-	public EntityQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
-
 	@Override
-	public Map<String, Object> query(QueryParam param, PageBean... page)
+	public Map<String, Object> query(QueryParam param)
 			throws QueryException {
 		SearchResult<? extends Index> result = searchQueryExecutor
-				.query(QueryType.ENTITY, param, page);
+				.query(QueryType.ENTITY, param);
 		Connection connection = null;
 		Map<String, Object> map = null;
 		try {

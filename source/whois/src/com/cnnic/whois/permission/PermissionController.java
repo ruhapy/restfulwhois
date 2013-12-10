@@ -6,32 +6,40 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import net.sf.json.JSONArray;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.dao.db.DbQueryExecutor;
+import com.cnnic.whois.util.AuthenticationHolder;
 import com.cnnic.whois.util.WhoisUtil;
 
+@Component
 public class PermissionController {
 	private static PermissionController permissionController = new PermissionController();
-	private DbQueryExecutor dbQueryExecutor = DbQueryExecutor.getExecutor();
+	@Autowired
+	private DbQueryExecutor dbQueryExecutor;
 
 	public static PermissionController getPermissionController() {
 		return permissionController;
 	}
 
-	public Map<String, Object> removeUnAuthedEntries(
-			Map<String, Object> map, String role) {
+	public Map<String, Object> removeUnAuthedEntries(Map<String, Object> map) {
+		String role = AuthenticationHolder.getAuthentication().getRole();
 		if (null == map) {
 			return map;
 		}
 		Object[] multiObjs = getMultiObjs(map);
-		if(null != multiObjs){
+		if (null != multiObjs) {
 			removeUnAuthedEntriesObject(multiObjs, role);
 			return map;
 		}
 		return removeUnAuthedEntriesMap(map, role);
 	}
-	
+
 	private Map<String, Object> removeUnAuthedEntriesMap(
 			Map<String, Object> map, String role) {
 		if (null == map) {
@@ -41,7 +49,8 @@ public class PermissionController {
 		List<String> dnrKeyFields = dbQueryExecutor.getKeyFields(queryType,
 				role);
 		Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
-		List<String> keyFieldsWithoutPrefix = this.removeFieldPrefix(dnrKeyFields);
+		List<String> keyFieldsWithoutPrefix = this
+				.removeFieldPrefix(dnrKeyFields);
 		keyFieldsWithoutPrefix.add(WhoisUtil.RDAPCONFORMANCEKEY);
 		keyFieldsWithoutPrefix.add(WhoisUtil.QUERY_TYPE);
 		keyFieldsWithoutPrefix.add(WhoisUtil.QUERY_JOIN_TYPE);
@@ -55,7 +64,8 @@ public class PermissionController {
 		}
 		return resultMap;
 	}
-	private Object[] getMultiObjs(Map<String, Object> map){
+
+	private Object[] getMultiObjs(Map<String, Object> map) {
 		for (Iterator<Entry<String, Object>> it = map.entrySet().iterator(); it
 				.hasNext();) {
 			Entry<String, Object> entry = it.next();
@@ -92,7 +102,7 @@ public class PermissionController {
 	}
 
 	private void removeUnAuthedEntriesObject(Object object, String role) {
-		if(null == object){
+		if (null == object) {
 			return;
 		}
 		if (object instanceof Object[]) {
