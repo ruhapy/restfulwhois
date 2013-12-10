@@ -95,7 +95,7 @@ public class JsonResponseWriter extends AbstractResponseWriter {
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
 		
 		try {
-			map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+			map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 		} catch (QueryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -121,7 +121,7 @@ public class JsonResponseWriter extends AbstractResponseWriter {
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
 		
 		try {
-			map = WhoisUtil.processError(WhoisUtil.RATELIMITECODE, role, format);
+			map = WhoisUtil.processError(WhoisUtil.RATELIMITECODE);
 		} catch (QueryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
