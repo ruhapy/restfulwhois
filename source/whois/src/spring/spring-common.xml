@@ -6,32 +6,41 @@
 		   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
 		   http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd"
 	default-autowire="byName" default-lazy-init="true">
+	<bean id="searchDomainQueryDao" class="com.cnnic.whois.dao.search.DomainQueryDao">
+		<constructor-arg value="${solr.url.domain}" />
+	</bean>
+	<bean id="searchEntityQueryDao" class="com.cnnic.whois.dao.search.EntityQueryDao">
+		<constructor-arg value="${solr.url.nameserver}" />
+	</bean>
+	<bean id="searchNsQueryDao" class="com.cnnic.whois.dao.search.NsQueryDao">
+		<constructor-arg value="${solr.url.entity}" />
+	</bean>
 	<bean id="cacheQueryDaos" name="cacheQueryDaos" class="java.util.ArrayList">
 		<constructor-arg>
 			<list>
-				<ref bean="asQueryDao" />
-				<ref bean="dnrDomainQueryDao" />
-				<ref bean="dsDataQueryDao" />
-				<ref bean="entityQueryDao" />
-				<ref bean="errorMsgQueryDao" />
-				<ref bean="eventsQueryDao" />
+				<ref bean="cacheAsQueryDao" />
+				<ref bean="cacheDnrDomainQueryDao" />
+				<ref bean="cacheDsDataQueryDao" />
+				<ref bean="cacheEntityQueryDao" />
+				<ref bean="cacheErrorMsgQueryDao" />
+				<ref bean="cacheEventsQueryDao" />
 				<ref bean="searchDomainQueryDao" />
 				<ref bean="searchEntityQueryDao" />
 				<ref bean="searchNsQueryDao" />
-				<ref bean="helpQueryDao" />
-				<ref bean="ipQueryDao" />
-				<ref bean="ipRedirectionQueryDao" />
-				<ref bean="keyDataQueryDao" />
-				<ref bean="linksQueryDao" />
-				<ref bean="noticesQueryDao" />
-				<ref bean="nsQueryDao" />
-				<ref bean="phonesQueryDao" />
-				<ref bean="postalAddressQueryDao" />
-				<ref bean="redirectionQueryDao" />
-				<ref bean="remarksQueryDao" />
-				<ref bean="rirDomainQueryDao" />
-				<ref bean="secureDnsQueryDao" />
-				<ref bean="variantsQueryDao" />
+				<ref bean="cacheHelpQueryDao" />
+				<ref bean="cacheIpQueryDao" />
+				<ref bean="cacheIpRedirectionQueryDao" />
+				<ref bean="cacheKeyDataQueryDao" />
+				<ref bean="cacheLinksQueryDao" />
+				<ref bean="cacheNoticesQueryDao" />
+				<ref bean="cacheNsQueryDao" />
+				<ref bean="cachePhonesQueryDao" />
+				<ref bean="cachePostalAddressQueryDao" />
+				<ref bean="cacheRedirectionQueryDao" />
+				<ref bean="cacheRemarksQueryDao" />
+				<ref bean="cacheRirDomainQueryDao" />
+				<ref bean="cacheSecureDnsQueryDao" />
+				<ref bean="cacheVariantsQueryDao" />
 			</list>
 		</constructor-arg>
 	</bean>

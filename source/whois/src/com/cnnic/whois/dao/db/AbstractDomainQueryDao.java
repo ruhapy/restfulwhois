@@ -16,10 +16,6 @@ public abstract class AbstractDomainQueryDao extends AbstractDbQueryDao {
 	public static final String GET_ALL_RIRDOMAIN = "select * from RIRDomain";
 	public static final String QUERY_KEY = "$mul$domains";
 
-	public AbstractDomainQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
-
 	@Override
 	public Map<String, Object> query(QueryParam param)
 			throws QueryException, RedirectExecption {

@@ -18,10 +18,6 @@ import com.cnnic.whois.util.WhoisUtil;
 public class SecureDnsQueryDao extends AbstractDbQueryDao {
 	public static final String GET_ALL_SECUREDNS = "select * from secureDNS ";
 
-	public SecureDnsQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
-
 	@Override
 	public Map<String, Object> query(QueryParam param)
 			throws QueryException {

@@ -19,10 +19,6 @@ import com.cnnic.whois.util.WhoisUtil;
 public class NoticesQueryDao extends AbstractDbQueryDao {
 	public static final String GET_ALL_NOTICES = "select * from notices ";
 
-	public NoticesQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
-
 	@Override
 	public Map<String, Object> query(QueryParam param) throws QueryException {
 		Connection connection = null;

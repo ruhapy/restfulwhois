@@ -18,10 +18,6 @@ import com.cnnic.whois.util.WhoisUtil;
 public class KeyDataQueryDao extends AbstractDbQueryDao {
 	public static final String GET_ALL_KEYDATA = "select * from keyData ";
 
-	public KeyDataQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
-
 	@Override
 	public Map<String, Object> query(QueryParam param)
 			throws QueryException {

@@ -18,10 +18,6 @@ import com.cnnic.whois.util.WhoisUtil;
 public class VariantsQueryDao extends AbstractDbQueryDao {
 	public static final String GET_ALL_VARIANTS = "select * from variants ";
 
-	public VariantsQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
-
 	@Override
 	public Map<String, Object> query(QueryParam param)
 			throws QueryException {

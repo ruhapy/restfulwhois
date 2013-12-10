@@ -18,10 +18,6 @@ import com.cnnic.whois.util.WhoisUtil;
 public class LinksQueryDao extends AbstractDbQueryDao {
 	public static final String GET_ALL_LINK = "select * from link ";
 
-	public LinksQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
-
 	@Override
 	public Map<String, Object> query(QueryParam param)
 			throws QueryException {

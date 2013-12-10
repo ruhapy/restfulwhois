@@ -2,7 +2,6 @@ package com.cnnic.whois.dao.db;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
 
 import com.cnnic.whois.bean.QueryJoinType;
@@ -14,9 +13,6 @@ import com.cnnic.whois.util.WhoisUtil;
 
 @Deprecated
 public class DelegationKeysQueryDao extends AbstractDbQueryDao {
-	public DelegationKeysQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
 
 	@Override
 	public Map<String, Object> query(QueryParam param) throws QueryException {

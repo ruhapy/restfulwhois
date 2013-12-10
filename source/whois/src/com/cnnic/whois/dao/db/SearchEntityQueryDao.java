@@ -2,10 +2,7 @@ package com.cnnic.whois.dao.db;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
-
-import org.springframework.stereotype.Repository;
 
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
@@ -14,11 +11,8 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.index.SearchResult;
 import com.cnnic.whois.util.WhoisUtil;
 
-@Repository
+//@Repository("db.searchEntityQueryDao")
 public class SearchEntityQueryDao extends AbstractSearchQueryDao {
-	public SearchEntityQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
 
 	@Override
 	public Map<String, Object> query(QueryParam param) throws QueryException {

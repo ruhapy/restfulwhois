@@ -16,11 +16,6 @@ import com.cnnic.whois.util.WhoisUtil;
 
 @Repository
 public class DnrDomainQueryDao extends AbstractDomainQueryDao {
-
-	public DnrDomainQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
-
 	@Override
 	public Map<String, Object> query(QueryParam param) throws QueryException {
 		Connection connection = null;

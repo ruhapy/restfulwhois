@@ -22,10 +22,6 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 	public static final String GET_ALL_DNRENTITY = "select * from DNREntity ";
 	public static final String GET_ALL_RIRENTITY = "select * from RIREntity ";
 
-	public EntityQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
-		super(dbQueryDaos);
-	}
-
 	@Override
 	public Map<String, Object> query(QueryParam param)
 			throws QueryException {
