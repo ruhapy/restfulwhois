@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import com.cnnic.whois.bean.PageBean;
+
+import org.springframework.stereotype.Repository;
+
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
@@ -15,6 +17,7 @@ import com.cnnic.whois.util.ColumnCache;
 import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
 
+@Repository
 public class NsQueryDao extends AbstractDbQueryDao {
 	public static final String GET_ALL_NAMESREVER = "select * from nameServer ";
 
@@ -22,8 +25,7 @@ public class NsQueryDao extends AbstractDbQueryDao {
 		super(dbQueryDaos);
 	}
 
-	public Map<String, Object> query(QueryParam param, PageBean... page)
-			throws QueryException {
+	public Map<String, Object> query(QueryParam param) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
@@ -52,9 +54,9 @@ public class NsQueryDao extends AbstractDbQueryDao {
 		}
 		return map;
 	}
-	
+
 	@Override
-	protected Map<String, Object> formatValue(Map<String, Object> map){
+	protected Map<String, Object> formatValue(Map<String, Object> map) {
 		Map<String, Object> map_IP = new LinkedHashMap<String, Object>();
 		Object IPAddressArray = map.get("IPV4_Addresses");
 		map_IP.put(WhoisUtil.IPV4PREFIX, IPAddressArray);

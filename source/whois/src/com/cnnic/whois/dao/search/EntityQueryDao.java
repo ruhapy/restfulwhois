@@ -1,5 +1,7 @@
 package com.cnnic.whois.dao.search;
 
+import org.springframework.stereotype.Repository;
+
 import com.cnnic.whois.bean.EntityQueryParam;
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
@@ -9,6 +11,7 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.QueryService;
 import com.cnnic.whois.service.index.SearchResult;
 
+@Repository
 public class EntityQueryDao extends AbstractSearchQueryDao<EntityIndex> {
 	private static final String ARRAY_SPLITER = "'~'";
 	private static final String FUZZY_MARK = "*";
@@ -29,12 +32,12 @@ public class EntityQueryDao extends AbstractSearchQueryDao<EntityIndex> {
 	}
 
 	@Override
-	public SearchResult<EntityIndex> query(QueryParam param,
-			PageBean... pageParams) throws QueryException {
+	public SearchResult<EntityIndex> query(QueryParam param)
+			throws QueryException {
 		EntityQueryParam entityQueryParam = (EntityQueryParam) param;
 		SearchResult<EntityIndex> result = fuzzyQueryEntitiesByHandleAndName(
 				entityQueryParam.getFuzzyQueryParamName(),
-				entityQueryParam.getQ(), pageParams[0]);
+				entityQueryParam.getQ(), param.getPage());
 		return result;
 	}
 
