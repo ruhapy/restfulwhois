@@ -5,7 +5,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import com.cnnic.whois.bean.PageBean;
+import org.springframework.stereotype.Repository;
+
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
@@ -13,7 +14,7 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.ColumnCache;
 import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
-
+@Repository
 public class ErrorMsgQueryDao extends AbstractDbQueryDao {
 	public static final String GET_ALL_ERRORMESSAGE = "select * from errormessage ";
 
@@ -22,7 +23,7 @@ public class ErrorMsgQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, PageBean... page)
+	public Map<String, Object> query(QueryParam param)
 			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;

@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.stereotype.Repository;
+
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryParam;
@@ -16,7 +18,7 @@ import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.service.index.SearchResult;
 import com.cnnic.whois.util.ColumnCache;
 import com.cnnic.whois.util.WhoisUtil;
-
+@Repository
 public class DomainQueryDao extends AbstractSearchQueryDao {
 	public static final String GET_ALL_DNRDOMAIN = "select * from DNRDomain";
 	public static final String GET_ALL_RIRDOMAIN = "select * from RIRDomain";
@@ -27,19 +29,17 @@ public class DomainQueryDao extends AbstractSearchQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param,
-			PageBean... page) throws QueryException, RedirectExecption {
+	public Map<String, Object> query(QueryParam param) throws QueryException, RedirectExecption {
 		if (param.isFuzzyQ()) {
-			return doFuzzyQuery(param, page);
+			return doFuzzyQuery(param);
 		} else {
-			return doQuery(param, page);
+			return doQuery(param);
 		}
 	}
 
-	private Map<String, Object> doFuzzyQuery(QueryParam param,
-			PageBean... pageParam) throws QueryException {
+	private Map<String, Object> doFuzzyQuery(QueryParam param) throws QueryException {
 		SearchResult<? extends Index> result = searchQueryExecutor.query(
-				QueryType.DOMAIN, param, pageParam);
+				QueryType.DOMAIN, param);
 		return queryWithIndexs(result);
 	}
 

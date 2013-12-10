@@ -1,5 +1,7 @@
 package com.cnnic.whois.dao.search;
 
+import org.springframework.stereotype.Repository;
+
 import com.cnnic.whois.bean.DomainQueryParam;
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
@@ -8,6 +10,7 @@ import com.cnnic.whois.bean.index.DomainIndex;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.index.SearchResult;
 
+@Repository
 public class DomainQueryDao extends AbstractSearchQueryDao<DomainIndex> {
 
 	public DomainQueryDao(String url) {
@@ -25,10 +28,10 @@ public class DomainQueryDao extends AbstractSearchQueryDao<DomainIndex> {
 	}
 
 	@Override
-	public SearchResult<DomainIndex> query(QueryParam param,
-			PageBean... pageParam) throws QueryException {
+	public SearchResult<DomainIndex> query(QueryParam param)
+			throws QueryException {
 		DomainQueryParam domainQueryParam = (DomainQueryParam) param;
-		PageBean page = pageParam[0];
+		PageBean page = param.getPage();
 		String queryStr = "ldhName:" + domainQueryParam.getDomainPuny()
 				+ " OR unicodeName:" + domainQueryParam.getQ();
 		SearchResult<DomainIndex> result = query(queryStr, page);

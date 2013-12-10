@@ -1,6 +1,5 @@
 package com.cnnic.whois.dao.search;
 
-import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.bean.index.Index;
@@ -23,6 +22,6 @@ public interface SearchQueryDao {
 	 */
 	boolean supportType(QueryType queryType);
 
-	SearchResult<? extends Index> query(QueryParam param, PageBean... page)
+	SearchResult<? extends Index> query(QueryParam param)
 			throws QueryException;
 }

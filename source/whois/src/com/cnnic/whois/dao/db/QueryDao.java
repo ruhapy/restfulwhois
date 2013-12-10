@@ -2,7 +2,6 @@ package com.cnnic.whois.dao.db;
 
 import java.util.Map;
 
-import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
@@ -27,14 +26,11 @@ public interface QueryDao {
 	/**
 	 * 
 	 * @param param
-	 * @param role
-	 * @param format
-	 * @param page
 	 * @return
 	 * @throws QueryException
 	 * @throws RedirectExecption
 	 */
-	Map<String, Object> query(QueryParam param, PageBean... page)
+	Map<String, Object> query(QueryParam param)
 			throws QueryException, RedirectExecption;
 
 	Map<String, Object> getAll() throws QueryException;

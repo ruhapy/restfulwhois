@@ -35,10 +35,10 @@ public class SearchQueryExecutor {
 	}
 
 	public SearchResult<? extends Index> query(QueryType queryType,
-			QueryParam param, PageBean... pageParam) throws QueryException {
+			QueryParam param) throws QueryException {
 		for (SearchQueryDao queryDao : searchQueryDaos) {
 			if (queryDao.supportType(queryType)) {
-				return queryDao.query(param, pageParam);
+				return queryDao.query(param);
 			}
 		}
 		return null;

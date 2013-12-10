@@ -6,23 +6,24 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
 import com.cnnic.whois.bean.IpQueryParam;
-import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.util.WhoisUtil;
-
+@Repository
 public class IpRedirectionQueryDao extends AbstractDbQueryDao {
 	public IpRedirectionQueryDao(List<AbstractDbQueryDao> dbQueryDaos) {
 		super(dbQueryDaos);
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, 
-			PageBean... page) throws QueryException, RedirectExecption {
+	public Map<String, Object> query(QueryParam param) throws QueryException, RedirectExecption {
 		IpQueryParam ipParam = (IpQueryParam) param;
 		long startHighAddr = ipParam.getStartHighAddr();
 		long startLowAddr = ipParam.getStartLowAddr();
