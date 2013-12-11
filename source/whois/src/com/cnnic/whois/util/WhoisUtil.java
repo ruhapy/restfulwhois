@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
 
+import org.springframework.web.context.ContextLoader;
+
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.QueryService;
 
@@ -1345,7 +1347,7 @@ public class WhoisUtil {
 	 */
 	public static Map<String, Object> processError(String errorCode) throws QueryException {
 		Map<String, Object>ErrorMessageMap = null;
-		QueryService queryService = QueryService.getQueryService();
+		QueryService queryService = (QueryService) ContextLoader.getCurrentWebApplicationContext().getBean("queryService");
 		ErrorMessageMap = queryService.queryError(errorCode);
 		return ErrorMessageMap;
 	}
