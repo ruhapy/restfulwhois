@@ -80,6 +80,7 @@ public class QueryController extends BaseController {
 		Map<String, Object> resultMap = null;
 		DomainQueryParam domainQueryParam = super.praseDomainQueryParams(request);
 		try{
+			domainName = WhoisUtil.toChineseUrl(domainName);
 			punyDomainName = IDN.toASCII(domainName);//long lable exception
 		}catch(Exception e){
 			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
@@ -105,7 +106,7 @@ public class QueryController extends BaseController {
 			HttpServletRequest request, HttpServletResponse response)
 			throws QueryException, SQLException, IOException, ServletException {
 		Map<String, Object> resultMap = null;
-		QueryParam queryParam = super.praseQueryParams(request);
+		EntityQueryParam queryParam = super.praseEntityQueryParams(request);
 		if(StringUtils.isBlank(fn) && StringUtils.isBlank(handle)){
 			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 			renderResponse(request, response, resultMap, queryParam);
@@ -120,8 +121,9 @@ public class QueryController extends BaseController {
 		if(StringUtils.isNotBlank(fn)){
 			fuzzyQuerySolrPropName = "entityNames";
 		}
-		resultMap = queryService.fuzzyQueryEntity(fuzzyQuerySolrPropName,
-				decodeQ);
+		queryParam.setFuzzyQueryParamName(fuzzyQuerySolrPropName);
+		queryParam.setQ(decodeQ);
+		resultMap = queryService.fuzzyQueryEntity(queryParam);
 		request.setAttribute("pageBean", queryParam.getPage());
 		request.setAttribute("queryPath", "entities");
 		renderResponse(request, response, resultMap, queryParam);
