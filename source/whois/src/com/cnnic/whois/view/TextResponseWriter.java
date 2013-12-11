@@ -32,7 +32,7 @@ public class TextResponseWriter extends AbstractResponseWriter {
 
 	@Override
 	public void writeResponse(HttpServletRequest request,
-			HttpServletResponse response, Map<String, Object> map, String format, int queryType) 
+			HttpServletResponse response, Map<String, Object> map, int queryType) 
 		throws IOException, ServletException {
 			request.setCharacterEncoding("utf-8");
 			response.setCharacterEncoding("utf-8");
@@ -40,7 +40,7 @@ public class TextResponseWriter extends AbstractResponseWriter {
 			PrintWriter out = response.getWriter();
 			String errorCode = "200"; 
 			
-			request.setAttribute("queryFormat", format);
+			request.setAttribute("queryFormat", FormatType.TEXTPLAIN.getName());
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			
 			//set response status
@@ -72,12 +72,12 @@ public class TextResponseWriter extends AbstractResponseWriter {
 				map.put(multiKey.substring(WhoisUtil.MULTIPRX.length()), jsonObj);
 			}
 			
-			response.setHeader("Content-Type", format);
+			response.setHeader("Content-Type", FormatType.TEXTPLAIN.getName());
 			out.write(getPresentationFromMap(map, 0));
 	}
 
 	public void displayErrorMessage(HttpServletRequest request, HttpServletResponse response, FilterChain chain, 
-			String format, String queryType, String role) throws IOException, ServletException{
+			String queryType, String role) throws IOException, ServletException{
 		request.setCharacterEncoding("utf-8");
 		response.setCharacterEncoding("utf-8");
 		
@@ -90,20 +90,20 @@ public class TextResponseWriter extends AbstractResponseWriter {
 			e.printStackTrace();
 		}
 		PrintWriter out = response.getWriter();
-		request.setAttribute("queryFormat", format);
+		request.setAttribute("queryFormat", FormatType.TEXTPLAIN.getName());
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		
 		if(isLegalType(queryType)){
 			chain.doFilter(request, response);
 		}else{
-			response.setHeader("Content-Type", format);
+			response.setHeader("Content-Type", FormatType.TEXTPLAIN.getName());
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			out.write(getPresentationFromMap(map, 0));
 		}
 	}
 	
 	public void displayOverTimeMessage(HttpServletRequest request, HttpServletResponse response, 
-			String format, String role) throws IOException, ServletException{
+			String role) throws IOException, ServletException{
 		request.setCharacterEncoding("utf-8");
 		response.setCharacterEncoding("utf-8");
 		
@@ -116,16 +116,16 @@ public class TextResponseWriter extends AbstractResponseWriter {
 			e.printStackTrace();
 		}
 		PrintWriter out = response.getWriter();
-		request.setAttribute("queryFormat", format);
+		request.setAttribute("queryFormat", FormatType.TEXTPLAIN.getName());
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setStatus(429);
-		response.setHeader("Content-Type", format);
+		response.setHeader("Content-Type", FormatType.TEXTPLAIN.getName());
 		out.write(getPresentationFromMap(map, 0));
 	}
 	
 	@Override
 	public boolean support(FormatType formatType) {
-		return FormatType.TEXTPLAIN.equals(formatType);
+		return null != formatType && formatType.isTextFormat();
 	}
 	
 	@SuppressWarnings("unchecked")
