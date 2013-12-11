@@ -265,12 +265,10 @@ public class QueryService {
 		}
 	}
 
-	public Map<String, Object> fuzzyQueryEntity(String fuzzyQueryParamName,
-			String queryPara)
+	public Map<String, Object> fuzzyQueryEntity(EntityQueryParam entityQueryParam)
 			throws QueryException, SQLException {
 		try {
-			Map map = queryEngine.query(QueryType.SEARCHENTITY, 
-					new EntityQueryParam(queryPara,fuzzyQueryParamName));
+			Map map = queryEngine.query(QueryType.SEARCHENTITY,entityQueryParam);
 			if (map == null) {
 				return queryError("404");
 			}
