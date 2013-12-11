@@ -47,7 +47,7 @@ public class SearchEntityQueryDao extends AbstractSearchQueryDao {
 
 	protected Map<String, Object> postHandleFieldsFuzzy(String keyName,
 			String format, Map<String, Object> map) {
-		map = WhoisUtil.toVCard(map);
+//		map = WhoisUtil.toVCard(map);
 		return map;
 	}
 

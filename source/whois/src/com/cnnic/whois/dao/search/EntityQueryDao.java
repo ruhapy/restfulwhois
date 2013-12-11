@@ -40,7 +40,7 @@ public class EntityQueryDao extends AbstractSearchQueryDao<EntityIndex> {
 	public SearchResult<EntityIndex> preciseQueryEntitiesByHandleOrName(
 			QueryParam param) {
 		String handleOrName = param.getQ();
-		handleOrName = handleOrName.replace(" ", "\\ ").replace(":", "\\:");
+		handleOrName = super.escapeSolrChar(handleOrName);
 		String entityNamePrefix = "entityNames:";
 		String entityNamesQ = entityNamePrefix + handleOrName;
 		String entityNamesQP = entityNamePrefix + FUZZY_MARK + ARRAY_SPLITER
@@ -61,7 +61,7 @@ public class EntityQueryDao extends AbstractSearchQueryDao<EntityIndex> {
 
 	private SearchResult<EntityIndex> fuzzyQueryEntitiesByHandleAndName(
 			String fuzzyQueryParamName, String handleOrName, PageBean page) {
-		handleOrName = handleOrName.replace(" ", "\\ ").replace(":", "\\:");
+		handleOrName = super.escapeSolrChar(handleOrName);
 		String kVSplit = ":";
 		String entityNamesQ = fuzzyQueryParamName + kVSplit + handleOrName;
 		String entityNamesQP = fuzzyQueryParamName + kVSplit + FUZZY_MARK
