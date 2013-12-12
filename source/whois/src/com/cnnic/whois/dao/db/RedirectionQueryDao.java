@@ -44,7 +44,11 @@ public class RedirectionQueryDao extends AbstractDbQueryDao {
 			stmt = connection.prepareStatement(selectSql);
 			results = stmt.executeQuery();
 			if (results.next()) {
-				throw new RedirectExecption(results.getString("redirectURL"));
+				String redirectUrl = results.getString("redirectURL");
+				if (!(redirectUrl.endsWith("/"))) {
+					redirectUrl += "/";
+				}
+				throw new RedirectExecption(redirectUrl + param.getQ());
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

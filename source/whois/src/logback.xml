@@ -6,11 +6,11 @@
 			</Pattern>
 		</encoder>
 	</appender>
-	<root level="DEBUG">
+	<root level="INFO">
 		<appender-ref ref="STDOUT" />
 	</root>
 	<logger name="org.springframework" additivity="true">
-		<level value="DEBUG" />
+		<level value="INFO" />
 		<appender-ref ref="STDOUT" />
 	</logger>
 	<logger name="org.springframework.web" additivity="true">

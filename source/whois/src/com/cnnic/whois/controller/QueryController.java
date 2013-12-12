@@ -47,28 +47,31 @@ public class QueryController extends BaseController {
 		name = StringUtils.trim(name);
 		String punyDomainName = name;
 		Map<String, Object> resultMap = null;
-		DomainQueryParam domainQueryParam = super.praseDomainQueryParams(request);
-		try{
-			punyDomainName = IDN.toASCII(name);//long lable exception
-		}catch(Exception e){//TODO:delete ,exception filter
+		DomainQueryParam domainQueryParam = super
+				.praseDomainQueryParams(request);
+		try {
+			punyDomainName = IDN.toASCII(name);// long lable exception
+		} catch (Exception e) {// TODO:delete ,exception filter
 			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 			renderResponse(request, response, resultMap, domainQueryParam);
 			return;
 		}
+		request.setAttribute("queryPara", IDN.toUnicode(punyDomainName));
 		if (!ValidateUtils.validateDomainName(punyDomainName)) {
 			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 		} else {
 			domainQueryParam.setQueryType(QueryType.SEARCHDOMAIN);
 			domainQueryParam.setQ(name);
 			domainQueryParam.setDomainPuny(punyDomainName);
-			resultMap =  queryService.query(domainQueryParam);
+			setMaxRecordsForFuzzyQ(domainQueryParam);
+			resultMap = queryService.query(domainQueryParam);
 			request.setAttribute("pageBean", domainQueryParam.getPage());
 			request.setAttribute("queryPath", "domains");
-			request.setAttribute("queryPara", IDN.toUnicode(punyDomainName));
 		}
+		request.setAttribute("queryType", "domain");
 		renderResponse(request, response, resultMap, domainQueryParam);
 	}
-	
+
 	@RequestMapping(value = "/domain/{domainName}", method = RequestMethod.GET)
 	@ResponseBody
 	public void queryDomain(@PathVariable String domainName,
@@ -78,15 +81,17 @@ public class QueryController extends BaseController {
 		domainName = StringUtils.trim(domainName);
 		String punyDomainName = domainName;
 		Map<String, Object> resultMap = null;
-		DomainQueryParam domainQueryParam = super.praseDomainQueryParams(request);
-		try{
+		DomainQueryParam domainQueryParam = super
+				.praseDomainQueryParams(request);
+		try {
 			domainName = WhoisUtil.toChineseUrl(domainName);
-			punyDomainName = IDN.toASCII(domainName);//long lable exception
-		}catch(Exception e){
+			punyDomainName = IDN.toASCII(domainName);// long lable exception
+		} catch (Exception e) {
 			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 			renderResponse(request, response, resultMap, domainQueryParam);
 			return;
 		}
+		request.setAttribute("queryPara", IDN.toUnicode(punyDomainName));
 		if (!ValidateUtils.validateDomainName(punyDomainName)) {
 			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 		} else {
@@ -94,8 +99,8 @@ public class QueryController extends BaseController {
 			domainQueryParam.setQ(domainName);
 			domainQueryParam.setDomainPuny(punyDomainName);
 			resultMap = queryService.queryDomain(domainQueryParam);
-			request.setAttribute("queryPara", IDN.toUnicode(punyDomainName));
 		}
+		request.setAttribute("queryType", "domain");
 		renderResponse(request, response, resultMap, domainQueryParam);
 	}
 
@@ -107,28 +112,33 @@ public class QueryController extends BaseController {
 			throws QueryException, SQLException, IOException, ServletException {
 		Map<String, Object> resultMap = null;
 		EntityQueryParam queryParam = super.praseEntityQueryParams(request);
-		if(StringUtils.isBlank(fn) && StringUtils.isBlank(handle)){
+		if (StringUtils.isBlank(fn) && StringUtils.isBlank(handle)) {
 			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 			renderResponse(request, response, resultMap, queryParam);
 			return;
 		}
 		String q = fn;
-		if(StringUtils.isNotBlank(handle)){
+		if (StringUtils.isNotBlank(handle)) {
 			q = handle;
 		}
 		String decodeQ = WhoisUtil.toChineseUrl(q);
 		String fuzzyQuerySolrPropName = "handle";
-		if(StringUtils.isNotBlank(fn)){
+		String paramName = "handle";
+		if (StringUtils.isNotBlank(fn)) {
 			fuzzyQuerySolrPropName = "entityNames";
+			paramName = "fn";
 		}
 		queryParam.setFuzzyQueryParamName(fuzzyQuerySolrPropName);
 		queryParam.setQ(decodeQ);
+		setMaxRecordsForFuzzyQ(queryParam);
 		resultMap = queryService.fuzzyQueryEntity(queryParam);
 		request.setAttribute("pageBean", queryParam.getPage());
 		request.setAttribute("queryPath", "entities");
+		request.setAttribute("queryType", "entity");
+		request.setAttribute("queryPara", paramName + ":" + decodeQ);
 		renderResponse(request, response, resultMap, queryParam);
 	}
-	
+
 	@RequestMapping(value = "/entity/{entityName}", method = RequestMethod.GET)
 	@ResponseBody
 	public void queryEntity(@PathVariable String entityName,
@@ -137,31 +147,36 @@ public class QueryController extends BaseController {
 		EntityQueryParam queryParam = super.praseEntityQueryParams(request);
 		queryParam.setQ(entityName);
 		Map<String, Object> resultMap = queryService.queryEntity(queryParam);
+		request.setAttribute("queryType", "entity");
+		request.setAttribute("queryPara", entityName);
 		renderResponse(request, response, resultMap, queryParam);
 	}
 
 	@RequestMapping(value = "/nameservers", method = RequestMethod.GET)
 	@ResponseBody
-	public void fuzzyQueryNs(@RequestParam(required = false) String q,
+	public void fuzzyQueryNs(@RequestParam(required = false) String name,
 			HttpServletRequest request, HttpServletResponse response)
 			throws QueryException, SQLException, IOException, ServletException,
 			RedirectExecption {
-		q = StringUtils.trim(q);
-		String decodeQ = WhoisUtil.toChineseUrl(q);
+		name = StringUtils.trim(name);
+		String decodeQ = WhoisUtil.toChineseUrl(name);
 		String punyQ = IDN.toASCII(decodeQ);
 		Map<String, Object> resultMap = null;
 		QueryParam queryParam = super.praseQueryParams(request);
+		request.setAttribute("queryPara", decodeQ);
 		if (!ValidateUtils.verifyNameServer(punyQ)) {
 			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 		} else {
 			queryParam.setQ(punyQ);
 			request.setAttribute("pageBean", queryParam.getPage());
 			request.setAttribute("queryPath", "nameservers");
+			setMaxRecordsForFuzzyQ(queryParam);
 			resultMap = queryService.fuzzyQueryNameServer(queryParam);
 		}
+		request.setAttribute("queryType", "nameserver");
 		renderResponse(request, response, resultMap, queryParam);
 	}
-	
+
 	@RequestMapping(value = "/nameserver/{nsName}", method = RequestMethod.GET)
 	@ResponseBody
 	public void queryNs(@PathVariable String nsName,
@@ -179,6 +194,7 @@ public class QueryController extends BaseController {
 			resultMap = queryService.query(queryParam);
 			request.setAttribute("queryPara", IDN.toUnicode(punyNsName));
 		}
+		request.setAttribute("queryType", "nameserver");
 		renderResponse(request, response, resultMap, queryParam);
 	}
 
@@ -191,6 +207,7 @@ public class QueryController extends BaseController {
 		QueryParam queryParam = super.praseQueryParams(request);
 		queryParam.setQ(autnum);
 		Map<String, Object> resultMap = queryService.queryAS(queryParam);
+		request.setAttribute("queryType", "autnum");
 		renderResponse(request, response, resultMap, queryParam);
 	}
 
@@ -228,40 +245,45 @@ public class QueryController extends BaseController {
 		renderResponse(request, response, resultMap, queryParam);
 	}
 
-	@RequestMapping(value = "/ip/{ip}", method = RequestMethod.GET)
+	@RequestMapping(value = {"/ip/{ip}","/ip/{ip}/"}, method = RequestMethod.GET)
 	@ResponseBody
 	public void queryIp(@PathVariable String ip, HttpServletRequest request,
 			HttpServletResponse response) throws QueryException,
 			RedirectExecption, IOException, ServletException {
+		String net = "0";
+		doQueryIp(ip, request, response, net);
+	}
+
+	@RequestMapping(value = {"/ip/{ip}/{net}","/ip/{ip}/{net}/"}, method = RequestMethod.GET)
+	@ResponseBody
+	public void queryIpWithNet(@PathVariable String ip,
+			@PathVariable String net, HttpServletRequest request,
+			HttpServletResponse response) throws QueryException,
+			RedirectExecption, IOException, ServletException {
+		net = StringUtils.trim(net);
+		doQueryIp(ip, request, response, net);
+	}
+
+	private void doQueryIp(String ip, HttpServletRequest request,
+			HttpServletResponse response, String ipLength)
+			throws QueryException, IOException, ServletException,
+			RedirectExecption {
 		ip = StringUtils.trim(ip);
 		Map<String, Object> resultMap = null;
 		IpQueryParam queryParam = super.praseIpQueryParams(request);
-		String ipLength = "0";
 		String strInfo = ip;
-		if (ip.indexOf(WhoisUtil.PRX) >= 0) {
-			String[] infoArray = ip.split(WhoisUtil.PRX);
-			if(infoArray.length > 2){//1.1.1.1//32
-				resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
-				viewResolver.writeResponse(queryParam.getFormat(), request, response,
-						resultMap, 0);
-				return;
-			}
-			if(infoArray.length > 1){
-				strInfo = infoArray[0];
-				ipLength = infoArray[1];
-			}
-		}
 		if (!ValidateUtils.verifyIP(strInfo, ipLength)) {
 			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
-			viewResolver.writeResponse(queryParam.getFormat(), request, response,
-					resultMap, 0);
+			viewResolver.writeResponse(queryParam.getFormat(), request,
+					response, resultMap, 0);
 			return;
 		}
 		queryParam.setQ(ip);
 		queryParam.setIpInfo(strInfo);
 		queryParam.setIpLength(Integer.parseInt(ipLength));
 		resultMap = queryService.queryIP(queryParam);
-		request.setAttribute("queryPara", queryParam);
+		request.setAttribute("queryPara", ip);
+		request.setAttribute("queryType", "ip");
 		viewResolver.writeResponse(queryParam.getFormat(), request, response,
 				resultMap, 0);
 	}
@@ -350,5 +372,17 @@ public class QueryController extends BaseController {
 			request.setAttribute("queryPara", queryParam);
 		}
 		renderResponse(request, response, resultMap, queryParam);
+	}
+
+	@RequestMapping(value = "/**", method = RequestMethod.GET)
+	@ResponseBody
+	public void error400(HttpServletRequest request,
+			HttpServletResponse response) throws QueryException,
+			RedirectExecption, IOException, ServletException {
+		QueryParam queryParam = praseQueryParams(request);
+		Map<String, Object> resultMap = WhoisUtil
+				.processError(WhoisUtil.COMMENDRRORCODE);
+		renderResponse(request, response, resultMap, queryParam);
+		return;
 	}
 }
