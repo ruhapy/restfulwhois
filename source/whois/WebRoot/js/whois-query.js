@@ -37,6 +37,10 @@ function toHtmlFormat() {
 	$("#maincontent").html(table);
 }
 function toTable(JsonObject){
+	var errorCode = JsonObject['Error_Code'];
+	if(errorCode){
+		return "<tr><td colspan=2>ERROR: <font color=red>"+JsonObject['Description']+"</font></td></tr>";
+	}
 	var urlhead = window.location.protocol + "//" + window.location.host + $("#pathUrl").val() + "/";
 	var tableStr = '';
 	for(var keyName in JsonObject){//According to the type of the field name to do the corresponding analytical
