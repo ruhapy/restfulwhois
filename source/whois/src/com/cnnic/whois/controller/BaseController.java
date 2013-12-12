@@ -73,7 +73,7 @@ public class BaseController {
 				resultMap, 0);
 	}
 
-	private String getFormatCookie(HttpServletRequest request) {
+	public static String getFormatCookie(HttpServletRequest request) {
 		Cookie[] cookies = request.getCookies();
 		String format = null;
 		if (cookies != null) {

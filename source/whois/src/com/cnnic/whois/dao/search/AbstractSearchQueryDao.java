@@ -49,6 +49,7 @@ public abstract class AbstractSearchQueryDao<T> implements SearchQueryDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		page.setRecordsCount(Long.valueOf(searchResult.getTotalResults()).intValue());
 		return searchResult;
 	}
 

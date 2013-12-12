@@ -46,7 +46,7 @@ public class QueryService {
 		Map map = queryEngine.query(QueryType.IP, ipQueryParam);
 		if (map == null) {
 			queryEngine.query(QueryType.IPREDIRECTION, 
-					new IpQueryParam("",ipLongs[0], ipLongs[1], ipLongs[2],ipLongs[3]));
+					new IpQueryParam(ipQueryParam.getIpInfo(),ipLongs[0], ipLongs[1], ipLongs[2],ipLongs[3]));
 			return queryError("404");
 		}
 		

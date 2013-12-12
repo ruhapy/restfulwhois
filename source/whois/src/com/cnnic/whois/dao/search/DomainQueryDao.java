@@ -35,7 +35,6 @@ public class DomainQueryDao extends AbstractSearchQueryDao<DomainIndex> {
 		String queryStr = "ldhName:" + domainPuny
 				+ " OR unicodeName:" + q;
 		SearchResult<DomainIndex> result = query(queryStr, page);
-		page.setRecordsCount(Long.valueOf(result.getTotalResults()).intValue());
 		return result;
 	}
 }

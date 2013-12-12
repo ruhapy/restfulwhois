@@ -44,6 +44,7 @@ public class HtmlResponseWriter extends AbstractResponseWriter {
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		
 		//set response status
+		htmlMap.remove("queryType");
 		if(map.containsKey("errorCode") || map.containsKey("Error Code")){
 			if(map.containsKey("errorCode"))
 				errorCode = map.get("errorCode").toString();

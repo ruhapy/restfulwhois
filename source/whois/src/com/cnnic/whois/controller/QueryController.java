@@ -56,6 +56,7 @@ public class QueryController extends BaseController {
 			renderResponse(request, response, resultMap, domainQueryParam);
 			return;
 		}
+		request.setAttribute("queryPara", IDN.toUnicode(punyDomainName));
 		if (!ValidateUtils.validateDomainName(punyDomainName)) {
 			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 		} else {
@@ -66,7 +67,6 @@ public class QueryController extends BaseController {
 			resultMap = queryService.query(domainQueryParam);
 			request.setAttribute("pageBean", domainQueryParam.getPage());
 			request.setAttribute("queryPath", "domains");
-			request.setAttribute("queryPara", IDN.toUnicode(punyDomainName));
 		}
 		request.setAttribute("queryType", "domain");
 		renderResponse(request, response, resultMap, domainQueryParam);
@@ -245,7 +245,7 @@ public class QueryController extends BaseController {
 		renderResponse(request, response, resultMap, queryParam);
 	}
 
-	@RequestMapping(value = "/ip/{ip}", method = RequestMethod.GET)
+	@RequestMapping(value = {"/ip/{ip}","/ip/{ip}/"}, method = RequestMethod.GET)
 	@ResponseBody
 	public void queryIp(@PathVariable String ip, HttpServletRequest request,
 			HttpServletResponse response) throws QueryException,
@@ -254,7 +254,7 @@ public class QueryController extends BaseController {
 		doQueryIp(ip, request, response, net);
 	}
 
-	@RequestMapping(value = "/ip/{ip}/{net}", method = RequestMethod.GET)
+	@RequestMapping(value = {"/ip/{ip}/{net}","/ip/{ip}/{net}/"}, method = RequestMethod.GET)
 	@ResponseBody
 	public void queryIpWithNet(@PathVariable String ip,
 			@PathVariable String net, HttpServletRequest request,
