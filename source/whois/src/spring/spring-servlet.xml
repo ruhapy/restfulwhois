@@ -30,7 +30,6 @@
 			<props>
 				<prop key="com.baidu.exception.UnhandledViewException">errors/unhandledView</prop>
 				<prop key="org.springframework.security.access.AccessDeniedException">errors/403</prop>
-				<prop key="com.baidu.issue.api.security.exception.IssueAccessDeniedException">errors/403</prop>
 				<prop key="java.lang.Exception">errors/500</prop>
 			</props>
 		</property>
