@@ -1,7 +1,6 @@
 package com.cnnic.whois.util.validate;
 
 import java.util.Map;
-
 import com.cnnic.whois.util.WhoisUtil;
 
 public class ValidateUtils {
@@ -96,7 +95,7 @@ public class ValidateUtils {
 			return false;
 
 		return Integer.parseInt(ipLengthStr) >= 0
-				&& Integer.parseInt(ipLengthStr) <= 32;
+				&& Integer.parseInt(ipLengthStr) < 32;
 	}
 	
 	/**
@@ -177,5 +176,4 @@ public class ValidateUtils {
 		}
 		return map;
 	}
-	
 }

@@ -15,41 +15,44 @@ import com.cnnic.whois.bean.EntityQueryParam;
 import com.cnnic.whois.bean.IpQueryParam;
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
+import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.QueryService;
+import com.cnnic.whois.util.WhoisUtil;
 import com.cnnic.whois.view.FormatType;
 import com.cnnic.whois.view.ViewResolver;
 
 public class BaseController {
 	@Autowired
 	protected ViewResolver viewResolver;
-	
+
 	protected void setMaxRecordsForFuzzyQ(QueryParam queryParam) {
-		if(queryParam.getFormat().isJsonOrXmlFormat()){
-			queryParam.getPage().setMaxRecords(QueryService.MAX_SIZE_FUZZY_QUERY);
+		if (queryParam.getFormat().isJsonOrXmlFormat()) {
+			queryParam.getPage().setMaxRecords(
+					QueryService.MAX_SIZE_FUZZY_QUERY);
 		}
 	}
-	
+
 	protected DomainQueryParam praseDomainQueryParams(HttpServletRequest request) {
 		String format = getFormatCookie(request);
 		FormatType formatType = FormatType.getFormatType(format);
 		PageBean page = getPageParam(request);
 		return new DomainQueryParam(formatType, page);
 	}
-	
+
 	protected EntityQueryParam praseEntityQueryParams(HttpServletRequest request) {
 		String format = getFormatCookie(request);
 		FormatType formatType = FormatType.getFormatType(format);
 		PageBean page = getPageParam(request);
 		return new EntityQueryParam(formatType, page);
 	}
-	
+
 	protected QueryParam praseQueryParams(HttpServletRequest request) {
 		String format = getFormatCookie(request);
 		FormatType formatType = FormatType.getFormatType(format);
 		PageBean page = getPageParam(request);
 		return new QueryParam(formatType, page);
 	}
-	
+
 	protected IpQueryParam praseIpQueryParams(HttpServletRequest request) {
 		String format = getFormatCookie(request);
 		FormatType formatType = FormatType.getFormatType(format);
@@ -65,12 +68,22 @@ public class BaseController {
 		}
 		return page;
 	}
-	
+
 	protected void renderResponse(HttpServletRequest request,
 			HttpServletResponse response, Map<String, Object> resultMap,
 			QueryParam queryParam) throws IOException, ServletException {
 		viewResolver.writeResponse(queryParam.getFormat(), request, response,
 				resultMap, 0);
+	}
+
+	protected void renderResponseError400(HttpServletRequest request,
+			HttpServletResponse response) throws IOException, ServletException,
+			QueryException {
+		Map<String, Object> resultMap = WhoisUtil
+				.processError(WhoisUtil.COMMENDRRORCODE);
+		viewResolver.writeResponse(
+				FormatType.getFormatType(getFormatCookie(request)), request,
+				response, resultMap, 0);
 	}
 
 	public static String getFormatCookie(HttpServletRequest request) {
