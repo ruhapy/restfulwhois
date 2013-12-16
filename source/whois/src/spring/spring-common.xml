@@ -94,4 +94,7 @@
 			</list>
 		</constructor-arg>
 	</bean>
+	
+	<import resource="spring-oauth.xml" />
+	
 </beans>
