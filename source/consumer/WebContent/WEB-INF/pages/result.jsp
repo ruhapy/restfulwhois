@@ -16,7 +16,6 @@
 
 		<script type="text/javascript" src="${ctx }/js/jquery-1.6.2.min.js"></script>
 		<script type="text/javascript" src="${ctx }/js/json2.js"></script>
-		<script type="text/javascript" src="${ctx }/js/whois-query.js" charset="utf-8"></script>
 		
 		<style type="text/css">
 			#content {

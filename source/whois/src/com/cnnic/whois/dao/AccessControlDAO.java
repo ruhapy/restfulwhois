@@ -35,7 +35,6 @@ public class AccessControlDAO extends BaseDao {
 	 */
 	public Map<String, Object> listPermissionCoulumn(String tableName)
 			throws ManagementException {
-//		TODO : 取得数据库连接
 		Connection connection = JdbcUtils.getConnection();
 		PreparedStatement stmt = null;
 		Map<String, Object> permissionList = new HashMap<String, Object>();
@@ -71,7 +70,6 @@ public class AccessControlDAO extends BaseDao {
 			Map<String, List<String>> permissionList)
 			throws ManagementException {
 		Set<String> columnkeySet = permissionList.keySet();
-//		TODO : 取得数据库连接
 		Connection connection = JdbcUtils.getConnection();
 		PreparedStatement stmt = null;
 

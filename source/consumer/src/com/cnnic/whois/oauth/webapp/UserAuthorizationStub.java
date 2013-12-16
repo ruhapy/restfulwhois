@@ -12,13 +12,10 @@ import net.oauth.OAuth;
 /**
  * A trivial implementation of user authorization. It neither authenticates nor
  * obtains permission; it merely redirects the user back to the Consumer.
- * 
- * @author John Kristian
  */
 public class UserAuthorizationStub extends HttpServlet {
 
     public static final String PATH = "/OAuth/UserAuthorizationStub";
-//	public static final String PATH = "/UserAuthorizationStub";
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
