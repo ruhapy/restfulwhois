@@ -1,29 +1,16 @@
-/*
- * Copyright 2007 AOL, LLC.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.cnnic.whois.controller.oauth;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.cnnic.whois.bean.oauth.User;
 import com.cnnic.whois.dao.oauth.UserDao;
@@ -37,24 +24,15 @@ import net.oauth.server.OAuthServlet;
 
 /**
  * Autherization request handler.
- *
- * @author Praveen Alavilli
  */
-public class AuthorizationServlet extends HttpServlet {
+@Controller
+public class AuthorizationController {
     
 	private static UserDao userDao = new UserDaoImpl();
-	
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        // nothing at this point
-    }
-    
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws IOException, ServletException {
-        
-        try{
+
+	@RequestMapping(value = "/authorize" , method = RequestMethod.GET)
+	public void list_get(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception{
+		try{
             OAuthMessage requestMessage = OAuthServlet.getMessage(request, null);
             
             OAuthAccessor accessor = OAuthProvider.getAccessor(requestMessage);
@@ -69,13 +47,11 @@ public class AuthorizationServlet extends HttpServlet {
         } catch (Exception e){
             OAuthProvider.handleException(e, request, response, true);
         }
-    }
-    
-    @Override 
-    public void doPost(HttpServletRequest request, HttpServletResponse response) 
-            throws IOException, ServletException{
-        
-        try{
+	}
+	
+	@RequestMapping(value = "/authorize" , method = RequestMethod.POST)
+	public void list_post(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception{
+		try{
             OAuthMessage requestMessage = OAuthServlet.getMessage(request, null);
             
             OAuthAccessor accessor = OAuthProvider.getAccessor(requestMessage);
@@ -96,7 +72,8 @@ public class AuthorizationServlet extends HttpServlet {
         } catch (Exception e){
             OAuthProvider.handleException(e, request, response, true);
         }
-    }
+	}
+    
     
     private void sendToAuthorizePage(HttpServletRequest request, 
             HttpServletResponse response, OAuthAccessor accessor)
@@ -148,7 +125,5 @@ public class AuthorizationServlet extends HttpServlet {
             response.setHeader("Location", callback);
         }
     }
-
-    private static final long serialVersionUID = 1L;
 
 }
