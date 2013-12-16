@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cnnic.whois.dao.QueryEngine;
@@ -32,5 +31,6 @@ public class CacheController extends BaseController {
 			HttpServletResponse response) throws QueryException,
 			RedirectExecption, IOException, ServletException {
 		cacheQueryExecutor.initCache();
+		response.getOutputStream().write("init cache success.".getBytes());
 	}
 }
