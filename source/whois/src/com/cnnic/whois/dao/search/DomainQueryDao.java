@@ -28,10 +28,13 @@ public class DomainQueryDao extends AbstractSearchQueryDao<DomainIndex> {
 			throws QueryException {
 		DomainQueryParam domainQueryParam = (DomainQueryParam) param;
 		PageBean page = param.getPage();
-		String queryStr = "ldhName:" + domainQueryParam.getDomainPuny()
-				+ " OR unicodeName:" + domainQueryParam.getQ();
+		String q = domainQueryParam.getQ();
+		q = escapeSolrChar(q);
+		String domainPuny = domainQueryParam.getDomainPuny();
+		domainPuny = escapeSolrChar(domainPuny);
+		String queryStr = "ldhName:" + domainPuny
+				+ " OR unicodeName:" + q;
 		SearchResult<DomainIndex> result = query(queryStr, page);
-		page.setRecordsCount(Long.valueOf(result.getTotalResults()).intValue());
 		return result;
 	}
 }

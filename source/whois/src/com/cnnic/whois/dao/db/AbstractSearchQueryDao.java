@@ -96,20 +96,20 @@ public abstract class AbstractSearchQueryDao extends AbstractDbQueryDao{
 
 	protected Map<String, Object> postHandleFieldsFuzzy(String keyName,
 			 Map<String, Object> map) {
-		if (keyName.equals("$mul$nameServer") || keyName.equals("$join$nameServer")){
-			Map<String, Object> map_IP = new LinkedHashMap<String, Object>();
-			Object IPAddressArray = map.get("IPV4_Addresses");
-			map_IP.put(WhoisUtil.IPV4PREFIX, IPAddressArray);
-			IPAddressArray = map.get("IPV6_Addresses");
-			map_IP.put(WhoisUtil.IPV6PREFIX, IPAddressArray);
-			map.put(WhoisUtil.IPPREFIX, map_IP);
-			map.remove("IPV4_Addresses");
-			map.remove("IPV6_Addresses");
-		}
+//		if (keyName.equals("$mul$nameServer") || keyName.equals("$join$nameServer")){
+//			Map<String, Object> map_IP = new LinkedHashMap<String, Object>();
+//			Object IPAddressArray = map.get("IPV4_Addresses");
+//			map_IP.put(WhoisUtil.IPV4PREFIX, IPAddressArray);
+//			IPAddressArray = map.get("IPV6_Addresses");
+//			map_IP.put(WhoisUtil.IPV6PREFIX, IPAddressArray);
+//			map.put(WhoisUtil.IPPREFIX, map_IP);
+//			map.remove("IPV4_Addresses");
+//			map.remove("IPV6_Addresses");
+//		}
 		//vcard format
-		if(keyName.equals(WhoisUtil.MULTIPRXENTITY)){
-			map = WhoisUtil.toVCard(map);
-		}
+//		if(keyName.equals(WhoisUtil.MULTIPRXENTITY)){
+//			map = WhoisUtil.toVCard(map);
+//		}
 		return map;
 	}
 	

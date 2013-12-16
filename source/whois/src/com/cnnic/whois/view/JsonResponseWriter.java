@@ -43,9 +43,9 @@ public class JsonResponseWriter extends AbstractResponseWriter {
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		
 		//set response status
-		if(map.containsKey("errorCode") || map.containsKey("Error Code")){
-			if(map.containsKey("errorCode"))
-				errorCode = map.get("errorCode").toString();
+		if(map.containsKey("Error_Code") || map.containsKey("Error Code")){
+			if(map.containsKey("Error_Code"))
+				errorCode = map.get("Error_Code").toString();
 			if (map.containsKey("Error Code"))
 				errorCode = map.get("Error Code").toString();
 			if (errorCode.equals(WhoisUtil.ERRORCODE)){

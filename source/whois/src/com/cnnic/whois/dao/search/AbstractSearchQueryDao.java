@@ -4,6 +4,7 @@ import java.lang.reflect.ParameterizedType;
 import java.net.MalformedURLException;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
@@ -48,6 +49,7 @@ public abstract class AbstractSearchQueryDao<T> implements SearchQueryDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		page.setRecordsCount(Long.valueOf(searchResult.getTotalResults()).intValue());
 		return searchResult;
 	}
 
@@ -59,5 +61,11 @@ public abstract class AbstractSearchQueryDao<T> implements SearchQueryDao {
 		Class<T> entityClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]; 
 		List indexes = queryResponse.getBeans(entityClass);
 		searchResult.setResultList(indexes);
+	}
+	protected String escapeSolrChar(String q){
+		if(StringUtils.isBlank(q)){
+			return q;
+		}
+		return q.replace(" ", "\\ ").replace(":", "\\:").replace("-", "\\-");
 	}
 }

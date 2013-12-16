@@ -5,6 +5,7 @@ import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.bean.index.NameServerIndex;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.index.SearchResult;
+
 public class NsQueryDao extends AbstractSearchQueryDao<NameServerIndex> {
 
 	public NsQueryDao(String url) {
@@ -24,8 +25,9 @@ public class NsQueryDao extends AbstractSearchQueryDao<NameServerIndex> {
 	@Override
 	public SearchResult<NameServerIndex> search(QueryParam param)
 			throws QueryException {
-		SearchResult<NameServerIndex> result = query(param.getQ(),
-				param.getPage());
+		String q = param.getQ();
+		q = escapeSolrChar(q);
+		SearchResult<NameServerIndex> result = query(q, param.getPage());
 		return result;
 	}
 }
