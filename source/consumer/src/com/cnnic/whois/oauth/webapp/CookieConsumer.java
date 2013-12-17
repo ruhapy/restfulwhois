@@ -1,19 +1,3 @@
-/*
- * Copyright 2007 Netflix, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.cnnic.whois.oauth.webapp;
 
 import java.io.OutputStream;
@@ -50,8 +34,6 @@ import net.oauth.server.OAuthServlet;
  * Utility methods for consumers that store tokens and secrets in cookies. Each
  * consumer has a name, and its accessors' credentials are stored in cookies
  * named [name].requestToken, [name].accessToken and [name].tokenSecret.
- * 
- * @author John Kristian
  */
 public abstract class CookieConsumer {
 

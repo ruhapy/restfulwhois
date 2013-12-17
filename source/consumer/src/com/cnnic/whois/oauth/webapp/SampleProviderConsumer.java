@@ -1,19 +1,3 @@
-/*
- * Copyright 2007 AOL, LLC.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.cnnic.whois.oauth.webapp;
 
 import java.io.IOException;
@@ -42,8 +26,6 @@ import net.sf.json.JSONObject;
 
 /**
  * Consumer for Sample OAuth Provider
- * 
- * @author Praveen Alavilli
  */
 public class SampleProviderConsumer extends HttpServlet {
 
@@ -60,9 +42,9 @@ public class SampleProviderConsumer extends HttpServlet {
             OAuthAccessor accessor = CookieConsumer.getAccessor(request,
                     response, consumer);
             Collection<OAuth.Parameter> parameters = HttpRequestMessage.getParameters(request);
-            if (!OAuth.newMap(parameters).containsKey("echo")) {
-                parameters.add(new OAuth.Parameter("echo", "Hello."));
-            }
+//            if (!OAuth.newMap(parameters).containsKey("echo")) {
+//                parameters.add(new OAuth.Parameter("echo", "Hello."));
+//            }
             String result = invoke(accessor, parameters);
             Map<String, Object> map = JSONHelper.reflect(JSONObject.fromObject(result));
         	Iterator iter = map.entrySet().iterator();
@@ -70,6 +52,17 @@ public class SampleProviderConsumer extends HttpServlet {
         		Entry en = (Entry) iter.next();
         		System.out.println(en.getKey() + " : " + en.getValue());
         	}
+        	
+        	if(OAuth.newMap(parameters).containsValue("ip")){
+        		request.setAttribute("queryType", "ip");
+        	}
+        	if(OAuth.newMap(parameters).containsValue("domain")){
+        		request.setAttribute("queryType", "domain");
+        	}
+        	if(OAuth.newMap(parameters).containsValue("entity")){
+        		request.setAttribute("queryType", "entity");
+        	}
+        	
         	request.setAttribute("result", result);
         	getServletContext().getRequestDispatcher(WHOIS_RESULT).forward(request, response);
         	
