@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.cnnic.whois.bean.QueryType;
-import com.cnnic.whois.dao.db.DbQueryExecutor;
+import com.cnnic.whois.dao.query.db.DbQueryExecutor;
 import com.cnnic.whois.util.AuthenticationHolder;
 import com.cnnic.whois.util.WhoisUtil;
 

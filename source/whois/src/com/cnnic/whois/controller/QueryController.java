@@ -11,12 +11,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.cnnic.whois.bean.DomainQueryParam;
 import com.cnnic.whois.bean.EntityQueryParam;
@@ -395,4 +398,14 @@ public class QueryController extends BaseController {
 		renderResponse(request, response, resultMap, queryParam);
 		return;
 	}
+	
+	@ExceptionHandler(value={RedirectExecption.class})
+	@ResponseStatus( value=HttpStatus.MOVED_PERMANENTLY ) 
+    public String exp(Exception ex,HttpServletRequest request,HttpServletResponse response) {  
+		RedirectExecption rEx = (RedirectExecption)ex;
+		response.setHeader("Accept", getFormatCookie(request));
+		response.setHeader("Location", rEx.getRedirectURL());
+		response.setHeader("Connection", "close");
+		return null;
+    } 
 }
