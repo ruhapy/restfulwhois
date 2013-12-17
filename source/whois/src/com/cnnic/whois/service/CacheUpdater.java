@@ -1,8 +1,8 @@
 package com.cnnic.whois.service;
 
 import com.cnnic.whois.dao.QueryExecutor;
-import com.cnnic.whois.dao.cache.CacheQueryExecutor;
-import com.cnnic.whois.dao.db.DbQueryExecutor;
+import com.cnnic.whois.dao.query.cache.CacheQueryExecutor;
+import com.cnnic.whois.dao.query.db.DbQueryExecutor;
 
 public class CacheUpdater {
 	private static CacheUpdater cacheUpdater = new CacheUpdater();
