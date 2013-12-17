@@ -101,17 +101,17 @@ vertical-align: top !important;
 							
 							<tr>
 								<td style="padding-left: 90px;padding-top: 20px;"><span>
-								<a href="${ctx }/SampleProvider">IP</a></span></td>
+								<a href="${ctx }/SampleProvider?queryType=ip">IP</a></span></td>
 							</tr>
 							
 							<tr>
-								<td style="padding-left: 50px;padding-top: 20px;"><span><a href="${ctx }/SampleProvider">Domain Query</a></span></td>
+								<td style="padding-left: 50px;padding-top: 20px;"><span><a href="${ctx }/SampleProvider?queryType=domain">Domain Query</a></span></td>
 							</tr>
 							
 							<tr>
-								<td style="padding-left: 80px;padding-top: 20px;"><span><a href="${ctx }/SampleProvider">Entity</a></span></td>
+								<td style="padding-left: 80px;padding-top: 20px;"><span><a href="${ctx }/SampleProvider?queryType=entity">Entity</a></span></td>
 							</tr>
-							
+							<%-- 
 							<tr>
 								<td style="padding-left: 40px;padding-top: 20px;"><span><a href="${ctx }/SampleProvider">Autonomous System</a></span></td>
 							</tr>
@@ -119,6 +119,7 @@ vertical-align: top !important;
 							<tr>
 								<td style="padding-left: 60px;padding-top: 20px;"><span><a href="${ctx }/SampleProvider">Name Server</a></span></td>
 							</tr>
+							--%>
 							
 						</table>
 					
@@ -130,46 +131,100 @@ vertical-align: top !important;
 			<div id="content">
 				<div id="maincontent">
 				
-					<%
-						String results = (String)request.getAttribute("result");
-						Map<String, Object> map = JSONHelper.reflect(JSONObject.fromObject(results));
-					%>
+				<%
+					String results = (String)request.getAttribute("result");
+					Map<String, Object> map = JSONHelper.reflect(JSONObject.fromObject(results));
+				%>
+				
+				<%
+				String queryType = (String)request.getAttribute("queryType");
+				if(queryType.equals("ip")){
+					System.out.println("ip--ip");
+				%>
+				
+					<table>
+						<tr>
+							<th colspan="2">Whois Information</th>
+						</tr>
 						
-						<table>
-							<tr>
-								<th colspan="2">Whois Information</th>
-							</tr>
-							
-							<tr>
-								<td width="20%">ldhName : </td>
-								<td><%=map.get("ldhName") %></td>
-							</tr>
-							<tr>
-								<td>Unicode Name : </td>
-								<td><%=map.get("unicodeName") %></td>
-							</tr>
-							<tr>
-								<td>Lang : </td>
-								<td><%=map.get("lang") %></td>
-							</tr>
-							
-							<tr>
-								<td>Status : </td>
-								<td><%=map.get("status") %></td>
-							</tr>
-						</table>
-					
-					<%
-						Iterator iter = map.entrySet().iterator();
-						while(iter.hasNext()){
-							Entry en = (Entry) iter.next();
-					%>
-					
-					<%		
-							// System.out.println(en.getKey() + " : " + en.getValue());
-						}
-					
-					%>
+						<tr>
+							<td width="20%">Handle : </td>
+							<td><%=map.get("handle") %></td>
+						</tr>
+						<tr>
+							<td>Start Address : </td>
+							<td><%=map.get("startAddress") %></td>
+						</tr>
+						<tr>
+							<td>End Address : </td>
+							<td><%=map.get("endAddress") %></td>
+						</tr>
+						
+						<tr>
+							<td>IP Version : </td>
+							<td><%=map.get("ipVersion") %></td>
+						</tr>
+					</table>
+				
+				<%	
+				}
+				if(queryType.equals("domain")){
+				%>
+					<table>
+						<tr>
+							<th colspan="2">Whois Information</th>
+						</tr>
+						
+						<tr>
+							<td width="20%">ldhName : </td>
+							<td><%=map.get("ldhName") %></td>
+						</tr>
+						<tr>
+							<td>Unicode Name : </td>
+							<td><%=map.get("unicodeName") %></td>
+						</tr>
+						<tr>
+							<td>Lang : </td>
+							<td><%=map.get("lang") %></td>
+						</tr>
+						
+						<tr>
+							<td>Status : </td>
+							<td><%=map.get("status") %></td>
+						</tr>
+					</table>
+				
+				<%	
+					System.out.println("domain--domain");
+				}
+				if(queryType.equals("entity")){
+				
+				%>
+				
+					<table>
+						<tr>
+							<th colspan="2">Whois Information</th>
+						</tr>
+						
+						<tr>
+							<td width="20%">Handle : </td>
+							<td><%=map.get("handle") %></td>
+						</tr>
+						<tr>
+							<td>Lang : </td>
+							<td><%=map.get("lang") %></td>
+						</tr>
+						<tr>
+							<td>Roles : </td>
+							<td><%=map.get("roles") %></td>
+						</tr>
+						
+					</table>
+				
+				<%
+					System.out.println("entity--entity");
+				}
+				%>
 			
 				</div>
 				<div id="jsoncontent"></div>
@@ -184,12 +239,12 @@ vertical-align: top !important;
 		<div id="footer">
 			<p>
 				By using the Restful Whois service, you are agreeing to the
-				<a href="/whois_tou.html" class="footer_link">Whois Terms of Use</a>
+				<a href="/whois_tou.html" class="footer_link" style="color: #000">Whois Terms of Use</a>
 				<br />
 				&copy; Copyright 2013, CNNIC & ICANN
 			</p>
-			<img name='image1' alt="" src="/image/cnnicLogo.jpg">
-			<img alt="" name='image2' src="/image/icannLogo.jpg">
+			<img name='image1' alt="" src="${ctx }/image/cnnicLogo.jpg">
+			<img alt="" name='image2' src="${ctx }/image/icannLogo.jpg">
 		</div>
 
 </body>

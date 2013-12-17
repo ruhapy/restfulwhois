@@ -42,9 +42,9 @@ public class SampleProviderConsumer extends HttpServlet {
             OAuthAccessor accessor = CookieConsumer.getAccessor(request,
                     response, consumer);
             Collection<OAuth.Parameter> parameters = HttpRequestMessage.getParameters(request);
-            if (!OAuth.newMap(parameters).containsKey("echo")) {
-                parameters.add(new OAuth.Parameter("echo", "Hello."));
-            }
+//            if (!OAuth.newMap(parameters).containsKey("echo")) {
+//                parameters.add(new OAuth.Parameter("echo", "Hello."));
+//            }
             String result = invoke(accessor, parameters);
             Map<String, Object> map = JSONHelper.reflect(JSONObject.fromObject(result));
         	Iterator iter = map.entrySet().iterator();
@@ -52,6 +52,17 @@ public class SampleProviderConsumer extends HttpServlet {
         		Entry en = (Entry) iter.next();
         		System.out.println(en.getKey() + " : " + en.getValue());
         	}
+        	
+        	if(OAuth.newMap(parameters).containsValue("ip")){
+        		request.setAttribute("queryType", "ip");
+        	}
+        	if(OAuth.newMap(parameters).containsValue("domain")){
+        		request.setAttribute("queryType", "domain");
+        	}
+        	if(OAuth.newMap(parameters).containsValue("entity")){
+        		request.setAttribute("queryType", "entity");
+        	}
+        	
         	request.setAttribute("result", result);
         	getServletContext().getRequestDispatcher(WHOIS_RESULT).forward(request, response);
         	
