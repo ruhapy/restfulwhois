@@ -34,7 +34,6 @@ public class RedirectionDAO {
 	 */
 	public void addDomainRedirection(String domainName, String redirectUrl)
 			throws ManagementException {
-//		TODO : 取得数据库连接
 		Connection connection = JdbcUtils.getConnection();
 		PreparedStatement stmt = null;
 		ResultSet resultsIsNull = null;
@@ -74,7 +73,6 @@ public class RedirectionDAO {
 	public void addIPRedirection(long startHighAddr, long endHighAddr,
 			long startLowAddr, long endLowAddr, String redirectUrl)
 			throws ManagementException {
-//		TODO : 取得数据库连接
 		Connection connection = JdbcUtils.getConnection();
 		PreparedStatement stmt = null;
 		ResultSet resultsIsNull = null;
@@ -115,7 +113,6 @@ public class RedirectionDAO {
 	 */
 	public void addAutnumRedirection(String startNumber, String endNumber,
 			String redirectUrl) throws ManagementException {
-//		TODO : 取得数据库连接
 		Connection connection = JdbcUtils.getConnection();
 		PreparedStatement stmt = null;
 		ResultSet resultsIsNull = null;
@@ -156,7 +153,6 @@ public class RedirectionDAO {
 	 */
 	public Map<Integer, List<String>> listRedirect(String tableName)
 			throws ManagementException {
-//		TODO : 取得数据库连接
 		Connection connection = JdbcUtils.getConnection();
 		PreparedStatement stmt = null;
 		Map<Integer, List<String>> redirectInfoList = new HashMap<Integer, List<String>>();
@@ -221,7 +217,6 @@ public class RedirectionDAO {
 	 */
 	public void updateDomainRedirection(String domainName, int id,
 			String redirectUrl) throws ManagementException {
-//		TODO : 取得数据库连接
 		Connection connection = JdbcUtils.getConnection();
 		PreparedStatement stmt = null;
 		ResultSet resultsIsNull = null;
@@ -260,7 +255,6 @@ public class RedirectionDAO {
 	 */
 	public void updateAutnumRedirection(String startNumber, String endNumber,
 			int id, String redirectUrl) throws ManagementException {
-//		TODO : 取得数据库连接
 		Connection connection = JdbcUtils.getConnection();
 		PreparedStatement stmt = null;
 		ResultSet resultsIsNull = null;
@@ -306,7 +300,6 @@ public class RedirectionDAO {
 	public void updateIPRedirection(long startHighAddr, long endHighAddr,
 			long startLowAddr, long endLowAddr, int id, String redirectUrl)
 			throws ManagementException {
-//		TODO : 取得数据库连接
 		Connection connection = JdbcUtils.getConnection();
 		PreparedStatement stmt = null;
 		ResultSet resultsIsNull = null;
@@ -349,7 +342,6 @@ public class RedirectionDAO {
 	 */
 	public void deleteRedirect(int id, String tableName)
 			throws ManagementException {
-//		TODO : 取得数据库连接
 		Connection connection = JdbcUtils.getConnection();
 		PreparedStatement stmt = null;
 

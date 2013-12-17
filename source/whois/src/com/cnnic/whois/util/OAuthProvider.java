@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,8 +36,6 @@ import net.oauth.server.OAuthServlet;
  * Utility methods for providers that store consumers, tokens and secrets in
  * local cache (HashSet). Consumer key is used as the name, and its credentials
  * are stored in HashSet.
- * 
- * @author Praveen Alavilli
  */
 public class OAuthProvider {
 	
@@ -54,7 +51,7 @@ public class OAuthProvider {
 	
 	private static Properties consumerProperties = null;
 
-	public static synchronized void loadConsumers(ServletConfig config)
+	public static synchronized void loadConsumers()
 			throws IOException {
 		Properties p = consumerProperties;
 		if (p == null) {
@@ -124,7 +121,7 @@ public class OAuthProvider {
 			accessor = new OAuthAccessor(
 					oauthAccessorBean.getRequest_token(), oauthAccessorBean.getAccess_token(), oauthAccessorBean.getToken_secret(), 
 					new OAuthConsumer("/OAuth/Callback", oauthAccessorBean.getApp_key(), oauthAccessorBean.getApp_secret(), 
-					new OAuthServiceProvider("request_token.do", "authorize.do", "access_token.do")
+					new OAuthServiceProvider("request_token", "authorize", "access_token")
 			));
 			ALL_TOKENS.add(accessor);
 		}

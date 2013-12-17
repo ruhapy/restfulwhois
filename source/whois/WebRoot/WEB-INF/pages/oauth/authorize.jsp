@@ -36,7 +36,7 @@
 
 <div class="auth-form" id="login">
 
-    <form action="authorize.do" method="post">
+    <form action="${ctx }/authorize" method="post">
     <div style="margin:0;padding:0;display:inline">
     <input type="hidden" name="oauth_token" value="<%= token %>"/>
 			<input type="hidden" name="oauth_callback" value="<%= callback %>"/>
