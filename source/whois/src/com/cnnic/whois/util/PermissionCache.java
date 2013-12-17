@@ -481,7 +481,6 @@ public class PermissionCache {
 		List<String> authenticatedDataList = new ArrayList<String>();
 		List<String> rootDataList = new ArrayList<String>();
 
-//		TODO : 取得数据库连接
 		Connection connection = JdbcUtils.getConnection();
 		try {
 			PreparedStatement stmt = connection

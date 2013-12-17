@@ -33,7 +33,6 @@ public class ExColumnDAO {
 	 */
 	public void addCoulumn(String tableName, Map<String, String> columnMap)
 			throws ManagementException {
-//		TODO : 取得数据库连接
 		Connection connection = JdbcUtils.getConnection();
 		PreparedStatement stmt = null;
 
@@ -92,7 +91,6 @@ public class ExColumnDAO {
 	 */
 	public Map<String, String> listCoulumn(String tableName)
 			throws ManagementException {
-//		TODO : 取得数据库连接
 		Connection connection = JdbcUtils.getConnection();
 		PreparedStatement stmt = null;
 		Map<String, String> columnInfoList = new HashMap<String, String>();
@@ -128,7 +126,6 @@ public class ExColumnDAO {
 	public void updateCoulumn(String tableName, String oldColumnName,
 			String newCloumnName, String columnLength)
 			throws ManagementException {
-//		TODO : 取得数据库连接
 		Connection connection = JdbcUtils.getConnection();
 		PreparedStatement stmt = null;
 
@@ -187,7 +184,6 @@ public class ExColumnDAO {
 	 */
 	public void deleteCoulumn(String tableName, String columnName)
 			throws ManagementException {
-//		TODO : 取得数据库连接
 		Connection connection = JdbcUtils.getConnection();
 		PreparedStatement stmt = null;
 		columnName = WhoisUtil.EXTENDPRX + columnName;
