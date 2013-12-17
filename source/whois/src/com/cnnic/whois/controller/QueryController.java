@@ -38,6 +38,11 @@ public class QueryController extends BaseController {
 	@Autowired
 	private QueryEngine queryEngine;
 
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public String index() {
+		return "/dot/index";
+	}
+			
 	@RequestMapping(value = "/domains", method = RequestMethod.GET)
 	@ResponseBody
 	public void fuzzyQueryDomain(@RequestParam(required = true) String name,
@@ -158,14 +163,19 @@ public class QueryController extends BaseController {
 			HttpServletRequest request, HttpServletResponse response)
 			throws QueryException, SQLException, IOException, ServletException,
 			RedirectExecption {
-		name = StringUtils.trim(name);
-		String decodeQ = WhoisUtil.toChineseUrl(name);
-		String punyQ = IDN.toASCII(decodeQ);
 		Map<String, Object> resultMap = null;
-		QueryParam queryParam = super.praseQueryParams(request);
+		QueryParam queryParam = super.praseQueryParams(request);		
+		name = StringUtils.trim(name);
+		if (StringUtils.isBlank(name)) {
+			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
+			renderResponse(request, response, resultMap, queryParam);
+			return;
+		} 
+		String decodeQ = WhoisUtil.toChineseUrl(name);
+		String punyQ = IDN.toASCII(decodeQ);	
 		request.setAttribute("queryPara", decodeQ);
 		if (!ValidateUtils.verifyNameServer(punyQ)) {
-			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
+			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);	
 		} else {
 			queryParam.setQ(punyQ);
 			request.setAttribute("pageBean", queryParam.getPage());
