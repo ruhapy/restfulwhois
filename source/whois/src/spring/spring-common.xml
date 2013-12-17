@@ -6,13 +6,13 @@
 		   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
 		   http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd"
 	default-autowire="byName" default-lazy-init="false">
-	<bean id="searchDomainQueryDao" class="com.cnnic.whois.dao.search.DomainQueryDao">
+	<bean id="searchDomainQueryDao" class="com.cnnic.whois.dao.query.search.DomainQueryDao">
 		<constructor-arg value="${solr.url.domain}" />
 	</bean>
-	<bean id="searchEntityQueryDao" class="com.cnnic.whois.dao.search.EntityQueryDao">
+	<bean id="searchEntityQueryDao" class="com.cnnic.whois.dao.query.search.EntityQueryDao">
 		<constructor-arg value="${solr.url.entity}" />
 	</bean>
-	<bean id="searchNsQueryDao" class="com.cnnic.whois.dao.search.NsQueryDao">
+	<bean id="searchNsQueryDao" class="com.cnnic.whois.dao.query.search.NsQueryDao">
 		<constructor-arg value="${solr.url.nameserver}" />
 	</bean>
 	<bean id="cacheQueryDaos" name="cacheQueryDaos" class="java.util.ArrayList">
