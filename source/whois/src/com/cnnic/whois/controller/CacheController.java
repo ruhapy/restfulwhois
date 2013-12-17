@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cnnic.whois.dao.QueryEngine;
-import com.cnnic.whois.dao.cache.CacheQueryExecutor;
+import com.cnnic.whois.dao.query.cache.CacheQueryExecutor;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 
