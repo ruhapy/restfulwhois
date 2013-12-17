@@ -1,4 +1,4 @@
-package com.cnnic.whois.dao;
+package com.cnnic.whois.dao.query;
 
 import java.util.Map;
 
