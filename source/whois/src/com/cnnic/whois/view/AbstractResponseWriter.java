@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import net.sf.json.JSONArray;
 
 import com.cnnic.whois.bean.QueryType;
-import com.cnnic.whois.dao.db.DbQueryExecutor;
+import com.cnnic.whois.dao.query.db.DbQueryExecutor;
 import com.cnnic.whois.util.WhoisUtil;
 
 public abstract class AbstractResponseWriter implements ResponseWriter {
