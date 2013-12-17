@@ -1,6 +1,6 @@
 package com.cnnic.whois.service;
 
-import com.cnnic.whois.dao.QueryExecutor;
+import com.cnnic.whois.dao.query.QueryExecutor;
 import com.cnnic.whois.dao.query.cache.CacheQueryExecutor;
 import com.cnnic.whois.dao.query.db.DbQueryExecutor;
 
