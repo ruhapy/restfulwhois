@@ -191,7 +191,7 @@ public class XmlResponseWriter extends AbstractResponseWriter {
 			}else if (map.get(key) instanceof List) {
 				if (map.get(key) instanceof JSONArray){
 					sb.append("<" + delTrim(key) + ">\n");
-					sb.append(parseJSONArray(map.get(key)));
+					sb.append(parseJSONArray(map.get(key), key));
 					sb.append("</" + delTrim(key) + ">\n");
 				} else {
 					String[] values = ((List<String>) map.get(key)).get(0).split(",");
@@ -334,7 +334,7 @@ public class XmlResponseWriter extends AbstractResponseWriter {
             if (obj instanceof JSONObject){
             	sb.append(parseJSONObject(obj));
             } else if (obj instanceof JSONArray){
-            	sb.append(parseJSONArray(obj));
+            	sb.append(parseJSONArray(obj, key));
             } else {
             	sb.append(obj.toString());
             }
@@ -343,15 +343,23 @@ public class XmlResponseWriter extends AbstractResponseWriter {
 		return sb;
 	}
 	
-	protected StringBuffer parseJSONArray(Object object){
+	protected StringBuffer parseJSONArray(Object object, String key){
 		StringBuffer sb = new StringBuffer();		
 		JSONArray jsonArray = (JSONArray) object;
-		
+	
 		for(int i = 0; i < jsonArray.size(); i++){      		
 			if (jsonArray.get(i) instanceof JSONObject){
 				sb.append(parseJSONObject(jsonArray.get(i))); 
-            } else {
-            	sb.append(jsonArray.get(i).toString());
+            } else { 
+            	if (jsonArray.size() == 1 || i == jsonArray.size() - 1){
+            		sb.append(jsonArray.get(i).toString());
+            	} else {
+            		sb.append(jsonArray.get(i).toString());
+            	    sb.append("</" + delTrim(key) + ">\n");
+            	    sb.append("<" + delTrim(key) + ">\n");
+            	} 
+            	
+            	
             }
         }
         return sb;
