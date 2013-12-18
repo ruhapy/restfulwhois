@@ -26,7 +26,7 @@ import com.cnnic.whois.bean.EntityQueryParam;
 import com.cnnic.whois.bean.IpQueryParam;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
-import com.cnnic.whois.dao.QueryEngine;
+import com.cnnic.whois.dao.query.QueryEngine;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.service.QueryService;
@@ -60,8 +60,7 @@ public class QueryController extends BaseController {
 		try {
 			punyDomainName = IDN.toASCII(name);// long lable exception
 		} catch (Exception e) {// TODO:delete ,exception filter
-			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
-			renderResponse(request, response, resultMap, domainQueryParam);
+			super.renderResponseError400(request, response);
 			return;
 		}
 		request.setAttribute("queryPara", IDN.toUnicode(punyDomainName));
@@ -95,8 +94,7 @@ public class QueryController extends BaseController {
 			domainName = WhoisUtil.toChineseUrl(domainName);
 			punyDomainName = IDN.toASCII(domainName);// long lable exception
 		} catch (Exception e) {
-			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
-			renderResponse(request, response, resultMap, domainQueryParam);
+			super.renderResponseError400(request, response);
 			return;
 		}
 		request.setAttribute("queryPara", IDN.toUnicode(punyDomainName));
@@ -121,8 +119,7 @@ public class QueryController extends BaseController {
 		Map<String, Object> resultMap = null;
 		EntityQueryParam queryParam = super.praseEntityQueryParams(request);
 		if (StringUtils.isBlank(fn) && StringUtils.isBlank(handle)) {
-			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
-			renderResponse(request, response, resultMap, queryParam);
+			super.renderResponseError400(request, response);
 			return;
 		}
 		String q = fn;
@@ -249,13 +246,13 @@ public class QueryController extends BaseController {
 		Map<String, Object> resultMap = null;
 		QueryParam queryParam = super.praseQueryParams(request);
 		if (StringUtils.isNotBlank(help)) {
-			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
+			super.renderResponseError400(request, response);
 		} else {
 			queryParam.setQ("helpID");
 			resultMap = queryService.queryHelp(queryParam);
 			request.setAttribute("queryPara", queryParam);
+			renderResponse(request, response, resultMap, queryParam);
 		}
-		renderResponse(request, response, resultMap, queryParam);
 	}
 
 	@RequestMapping(value = {"/ip/{ip}","/ip/{ip}/"}, method = RequestMethod.GET)
@@ -286,9 +283,7 @@ public class QueryController extends BaseController {
 		IpQueryParam queryParam = super.praseIpQueryParams(request);
 		String strInfo = ip;
 		if (!ValidateUtils.verifyIP(strInfo, ipLength)) {
-			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
-			viewResolver.writeResponse(queryParam.getFormat(), request,
-					response, resultMap, 0);
+			super.renderResponseError400(request, response);
 			return;
 		}
 		queryParam.setQ(ip);
@@ -379,12 +374,12 @@ public class QueryController extends BaseController {
 		queryParam.setQueryType(queryType);
 		queryParam.setQ(q);
 		if (!ValidateUtils.isCommonInvalidStr(queryParam.getQ())) {
-			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
+			super.renderResponseError400(request, response);
 		} else {
 			resultMap = queryService.query(queryParam);
 			request.setAttribute("queryPara", queryParam);
+			renderResponse(request, response, resultMap, queryParam);
 		}
-		renderResponse(request, response, resultMap, queryParam);
 	}
 
 	@RequestMapping(value = "/**", method = RequestMethod.GET)

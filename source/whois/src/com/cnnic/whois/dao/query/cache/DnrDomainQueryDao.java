@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.cnnic.whois.bean.DomainQueryParam;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.dao.query.db.AbstractDomainQueryDao;
@@ -12,10 +13,11 @@ import com.cnnic.whois.dao.query.db.AbstractDomainQueryDao;
 public class DnrDomainQueryDao extends AbstractCacheQueryDao {
 	@Override
 	protected List<String> getCacheKeySplits(QueryParam param) {
+		DomainQueryParam domainParam = (DomainQueryParam)param;
 		List<String> keySplits = new ArrayList<String>();
 		keySplits.add(QueryType.DNRDOMAIN.toString());
 		keySplits.add("ldhName");
-		keySplits.add(param.getQ());
+		keySplits.add(domainParam.getDomainPuny());
 		return keySplits;
 	}
 

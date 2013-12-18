@@ -1,4 +1,4 @@
-package com.cnnic.whois.dao;
+package com.cnnic.whois.dao.query;
 
 import java.util.Map;
 
@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
-import com.cnnic.whois.dao.query.QueryExecutor;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.permission.PermissionController;

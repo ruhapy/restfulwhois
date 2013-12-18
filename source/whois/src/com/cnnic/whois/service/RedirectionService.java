@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.cnnic.whois.dao.RedirectionDAO;
 import com.cnnic.whois.execption.ManagementException;
-import com.cnnic.whois.execption.QueryException;
+import com.cnnic.whois.util.IpUtil;
 import com.cnnic.whois.util.WhoisUtil;
 
 public class RedirectionService {
@@ -39,7 +39,7 @@ public class RedirectionService {
 			String[] startAddress = isIPMaskNetWork(startNumber);
 			String[] endAddress = isIPMaskNetWork(endNumber);
 			
-			long[] ipLongs = WhoisUtil.parsingIp(startAddress[0],
+			long[] ipLongs = IpUtil.parsingIp(startAddress[0],
 					endAddress[0], Integer.parseInt(startAddress[1]),
 					Integer.parseInt(endAddress[1]));
 
@@ -95,7 +95,7 @@ public class RedirectionService {
 			String[] startAddress = isIPMaskNetWork(startNumber);
 			String[] endAddress = isIPMaskNetWork(endNumber);
 
-			long[] ipLongs = WhoisUtil.parsingIp(startAddress[0],
+			long[] ipLongs = IpUtil.parsingIp(startAddress[0],
 					endAddress[0], Integer.parseInt(startAddress[1]),
 					Integer.parseInt(endAddress[1]));;
 			

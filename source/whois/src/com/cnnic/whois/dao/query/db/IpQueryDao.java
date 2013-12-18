@@ -15,6 +15,7 @@ import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.ColumnCache;
+import com.cnnic.whois.util.IpUtil;
 import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
 
@@ -105,16 +106,16 @@ public class IpQueryDao extends AbstractDbQueryDao {
 					if (ipVersion.toString().indexOf("v6") != -1) { // judgment
 																	// is IPv6
 																	// or IPv4
-						startAddress = WhoisUtil.ipV6ToString(
+						startAddress = IpUtil.ipV6ToString(
 								Long.parseLong(startHighAddress),
 								Long.parseLong(startLowAddress));
-						endAddress = WhoisUtil.ipV6ToString(
+						endAddress = IpUtil.ipV6ToString(
 								Long.parseLong(endHighAddress),
 								Long.parseLong(endLowAddress));
 					} else {
-						startAddress = WhoisUtil.longtoipV4(Long
+						startAddress = IpUtil.longtoipV4(Long
 								.parseLong(startLowAddress));
-						endAddress = WhoisUtil.longtoipV4(Long
+						endAddress = IpUtil.longtoipV4(Long
 								.parseLong(endLowAddress));
 					}
 					map.put("Start_Address", startAddress);

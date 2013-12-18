@@ -38,17 +38,17 @@
 							
 							<tr>
 								<td style="padding-left: 90px;padding-top: 20px;"><span>
-								<a href="${ctx }/SampleProvider">IP</a></span></td>
+								<a href="${ctx }/SampleProvider?queryType=ip">IP</a></span></td>
 							</tr>
 							
 							<tr>
-								<td style="padding-left: 50px;padding-top: 20px;"><span><a href="${ctx }/SampleProvider">Domain Query</a></span></td>
+								<td style="padding-left: 50px;padding-top: 20px;"><span><a href="${ctx }/SampleProvider?queryType=domain">Domain Query</a></span></td>
 							</tr>
 							
 							<tr>
-								<td style="padding-left: 80px;padding-top: 20px;"><span><a href="${ctx }/SampleProvider">Entity</a></span></td>
+								<td style="padding-left: 80px;padding-top: 20px;"><span><a href="${ctx }/SampleProvider?queryType=entity">Entity</a></span></td>
 							</tr>
-							
+							<%-- 
 							<tr>
 								<td style="padding-left: 40px;padding-top: 20px;"><span><a href="${ctx }/SampleProvider">Autonomous System</a></span></td>
 							</tr>
@@ -56,7 +56,7 @@
 							<tr>
 								<td style="padding-left: 60px;padding-top: 20px;"><span><a href="${ctx }/SampleProvider">Name Server</a></span></td>
 							</tr>
-							
+							--%>
 						</table>
 					
 
@@ -78,12 +78,12 @@
 		<div id="footer">
 			<p>
 				By using the Restful Whois service, you are agreeing to the
-				<a href="/whois_tou.html" class="footer_link">Whois Terms of Use</a>
+				<a href="/whois_tou.html" class="footer_link" style="color: #000">Whois Terms of Use</a>
 				<br />
 				&copy; Copyright 2013, CNNIC & ICANN
 			</p>
-			<img name='image1' alt="" src="/image/cnnicLogo.jpg">
-			<img alt="" name='image2' src="/image/icannLogo.jpg">
+			<img name='image1' alt="" src="${ctx }/image/cnnicLogo.jpg">
+			<img alt="" name='image2' src="${ctx }/image/icannLogo.jpg">
 		</div>
 		
 <!--  

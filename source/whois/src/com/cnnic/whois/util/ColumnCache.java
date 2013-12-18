@@ -429,7 +429,6 @@ public class ColumnCache {
 	private List<String> getKeyList(String tableName) {
 		List<String> coulumNameList = new ArrayList<String>();
 
-//		TODO : 取得数据库连接
 		Connection connection = JdbcUtils.getConnection();
 		try {
 			PreparedStatement stmt = connection

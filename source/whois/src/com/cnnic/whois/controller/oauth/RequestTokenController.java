@@ -1,29 +1,18 @@
-/*
- * Copyright 2007 AOL, LLC.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.cnnic.whois.controller.oauth;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import javax.servlet.ServletConfig;
+import javax.annotation.PostConstruct;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.cnnic.whois.bean.oauth.User;
 import com.cnnic.whois.dao.oauth.UserDao;
@@ -32,29 +21,62 @@ import com.cnnic.whois.util.OAuthProvider;
 
 import net.oauth.OAuth;
 import net.oauth.OAuthAccessor;
+import net.oauth.OAuthConsumer;
 import net.oauth.OAuthMessage;
 import net.oauth.server.OAuthServlet;
 
 /**
- * Autherization request handler.
- *
- * @author Praveen Alavilli
+ * Request token request handler
  */
-public class AuthorizationServlet extends HttpServlet {
-    
+@Controller
+public class RequestTokenController {
+
 	private static UserDao userDao = new UserDaoImpl();
 	
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        // nothing at this point
-    }
+	@PostConstruct
+	public void init() throws ServletException {
+      try{
+          OAuthProvider.loadConsumers();
+      }catch(IOException e){
+          throw new ServletException(e.getMessage());
+      }
+	}
     
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws IOException, ServletException {
-        
-        try{
+    @RequestMapping(value = "/request_token")
+	public void request_token(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception{
+    	try {
+            OAuthMessage requestMessage = OAuthServlet.getMessage(request, null);
+            
+            OAuthConsumer consumer = OAuthProvider.getConsumer(requestMessage);
+            
+            OAuthAccessor accessor = new OAuthAccessor(consumer);
+            OAuthProvider.VALIDATOR.validateMessage(requestMessage, accessor);
+            {
+                // Support the 'Variable Accessor Secret' extension
+                // described in http://oauth.pbwiki.com/AccessorSecret
+                String secret = requestMessage.getParameter("oauth_accessor_secret");
+                if (secret != null) {
+                    accessor.setProperty(OAuthConsumer.ACCESSOR_SECRET, secret);
+                }
+            }
+            // generate request_token and secret
+            OAuthProvider.generateRequestToken(accessor);
+            
+            response.setContentType("text/plain");
+            OutputStream out = response.getOutputStream();
+            OAuth.formEncode(OAuth.newList("oauth_token", accessor.requestToken,
+                                           "oauth_token_secret", accessor.tokenSecret),
+                             out);
+            out.close();
+            
+        } catch (Exception e){
+            OAuthProvider.handleException(e, request, response, true);
+        }
+	}
+
+	@RequestMapping(value = "/authorize" , method = RequestMethod.GET)
+	public void authorize_get(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception{
+		try{
             OAuthMessage requestMessage = OAuthServlet.getMessage(request, null);
             
             OAuthAccessor accessor = OAuthProvider.getAccessor(requestMessage);
@@ -69,13 +91,11 @@ public class AuthorizationServlet extends HttpServlet {
         } catch (Exception e){
             OAuthProvider.handleException(e, request, response, true);
         }
-    }
-    
-    @Override 
-    public void doPost(HttpServletRequest request, HttpServletResponse response) 
-            throws IOException, ServletException{
-        
-        try{
+	}
+	
+	@RequestMapping(value = "/authorize" , method = RequestMethod.POST)
+	public void authorize_post(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception{
+		try{
             OAuthMessage requestMessage = OAuthServlet.getMessage(request, null);
             
             OAuthAccessor accessor = OAuthProvider.getAccessor(requestMessage);
@@ -96,8 +116,38 @@ public class AuthorizationServlet extends HttpServlet {
         } catch (Exception e){
             OAuthProvider.handleException(e, request, response, true);
         }
-    }
+	}
     
+	@RequestMapping(value = "/access_token")
+	public void access_token(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception{
+		try{
+            OAuthMessage requestMessage = OAuthServlet.getMessage(request, null);
+            
+            OAuthAccessor accessor = OAuthProvider.getAccessor(requestMessage);
+            OAuthProvider.VALIDATOR.validateMessage(requestMessage, accessor);
+            
+//          TODO :  Not sure whether to delete this part
+            // make sure token is authorized
+//            if (!Boolean.TRUE.equals(accessor.getProperty("authorized"))) {
+//                 OAuthProblemException problem = new OAuthProblemException("permission_denied");
+//                throw problem;
+//            }
+            // generate access token and secret
+            OAuthProvider.generateAccessToken(accessor);
+            
+            response.setContentType("text/plain");
+            OutputStream out = response.getOutputStream();
+            OAuth.formEncode(OAuth.newList("oauth_token", accessor.accessToken,
+                                           "oauth_token_secret", accessor.tokenSecret),
+                             out);
+            out.close();
+            
+        } catch (Exception e){
+            OAuthProvider.handleException(e, request, response, true);
+        }
+	}
+	
+	
     private void sendToAuthorizePage(HttpServletRequest request, 
             HttpServletResponse response, OAuthAccessor accessor)
     throws IOException, ServletException{
@@ -148,7 +198,6 @@ public class AuthorizationServlet extends HttpServlet {
             response.setHeader("Location", callback);
         }
     }
-
-    private static final long serialVersionUID = 1L;
+    
 
 }
