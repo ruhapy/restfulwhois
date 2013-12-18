@@ -2,6 +2,7 @@ package com.cnnic.whois.view;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -167,41 +168,11 @@ public class XmlResponseWriter extends AbstractResponseWriter {
 				sb.append(getXMLFromMap((Map<String, Object>) map.get(key),
 						iMode + 1));
 				sb.append("</" + delTrim(key) + ">\n");
-			} else if (map.get(key) instanceof Object[]) {
-				sb.append("<" + delTrim(key) + ">\n");				
-				for (Object obj : (Object[]) map.get(key)) {
-					int count = ((Object[]) map.get(key)).length;
-					
-					if (obj instanceof Map) {
-						sb.append(getXMLFromMap((Map<String, Object>) obj,
-								iMode + 2));
-					} else if (obj instanceof List) {
-						sb.append(toVCardXml((List<Object>) obj));
-					} else {
-						if(obj != null && !obj.toString().trim().equals("")){
-							sb.append(obj);
-						}
-						if(((Object[]) map.get(key))[count - 1] != obj) {
-							sb.append("</" + delTrim(key) + ">\n");
-							sb.append("<" + delTrim(key) + ">\n");
-						}
-					}
-				}
-				sb.append("</" + delTrim(key) + ">\n");
-			}else if (map.get(key) instanceof List) {
+			} else if (map.get(key) instanceof List) {
 				if (map.get(key) instanceof JSONArray){
-					sb.append("<" + delTrim(key) + ">\n");
 					sb.append(parseJSONArray(map.get(key), key));
-					sb.append("</" + delTrim(key) + ">\n");
-				} else {
-					String[] values = ((List<String>) map.get(key)).get(0).split(",");
-					for (String value : values) {
-						sb.append("<" + delTrim(key) + ">\n");
-						sb.append(value);
-						sb.append("</" + delTrim(key) + ">\n");
-					}
 				}			
-			}else {
+			}else {				
 				sb.append("<" + delTrim(key) + ">\n");
 				sb.append(map.get(key));
 				sb.append("</" + delTrim(key) + ">\n");
@@ -323,23 +294,16 @@ public class XmlResponseWriter extends AbstractResponseWriter {
 	
 	protected StringBuffer parseJSONObject(Object object){
 		StringBuffer sb = new StringBuffer();		
-		JSONObject jsonbject = (JSONObject) object;		
+		JSONObject jsonObject = (JSONObject) object;				
+		Map<String, Object> map = new LinkedHashMap<String, Object>(); 
 		
-		Iterator<?> iterator = jsonbject.keys();   
+		Iterator<?> iterator = jsonObject.keys();   
         while(iterator.hasNext()){ 
-            String key = (String) iterator.next().toString(); 
-            sb.append("<" + key + ">\n");
-            
-            Object obj = jsonbject.get(key);  
-            if (obj instanceof JSONObject){
-            	sb.append(parseJSONObject(obj));
-            } else if (obj instanceof JSONArray){
-            	sb.append(parseJSONArray(obj, key));
-            } else {
-            	sb.append(obj.toString());
-            }
-            sb.append("</" + key + ">\n");
+            String key = (String) iterator.next().toString();                         
+            Object obj = jsonObject.get(key); 
+            map.put(key, obj);
         }
+        sb.append(getXMLFromMap(map, 1));
 		return sb;
 	}
 	
@@ -347,21 +311,19 @@ public class XmlResponseWriter extends AbstractResponseWriter {
 		StringBuffer sb = new StringBuffer();		
 		JSONArray jsonArray = (JSONArray) object;
 	
-		for(int i = 0; i < jsonArray.size(); i++){      		
-			if (jsonArray.get(i) instanceof JSONObject){
+		if (jsonArray.get(0) instanceof JSONObject){ 
+			sb.append("<" + delTrim(key) + ">\n");
+			for (int i = 0; i < jsonArray.size(); i++) {
 				sb.append(parseJSONObject(jsonArray.get(i))); 
-            } else { 
-            	if (jsonArray.size() == 1 || i == jsonArray.size() - 1){
-            		sb.append(jsonArray.get(i).toString());
-            	} else {
-            		sb.append(jsonArray.get(i).toString());
-            	    sb.append("</" + delTrim(key) + ">\n");
-            	    sb.append("<" + delTrim(key) + ">\n");
-            	} 
-            	
-            	
-            }
-        }
+			}
+			sb.append("</" + delTrim(key) + ">\n");	
+		} else {
+			for (int i = 0; i < jsonArray.size(); i++) {
+				sb.append("<" + delTrim(key) + ">\n");
+				sb.append(jsonArray.get(i));
+				sb.append("</" + delTrim(key) + ">\n");
+			}
+		}
         return sb;
 	}
 }
