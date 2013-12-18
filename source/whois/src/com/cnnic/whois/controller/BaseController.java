@@ -104,7 +104,7 @@ public class BaseController {
 			return FormatType.HTML;
 		}
 		String acceptHeader = request.getHeader("Accept");
-		if (acceptHeader.contains("html")) {
+		if (StringUtils.isNotBlank(acceptHeader) && acceptHeader.contains("html")) {
 			format = FormatType.HTML.getName();
 		}
 		if (StringUtils.isBlank(acceptHeader)) {
