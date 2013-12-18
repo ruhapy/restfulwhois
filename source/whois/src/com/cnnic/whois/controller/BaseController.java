@@ -8,6 +8,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cnnic.whois.bean.DomainQueryParam;
@@ -33,29 +34,25 @@ public class BaseController {
 	}
 
 	protected DomainQueryParam praseDomainQueryParams(HttpServletRequest request) {
-		String format = getFormatCookie(request);
-		FormatType formatType = FormatType.getFormatType(format);
+		FormatType formatType = getFormatType(request);
 		PageBean page = getPageParam(request);
 		return new DomainQueryParam(formatType, page);
 	}
 
 	protected EntityQueryParam praseEntityQueryParams(HttpServletRequest request) {
-		String format = getFormatCookie(request);
-		FormatType formatType = FormatType.getFormatType(format);
+		FormatType formatType = getFormatType(request);
 		PageBean page = getPageParam(request);
 		return new EntityQueryParam(formatType, page);
 	}
 
 	protected QueryParam praseQueryParams(HttpServletRequest request) {
-		String format = getFormatCookie(request);
-		FormatType formatType = FormatType.getFormatType(format);
+		FormatType formatType = getFormatType(request);
 		PageBean page = getPageParam(request);
 		return new QueryParam(formatType, page);
 	}
 
 	protected IpQueryParam praseIpQueryParams(HttpServletRequest request) {
-		String format = getFormatCookie(request);
-		FormatType formatType = FormatType.getFormatType(format);
+		FormatType formatType = getFormatType(request);
 		PageBean page = getPageParam(request);
 		return new IpQueryParam(formatType, page);
 	}
@@ -81,9 +78,8 @@ public class BaseController {
 			QueryException {
 		Map<String, Object> resultMap = WhoisUtil
 				.processError(WhoisUtil.COMMENDRRORCODE);
-		viewResolver.writeResponse(
-				FormatType.getFormatType(getFormatCookie(request)), request,
-				response, resultMap, 0);
+		viewResolver.writeResponse(getFormatType(request), request, response,
+				resultMap, 0);
 	}
 
 	public static String getFormatCookie(HttpServletRequest request) {
@@ -96,8 +92,39 @@ public class BaseController {
 				}
 			}
 		}
-		if (format == null)
-			format = "application/json";
 		return format;
+	}
+
+	public static FormatType getFormatType(HttpServletRequest request) {
+		String format = getFormatCookie(request);
+		if (StringUtils.isNotBlank(format)) {
+			return FormatType.getFormatType(format);
+		}
+		if(isWebBrowser(request)){
+			return FormatType.HTML;
+		}
+		String acceptHeader = request.getHeader("Accept");
+		if (acceptHeader.contains("html")) {
+			format = FormatType.HTML.getName();
+		}
+		if (StringUtils.isBlank(acceptHeader)) {
+			format = "application/json";
+		}
+		return FormatType.getFormatType(format);
+	}
+
+	public static boolean isWebBrowser(HttpServletRequest request) {
+		String userAgent = "";
+		try {
+			userAgent = request.getHeader("user-agent").toLowerCase();
+		} catch (Exception e) {
+			userAgent = "";
+		}
+		if (userAgent.contains("msie") || userAgent.contains("firefox")
+				|| userAgent.contains("chrome") || userAgent.contains("safiri")
+				|| userAgent.contains("opera")) {
+			return true;
+		}
+		return false;
 	}
 }

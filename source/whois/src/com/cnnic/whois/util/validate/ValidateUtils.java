@@ -1,41 +1,18 @@
 package com.cnnic.whois.util.validate;
 
 import java.util.Map;
-import com.cnnic.whois.util.WhoisUtil;
+
+import com.cnnic.whois.util.IpUtil;
 
 public class ValidateUtils {
 
-	private boolean isFuzzyQueryType(int typeIndex){
-		if(typeIndex == 1 ||typeIndex == 3 ||typeIndex == 9){
-			return true;
-		}
-		return false;
-	}
-
-	public static boolean isFuzzyQueryType(String queryType) {
-		if("domains".equals(queryType)||"nameservers".equals(queryType)
-				||"entities".equals(queryType)){
-			return true;
-		}
-		return false;
-	}
-	
-	public static String convertFuzzyQueryType(String queryType) {
-		if("domains".equals(queryType)){
-			return "domain";
-		}
-		if("nameservers".equals(queryType)){
-			return "nameserver";
-		}
-		if("entities".equals(queryType)){
-			return "entity";
-		}
-		return null;
-	}
-	
 	public static boolean validateDomainName(String domainName){
-		if (!isCommonInvalidStr(domainName))
+		if (!isCommonInvalidStr(domainName)){
 			return false;
+		}
+		if(domainName.length() > 255){
+			return false;
+		}
 		if(!domainName.startsWith("xn--") && !verifyNameServer(domainName)){
 			return false;
 		}
@@ -64,8 +41,12 @@ public class ValidateUtils {
 	 * @return The correct parity returns true, failure to return false
 	 */
 	public static boolean verifyNameServer(String queryPara) {
-		if (!isCommonInvalidStr(queryPara))
+		if (!isCommonInvalidStr(queryPara)){
 			return false;
+		}
+		if(queryPara.length() > 255){
+			return false;
+		}
 		String fuzzyReg = "^(?!-.)(?!.*?-$)((\\*)?[0-9a-zA-Z][0-9a-zA-Z-]{0,62}(\\*)?\\.)+([0-9a-zA-Z][0-9a-zA-Z-]{0,62}\\*?)?$";
 		if (queryPara.matches(fuzzyReg))
 			return true;
@@ -159,16 +140,16 @@ public class ValidateUtils {
 		String endAddress = "";
 		if (ipversion != null) {
 			if (ipversion.toString().indexOf("v6") != -1) {
-				startAddress = WhoisUtil.ipV6ToString(
+				startAddress = IpUtil.ipV6ToString(
 						Long.parseLong(startHightAddress),
 						Long.parseLong(startLowAddress));
-				endAddress = WhoisUtil.ipV6ToString(
+				endAddress = IpUtil.ipV6ToString(
 						Long.parseLong(endHighAddress),
 						Long.parseLong(endLowAddress));
 			} else {
-				startAddress = WhoisUtil.longtoipV4(Long
+				startAddress = IpUtil.longtoipV4(Long
 						.parseLong(startLowAddress));
-				endAddress = WhoisUtil
+				endAddress = IpUtil
 						.longtoipV4(Long.parseLong(endLowAddress));
 			}
 			map.put("Start Address", startAddress);

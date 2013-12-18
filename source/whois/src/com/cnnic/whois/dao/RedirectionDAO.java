@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.cnnic.whois.execption.ManagementException;
+import com.cnnic.whois.util.IpUtil;
 import com.cnnic.whois.util.JdbcUtils;
 import com.cnnic.whois.util.WhoisUtil;
 
@@ -180,13 +181,13 @@ public class RedirectionDAO {
 					String endNumber = "";
 
 					if (startHightAddress != 0 && endHighAddress != 0) {
-						startNumber = WhoisUtil.ipV6ToString(startHightAddress,
+						startNumber = IpUtil.ipV6ToString(startHightAddress,
 								startLowAddress);
-						endNumber = WhoisUtil.ipV6ToString(endHighAddress,
+						endNumber = IpUtil.ipV6ToString(endHighAddress,
 								endLowAddress);
 					} else {
-						startNumber = WhoisUtil.longtoipV4(startLowAddress);
-						endNumber = WhoisUtil.longtoipV4(endLowAddress);
+						startNumber = IpUtil.longtoipV4(startLowAddress);
+						endNumber = IpUtil.longtoipV4(endLowAddress);
 					}
 
 					list.add(startNumber);

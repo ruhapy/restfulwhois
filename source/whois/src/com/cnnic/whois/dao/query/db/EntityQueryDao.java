@@ -36,7 +36,9 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 		try {
 			connection = ds.getConnection();
 			map = fuzzyQuery(connection, result, MAP_KEY);
-			map = rdapConformance(map);
+			if(null != map){
+				map = rdapConformance(map);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
