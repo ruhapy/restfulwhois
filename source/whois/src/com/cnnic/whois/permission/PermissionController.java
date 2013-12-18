@@ -19,13 +19,8 @@ import com.cnnic.whois.util.WhoisUtil;
 
 @Component
 public class PermissionController {
-	private static PermissionController permissionController = new PermissionController();
 	@Autowired
 	private DbQueryExecutor dbQueryExecutor;
-
-	public static PermissionController getPermissionController() {
-		return permissionController;
-	}
 
 	public Map<String, Object> removeUnAuthedEntries(Map<String, Object> map) {
 		String role = AuthenticationHolder.getAuthentication().getRole();
