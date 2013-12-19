@@ -13,11 +13,15 @@ import com.cnnic.whois.dao.query.db.AbstractDomainQueryDao;
 public class DnrDomainQueryDao extends AbstractCacheQueryDao {
 	@Override
 	protected List<String> getCacheKeySplits(QueryParam param) {
-		DomainQueryParam domainParam = (DomainQueryParam)param;
+		String q = param.getQ();
+		if(param instanceof DomainQueryParam){
+			DomainQueryParam domainParam = (DomainQueryParam)param;
+			q = domainParam.getDomainPuny();
+		}
 		List<String> keySplits = new ArrayList<String>();
 		keySplits.add(QueryType.DNRDOMAIN.toString());
 		keySplits.add("ldhName");
-		keySplits.add(domainParam.getDomainPuny());
+		keySplits.add(q);
 		return keySplits;
 	}
 
