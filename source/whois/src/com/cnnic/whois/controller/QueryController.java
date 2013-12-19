@@ -86,6 +86,7 @@ public class QueryController extends BaseController {
 			throws QueryException, RedirectExecption, IOException,
 			ServletException {
 		domainName = StringUtils.trim(domainName);
+		domainName = StringUtils.lowerCase(domainName);
 		String punyDomainName = domainName;
 		Map<String, Object> resultMap = null;
 		DomainQueryParam domainQueryParam = super
@@ -193,6 +194,7 @@ public class QueryController extends BaseController {
 			HttpServletRequest request, HttpServletResponse response)
 			throws QueryException, SQLException, IOException, ServletException {
 		nsName = StringUtils.trim(nsName);
+		nsName = StringUtils.lowerCase(nsName);
 		String punyNsName = IDN.toASCII(WhoisUtil.toChineseUrl(nsName));
 		Map<String, Object> resultMap = null;
 		QueryParam queryParam = super.praseQueryParams(request);
