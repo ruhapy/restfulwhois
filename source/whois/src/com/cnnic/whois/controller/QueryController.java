@@ -53,6 +53,7 @@ public class QueryController extends BaseController {
 			throws QueryException, RedirectExecption, IOException,
 			ServletException {
 		name = StringUtils.trim(name);
+		name = super.getNormalization(name);
 		String punyDomainName = name;
 		Map<String, Object> resultMap = null;
 		DomainQueryParam domainQueryParam = super
@@ -87,6 +88,7 @@ public class QueryController extends BaseController {
 			ServletException {
 		domainName = StringUtils.trim(domainName);
 		domainName = StringUtils.lowerCase(domainName);
+		domainName = super.getNormalization(domainName);
 		String punyDomainName = domainName;
 		Map<String, Object> resultMap = null;
 		DomainQueryParam domainQueryParam = super
@@ -160,19 +162,20 @@ public class QueryController extends BaseController {
 
 	@RequestMapping(value = "/nameservers", method = RequestMethod.GET)
 	@ResponseBody
-	public void fuzzyQueryNs(@RequestParam(required = false) String name,
+	public void fuzzyQueryNs(@RequestParam(required = false) String nsName,
 			HttpServletRequest request, HttpServletResponse response)
 			throws QueryException, SQLException, IOException, ServletException,
 			RedirectExecption {
 		Map<String, Object> resultMap = null;
 		QueryParam queryParam = super.praseQueryParams(request);		
-		name = StringUtils.trim(name);
-		if (StringUtils.isBlank(name)) {
+		nsName = StringUtils.trim(nsName);
+		nsName = super.getNormalization(nsName);
+		if (StringUtils.isBlank(nsName)) {
 			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 			renderResponse(request, response, resultMap, queryParam);
 			return;
 		} 
-		String decodeQ = WhoisUtil.toChineseUrl(name);
+		String decodeQ = WhoisUtil.toChineseUrl(nsName);
 		String punyQ = IDN.toASCII(decodeQ);	
 		request.setAttribute("queryPara", decodeQ);
 		if (!ValidateUtils.verifyNameServer(punyQ)) {
@@ -195,6 +198,7 @@ public class QueryController extends BaseController {
 			throws QueryException, SQLException, IOException, ServletException {
 		nsName = StringUtils.trim(nsName);
 		nsName = StringUtils.lowerCase(nsName);
+		nsName = super.getNormalization(nsName);
 		String punyNsName = IDN.toASCII(WhoisUtil.toChineseUrl(nsName));
 		Map<String, Object> resultMap = null;
 		QueryParam queryParam = super.praseQueryParams(request);
