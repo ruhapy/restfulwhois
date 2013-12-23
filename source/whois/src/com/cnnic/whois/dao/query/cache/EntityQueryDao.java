@@ -16,14 +16,14 @@ public class EntityQueryDao extends AbstractCacheQueryDao {
 	public Map<String, Object> query(QueryParam param) throws QueryException, RedirectExecption {
 		return dbQueryExecutor.query(QueryType.ENTITY, param);
 	}
-//	@Override
-//	protected List<String> getCacheKeySplits(QueryParam param) {
-//		List<String> keySplits = new ArrayList<String>();
-//		keySplits.add(QueryType.ENTITY.toString());
-//		keySplits.add("handle");
-//		keySplits.add(param.getQ());
-//		return keySplits;
-//	}
+	@Override
+	protected List<String> getCacheKeySplits(QueryParam param) {
+		List<String> keySplits = new ArrayList<String>();
+		keySplits.add(QueryType.ENTITY.toString());
+		keySplits.add("handle");
+		keySplits.add(param.getQ());
+		return keySplits;
+	}
 
 	@Override
 	public QueryType getQueryType() {
