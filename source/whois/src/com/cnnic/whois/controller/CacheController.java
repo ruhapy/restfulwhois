@@ -27,7 +27,7 @@ public class CacheController extends BaseController {
 
 	@RequestMapping(value = "/init", method = RequestMethod.GET)
 	@ResponseBody
-	public void fuzzyQueryDomain(HttpServletRequest request,
+	public void init(HttpServletRequest request,
 			HttpServletResponse response) throws QueryException,
 			RedirectExecption, IOException, ServletException {
 		cacheQueryExecutor.initCache();
