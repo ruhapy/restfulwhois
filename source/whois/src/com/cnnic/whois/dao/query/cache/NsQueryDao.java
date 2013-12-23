@@ -1,5 +1,6 @@
 package com.cnnic.whois.dao.query.cache;
 
+import java.net.IDN;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -31,5 +32,14 @@ public class NsQueryDao extends AbstractCacheQueryDao {
 	@Override
 	protected void initCache() {
 		super.initCacheWithOneKey("$mul$nameServer", "Ldh_Name");
+	}
+	@Override
+	protected String convertCacheKeyValue(String value) {
+		try {
+			value = IDN.toASCII(value);// long lable exception
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return value;
 	}
 }

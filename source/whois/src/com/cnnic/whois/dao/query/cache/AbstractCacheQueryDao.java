@@ -107,10 +107,14 @@ public abstract class AbstractCacheQueryDao implements QueryDao {
 			e.printStackTrace();
 		}
 	}
+	protected String convertCacheKeyValue(String value){
+		return value;
+	}
 
 	private void setCache(Map<String, Object> entityMap, String key) {
-		String cacheKey = getCacheKey(new QueryParam(entityMap.get(key)
-				.toString()));
+		String keyValue = convertCacheKeyValue(entityMap.get(key)
+				.toString());
+		String cacheKey = getCacheKey(new QueryParam(keyValue));
 		System.err.println("init cache,add " + getQueryType() + ",key:"
 				+ cacheKey);
 		setCache(cacheKey, entityMap);

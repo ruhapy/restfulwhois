@@ -205,7 +205,7 @@ public class QueryController extends BaseController {
 		if (!ValidateUtils.verifyNameServer(punyNsName)) {
 			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 		} else {
-			queryParam.setQ(nsName);
+			queryParam.setQ(punyNsName);
 			queryParam.setQueryType(QueryType.NAMESERVER);
 			resultMap = queryService.query(queryParam);
 			request.setAttribute("queryPara", IDN.toUnicode(punyNsName));
