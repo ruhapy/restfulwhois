@@ -1,6 +1,8 @@
 package com.cnnic.whois.controller;
 
 import java.io.IOException;
+import java.text.Normalizer;
+import java.text.Normalizer.Form;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -126,5 +128,12 @@ public class BaseController {
 			return true;
 		}
 		return false;
+	}
+	
+	protected String getNormalization(String str){
+		if (StringUtils.isBlank(str)) {
+			return str;
+		}
+		return Normalizer.normalize(str, Form.NFD);
 	}
 }
