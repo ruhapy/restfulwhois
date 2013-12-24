@@ -26,7 +26,7 @@ public class PermissionController {
 		String role = AuthenticationHolder.getAuthentication().getRole();
 		if (null == map) {
 			return map;
-		}
+		}		
 		Object[] multiObjs = getMultiObjs(map);
 		if (null != multiObjs) {
 			removeUnAuthedEntriesObject(multiObjs, role);

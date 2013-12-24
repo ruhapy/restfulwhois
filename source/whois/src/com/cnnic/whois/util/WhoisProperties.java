@@ -1,122 +1,146 @@
 package com.cnnic.whois.util;
 
-import java.util.Properties;
-
 public class WhoisProperties {
-
-	private static Properties resource;
-	
-	/*
-	 * WHOIS Properties Location
-	 */
-	private static final String CLASSESURL = "com/cnnic/whois/properties/whois.properties";
 	
 	/*
 	 * User Expire Time for anonymous
 	 */
-	private static final String ANONYMOUS_EXPIRE_TIME = "anonymous_expire_time";
+	private static String anonymousExpireTime;
 	
 	/*
 	 * User Expire Time for authenticated
 	 */
-	private static final String AUTHENTICATED_EXPIRE_TIME = "authenticated_expire_time";
+	private static String authenticatedExpireTime;
 	
 	/*
 	 * User Expire Time for ROOT
 	 */
-	private static final String ROOT_EXPIRE_TIME = "root_expire_time";
+	private static String rootExpireTime;
 	
 	/*
 	 * Cache Expire Time
 	 */
-	private static final String EXPIRE_TIME = "expire_time";
+	private static String expireTime;
+	
+	/*
+	 * Domain Solr Url
+	 */
+	private static String domainSolrUrl;
+	
+	/*
+	 * Entity Solr Url
+	 */
+	private static String entitySolrUrl;
+	
+	/*
+	 * Name Server Solr Url
+	 */
+	private static String nameServerSolrUrl;
 	
 	/*
 	 * Max Length for fuzzy query
 	 */
-	private static final String MAX_SIZE_FUZZY_QUERY = "maxsize.fuzzyquery";
+	private static String maxFuzzyQuery;
 	
 	/*
-	 * prefix url of ".well-known/rdap/"
+	 * cache IP
 	 */
-	private static final String WELL_KNOWN_RDAP_URL = ".well-known/rdap";
+	private static String cacheIP;
 	
-	/**
-	 * Load the resource file
+	/*
+	 * cache port
 	 */
-	static {
-		resource = new Properties();
-		try {
-			resource.load(WhoisUtil.class.getClassLoader().getResourceAsStream(
-					CLASSESURL));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	private static String cachePort;
+	
+	/*
+	 * prefix url of ".well-known/rdap/" 
+	 */
+	private static String wellKnown;
+	
+	public void setAnonymousExpireTime(String time) {
+	    anonymousExpireTime = time;
 	}
-
-	/**
-	 * Get AnonymousExpireTime
-	 * 
-	 * @return long
-	 */
-	public static long getAnonymousExpireTime() {
-		return Long.parseLong(resource.getProperty(ANONYMOUS_EXPIRE_TIME));
-	}
-
-	/**
-	 * Get AuthenticatedExpireTime
-	 * 
-	 * @return long
-	 */
-	public static long getAuthenticatedExpireTime() {
-		return Long.parseLong(resource.getProperty(AUTHENTICATED_EXPIRE_TIME));
-	}
-
-	/**
-	 * Get RootExpireTime
-	 * 
-	 * @return long
-	 */
-	public static long getRootExpireTime() {
-		return Long.parseLong(resource.getProperty(ROOT_EXPIRE_TIME));
+	 
+	public static String getAnonymousExpireTime() {
+	    return anonymousExpireTime;
 	}
 	
-
-	/**
-	 * Get RootExpireTime
-	 * 
-	 * @return long
-	 */
-	public static long getExpireTime() {
-		return Long.parseLong(resource.getProperty(EXPIRE_TIME));
+	public void setAuthenticatedExpireTime(String time) {
+	    authenticatedExpireTime = time;
+	}
+	 
+	public static String getAuthenticatedExpireTime() {
+	    return authenticatedExpireTime;
 	}
 	
+	public void setRootExpireTime(String time) {
+	    rootExpireTime = time;
+	}
+	 
+	public static String getRootExpireTime() {
+	    return rootExpireTime;
+	}
+	
+	public void setExpireTime(String time) {
+	    expireTime = time;
+	}
+	 
+	public static String getExpireTime() {
+	    return expireTime;
+	}
+	
+	public void setDomainSolrUrl(String url) {
+		domainSolrUrl = url;
+	}
+	 
 	public static String getDomainSolrUrl() {
-		return resource.getProperty("solr.url.domain");
+	    return domainSolrUrl;
 	}
 	
-	public static String getNameServerSolrUrl() {
-		return resource.getProperty("solr.url.nameserver");
+	public void setEntitySolrUrl(String url) {
+		entitySolrUrl = url;
 	}
-	
+	 
 	public static String getEntitySolrUrl() {
-		return resource.getProperty("solr.url.entity");
+	    return entitySolrUrl;
+	}
+	public void setNameServerSolrUrl(String url) {
+		nameServerSolrUrl = url;
+	}
+	 
+	public static String getNameServerSolrUrl() {
+	    return nameServerSolrUrl;
 	}
 	
-	public static int getMaxSizeFuzzyQuery() {
-		return Integer.parseInt(resource.getProperty(MAX_SIZE_FUZZY_QUERY));
+	public void setMaxFuzzyQuery(String num) {
+	    maxFuzzyQuery = num;
+	}
+	 
+	public static String getMaxFuzzyQuery() {
+	    return maxFuzzyQuery;
 	}
 	
-	public static String getCacheIp() {
-		return resource.getProperty("cache.ip");
+	public void setCacheIP(String ip) {
+	    cacheIP = ip;
+	}
+	
+	public static String getCacheIP() {
+	    return cacheIP;
+	}
+	
+	public void setCachePort(String port) {
+	    cachePort = port;
 	}
 	
 	public static String getCachePort() {
-		return resource.getProperty("cache.port");
-	}
+	    return cachePort;
+	}	
 	
+	public void setRdapUrl(String url) {
+	    wellKnown = url;
+	}
+	 
 	public static String getRdapUrl() {
-		String field = resource.getProperty("rdap.url");
-		return (null == field) ? WELL_KNOWN_RDAP_URL : field;
+	    return wellKnown;
 	}
 }

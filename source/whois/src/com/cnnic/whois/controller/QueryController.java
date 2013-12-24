@@ -136,6 +136,7 @@ public class QueryController extends BaseController {
 			fuzzyQuerySolrPropName = "entityNames";
 			paramName = "fn";
 		}
+		queryParam.setQueryType(QueryType.SEARCHENTITY);
 		queryParam.setFuzzyQueryParamName(fuzzyQuerySolrPropName);
 		queryParam.setQ(decodeQ);
 		setMaxRecordsForFuzzyQ(queryParam);
@@ -153,6 +154,7 @@ public class QueryController extends BaseController {
 			HttpServletRequest request, HttpServletResponse response)
 			throws QueryException, SQLException, IOException, ServletException {
 		EntityQueryParam queryParam = super.praseEntityQueryParams(request);
+		queryParam.setQueryType(QueryType.ENTITY);
 		queryParam.setQ(entityName);
 		Map<String, Object> resultMap = queryService.queryEntity(queryParam);
 		request.setAttribute("queryType", "entity");
@@ -181,6 +183,7 @@ public class QueryController extends BaseController {
 		if (!ValidateUtils.verifyNameServer(punyQ)) {
 			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);	
 		} else {
+			queryParam.setQueryType(QueryType.SEARCHNS);
 			queryParam.setQ(punyQ);
 			request.setAttribute("pageBean", queryParam.getPage());
 			request.setAttribute("queryPath", "nameservers");
@@ -298,8 +301,8 @@ public class QueryController extends BaseController {
 		resultMap = queryService.queryIP(queryParam);
 		request.setAttribute("queryPara", ip);
 		request.setAttribute("queryType", "ip");
-		viewResolver.writeResponse(queryParam.getFormat(), request, response,
-				resultMap, 0);
+		viewResolver.writeResponse(queryParam.getFormat(), queryParam.getQueryType(),
+				request, response, resultMap);
 	}
 
 	@RequestMapping(value = "/keyData/{q}", method = RequestMethod.GET)

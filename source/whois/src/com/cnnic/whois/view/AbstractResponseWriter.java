@@ -1,5 +1,6 @@
 package com.cnnic.whois.view;
 
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -23,7 +24,34 @@ public abstract class AbstractResponseWriter implements ResponseWriter {
 		Map<String, Object> result = formatMap(map);
 		return result;
 	}
-
+	
+	@Override
+	public Map<String, Object> getMapField(QueryType queryType, Map<String, Object> map) {
+		if(null != queryType){
+			Iterator<String> iterr = map.keySet().iterator();
+			String multiKey = null;
+			while(iterr.hasNext()){
+				String key =  iterr.next();
+				if(key.startsWith(WhoisUtil.MULTIPRX)){
+					multiKey = key;
+				}
+			}
+			if( null != multiKey){
+				Object jsonObj = map.get(multiKey);
+				map.remove(multiKey);
+				if(queryType.equals(QueryType.SEARCHDOMAIN))
+					map.put("domainSearchResults", jsonObj);
+				else if(queryType.equals(QueryType.SEARCHENTITY))
+					map.put("entitySearchResults", jsonObj);
+				else if(queryType.equals(QueryType.SEARCHNS))
+					map.put("nameserverSearchResults", jsonObj);
+				else
+					map.put(multiKey.substring(WhoisUtil.MULTIPRX.length()), jsonObj);
+			}
+		} 
+		return map;
+	}
+	
 	protected boolean isUnusedEntry(Entry<String, Object> entry) {
 		String key = entry.getKey();
 		boolean endwithId = key.substring(key.length() - 2).toLowerCase()
@@ -128,25 +156,5 @@ public abstract class AbstractResponseWriter implements ResponseWriter {
 		if (data.startsWith("$mul$"))
 			return data.substring("$mul$".length());
 		return data.replaceAll(" ", "");
-	}
-	
-	protected boolean isLegalType(String queryType){
-		if(queryType.equals(WhoisUtil.FUZZY_DOMAINS) ||
-				queryType.equals(WhoisUtil.FUZZY_NAMESERVER) ||
-				queryType.equals(WhoisUtil.FUZZY_ENTITIES) ||
-				queryType.equals(WhoisUtil.IP) ||
-				queryType.equals(WhoisUtil.DMOAIN) ||
-				queryType.equals(WhoisUtil.ENTITY) ||
-				queryType.equals(WhoisUtil.AUTNUM) ||
-				queryType.equals(WhoisUtil.NAMESERVER) ||
-				queryType.equals(WhoisUtil.HELP) ||
-				
-				queryType.equals(WhoisUtil.SEARCHDOMAIN)	//search functions of domain
-				){
-			return true;
-		}
-		else{
-			return false;
-		}
 	}
 }

@@ -82,8 +82,8 @@ public class EchoController extends BaseController {
 	                		String strInfo = ip;
 	                		if (!ValidateUtils.verifyIP(strInfo, net)) {
 	                			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
-	                			viewResolver.writeResponse(queryParam.getFormat(), request,
-	                					response, resultMap, 0);
+	                			viewResolver.writeResponse(queryParam.getFormat(), queryParam.getQueryType(),
+	                					request, response, resultMap);
 	                			return;
 	                		}
 	                		queryParam.setQ(ip);
@@ -92,8 +92,8 @@ public class EchoController extends BaseController {
 	                		resultMap = queryService.queryIP(queryParam);
 	                		request.setAttribute("queryPara", ip);
 	                		request.setAttribute("queryType", "ip");
-	                		viewResolver.writeResponse(queryParam.getFormat(), request, response,
-	                				resultMap, 0);
+	                		viewResolver.writeResponse(queryParam.getFormat(), queryParam.getQueryType(),
+                					request, response, resultMap);
 	                	}
 	                	if(value.equals("domain")){
 	                		String domainName = StringUtils.trim("z.cn");
@@ -107,8 +107,8 @@ public class EchoController extends BaseController {
 	            				resultMap = queryService.queryDomain(queryParam);
 	            				System.err.println(resultMap);
 	            			}
-	            			viewResolver.writeResponse(queryParam.getFormat(), request,
-	            					response, resultMap, 0);
+	            			viewResolver.writeResponse(queryParam.getFormat(), queryParam.getQueryType(),
+                					request, response, resultMap);
 	                	}
 	                	if(value.equals("entity")){
 	                		EntityQueryParam queryParam = super.praseEntityQueryParams(request);
