@@ -75,20 +75,7 @@ public class EchoController extends BaseController {
 					.getMessage(request, null);
 			OAuthAccessor accessor = oauthProvider.getAccessor(requestMessage);
 			OAuthProvider.VALIDATOR.validateMessage(requestMessage, accessor);
-
 			accessApi(accessor.accessToken, request, response);
-
-			// String userId = (String) accessor.getProperty("user");
-			// response.setContentType("text/plain");
-			// PrintWriter out = response.getWriter();
-			// for (Object item : request.getParameterMap().entrySet()) {
-			// Map.Entry parameter = (Map.Entry) item;
-			// String[] values = (String[]) parameter.getValue();
-			// for (String value : values) {
-			// out.println(parameter.getKey() + ": " + value);
-			// }
-			// }
-
 		} catch (Exception e) {
 			OAuthProvider.handleException(e, request, response, false);
 		}

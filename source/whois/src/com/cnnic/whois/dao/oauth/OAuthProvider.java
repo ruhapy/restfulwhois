@@ -55,7 +55,7 @@ public class OAuthProvider {
 	
 	private static Properties consumerProperties = null;
 
-	public synchronized void loadConsumers()
+	public void loadConsumers()
 			throws IOException {
 		Properties p = consumerProperties;
 		if (p == null) {
@@ -91,7 +91,7 @@ public class OAuthProvider {
 
 	}
 
-	public static synchronized OAuthConsumer getConsumer(
+	public static OAuthConsumer getConsumer(
 			OAuthMessage requestMessage) throws IOException,
 			OAuthProblemException {
 
@@ -112,7 +112,7 @@ public class OAuthProvider {
 	/**
 	 * Get the access token and token secret for the given oauth_token.
 	 */
-	public synchronized OAuthAccessor getAccessor(
+	public OAuthAccessor getAccessor(
 			OAuthMessage requestMessage) throws IOException,
 			OAuthProblemException {
 
@@ -156,7 +156,7 @@ public class OAuthProvider {
 	/**
 	 * Set the access token
 	 */
-	public static synchronized void markAsAuthorized(OAuthAccessor accessor,
+	public static void markAsAuthorized(OAuthAccessor accessor,
 			String userId) throws OAuthException {
 
 		// first remove the accessor from cache
@@ -174,7 +174,7 @@ public class OAuthProvider {
 	 * 
 	 * @throws OAuthException
 	 */
-	public synchronized void generateRequestToken(OAuthAccessor accessor)
+	public void generateRequestToken(OAuthAccessor accessor)
 			throws OAuthException {
 
 		// generate oauth_token and oauth_secret
@@ -206,7 +206,7 @@ public class OAuthProvider {
 	 * 
 	 * @throws OAuthException
 	 */
-	public synchronized void generateAccessToken(OAuthAccessor accessor)
+	public void generateAccessToken(OAuthAccessor accessor)
 			throws OAuthException {
 
 		// generate oauth_token and oauth_secret
