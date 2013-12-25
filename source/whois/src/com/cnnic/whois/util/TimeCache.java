@@ -34,13 +34,13 @@ public class TimeCache {
 			return true;
 		} else {
 			if (role.equals(WhoisUtil.ANONYMOUS)) {
-				if (time >= WhoisProperties.getAnonymousExpireTime())
+				if (time >= Long.parseLong(WhoisProperties.getAnonymousExpireTime()))
 					return false;
 			} else if (role.equals(WhoisUtil.AUTHENTICATED)) {
-				if (time >= WhoisProperties.getAuthenticatedExpireTime())
+				if (time >= Long.parseLong(WhoisProperties.getAuthenticatedExpireTime()))
 					return false;
 			} else {
-				if (time >= WhoisProperties.getRootExpireTime())
+				if (time >= Long.parseLong(WhoisProperties.getRootExpireTime()))
 					return false;
 			}
 			return true;

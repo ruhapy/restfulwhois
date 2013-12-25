@@ -2,13 +2,11 @@ package com.cnnic.whois.view;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,10 +18,11 @@ import org.springframework.stereotype.Component;
 
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.WhoisUtil;
+
 @Component("xmlResponseWriter")
 public class XmlResponseWriter extends AbstractResponseWriter {
 	private static XmlResponseWriter writer = new XmlResponseWriter();
-
+	
 	public static ResponseWriter getWriter() {
 		return writer;
 	}
@@ -35,7 +34,7 @@ public class XmlResponseWriter extends AbstractResponseWriter {
 
 	@Override
 	public void writeResponse(HttpServletRequest request,
-			HttpServletResponse response, Map<String, Object> map, int queryType)
+			HttpServletResponse response, Map<String, Object> map)
 		throws IOException, ServletException {
 		request.setCharacterEncoding("utf-8");
 		response.setCharacterEncoding("utf-8");
@@ -60,61 +59,8 @@ public class XmlResponseWriter extends AbstractResponseWriter {
 			}
 		}
 		
-		//multi-responses
-		Iterator<String> iterr = map.keySet().iterator();
-		String multiKey = null;
-		while(iterr.hasNext()){
-			String key =  iterr.next();
-			if(key.startsWith(WhoisUtil.MULTIPRX)){
-				multiKey = key;
-			}
-		}
-		if(multiKey != null){
-			Object jsonObj = map.get(multiKey);
-			map.remove(multiKey);
-			switch (queryType) {
-			case 1:
-				map.put("domainSearchResults", jsonObj);
-				break;
-			case 3:
-				map.put("entitySearchResults", jsonObj);
-				break;
-			case 9:
-				map.put("nameserverSearchResults", jsonObj);
-				break;
-			default:
-				map.put(multiKey.substring(WhoisUtil.MULTIPRX.length()), jsonObj);
-			}
-		}
-		
 		response.setHeader("Content-Type", FormatType.XML.getName());
 		out.write(getXMLFromMap(map, 0));
-	}
-
-	public void displayErrorMessage(HttpServletRequest request, HttpServletResponse response, FilterChain chain, 
-			String queryType, String role) throws IOException, ServletException{
-		request.setCharacterEncoding("utf-8");
-		response.setCharacterEncoding("utf-8");
-		
-		Map<String, Object> map = new LinkedHashMap<String, Object>();
-		
-		try {
-			map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
-		} catch (QueryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		PrintWriter out = response.getWriter();
-		request.setAttribute("queryFormat", FormatType.XML.getName());
-		response.setHeader("Access-Control-Allow-Origin", "*");
-		
-		if(isLegalType(queryType)){
-			chain.doFilter(request, response);
-		} else {
-			response.setHeader("Content-Type", FormatType.XML.getName());
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			out.write(getXMLFromMap(map, 0));
-		}
 	}
 	
 	public void displayOverTimeMessage(HttpServletRequest request, HttpServletResponse response, 
@@ -168,11 +114,33 @@ public class XmlResponseWriter extends AbstractResponseWriter {
 				sb.append(getXMLFromMap((Map<String, Object>) map.get(key),
 						iMode + 1));
 				sb.append("</" + delTrim(key) + ">\n");
+			} else if (map.get(key) instanceof Object[]) {
+				sb.append("<" + delTrim(key) + ">\n");				
+				for (Object obj : (Object[]) map.get(key)) {
+					if (obj instanceof Map) {
+						sb.append(getXMLFromMap((Map<String, Object>) obj,
+								iMode + 2));
+					} else if (obj instanceof List) {
+						if (obj instanceof JSONArray){
+							sb.append(parseJSONArray(map.get(key), key));
+						}
+					} else {
+						int count = ((Object[]) map.get(key)).length;
+						if(obj != null && !obj.toString().trim().equals("")){
+							sb.append(obj);
+						}
+						if(((Object[]) map.get(key))[count - 1] != obj) {
+							sb.append("</" + delTrim(key) + ">\n");
+							sb.append("<" + delTrim(key) + ">\n");
+						}
+					}
+				}
+				sb.append("</" + delTrim(key) + ">\n");
 			} else if (map.get(key) instanceof List) {
 				if (map.get(key) instanceof JSONArray){
 					sb.append(parseJSONArray(map.get(key), key));
 				}			
-			}else {				
+			}else {	
 				sb.append("<" + delTrim(key) + ">\n");
 				sb.append(map.get(key));
 				sb.append("</" + delTrim(key) + ">\n");

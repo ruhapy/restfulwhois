@@ -63,8 +63,7 @@ public class WhoisFilter implements Filter {
 			HttpServletResponse response, FormatType formatType, String role)
 			throws IOException, ServletException {
 		ViewResolver viewResolver = ViewResolver.getResolver();
-		viewResolver
-				.displayOverTimeMessage(request, response, formatType, role);
+		viewResolver.displayOverTimeMessage(request, response, formatType, role);
 	}
 
 	/**
@@ -85,17 +84,17 @@ public class WhoisFilter implements Filter {
 			long time = accessTime - WhoisUtil.queryRemoteIPMap.get(userIp);
 			boolean isOverTime = true;
 			if (role.equals(WhoisUtil.ANONYMOUS)) {
-				if (time <= WhoisProperties.getAnonymousExpireTime())
+				if (time <= Long.parseLong(WhoisProperties.getAnonymousExpireTime()))
 					isOverTime = false;
 			} else if (role.equals(WhoisUtil.AUTHENTICATED)) {
-				if (time <= WhoisProperties.getAuthenticatedExpireTime())
+				if (time <= Long.parseLong(WhoisProperties.getAuthenticatedExpireTime()))
 					isOverTime = false;
 			} else if (role.equals(WhoisUtil.ROOT)) {
-				if (time <= WhoisProperties.getRootExpireTime())
+				if (time <= Long.parseLong(WhoisProperties.getRootExpireTime()))
 					isOverTime = false;
 			}
 			WhoisUtil.queryRemoteIPMap.put(userIp, accessTime);
-			if (time >= WhoisProperties.getExpireTime())
+			if (time >= Long.parseLong(WhoisProperties.getExpireTime()))
 				WhoisUtil.queryRemoteIPMap.remove(userIp);
 			return isOverTime;
 		}
