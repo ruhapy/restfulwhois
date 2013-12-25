@@ -18,6 +18,7 @@ import com.cnnic.whois.bean.EntityQueryParam;
 import com.cnnic.whois.bean.IpQueryParam;
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
+import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.QueryService;
 import com.cnnic.whois.util.WhoisUtil;
@@ -71,8 +72,8 @@ public class BaseController {
 	protected void renderResponse(HttpServletRequest request,
 			HttpServletResponse response, Map<String, Object> resultMap,
 			QueryParam queryParam) throws IOException, ServletException {
-		viewResolver.writeResponse(queryParam.getFormat(), request, response,
-				resultMap, 0);
+		viewResolver.writeResponse(queryParam.getFormat(), queryParam.getQueryType(),
+				request, response, resultMap);
 	}
 
 	protected void renderResponseError400(HttpServletRequest request,
@@ -80,8 +81,8 @@ public class BaseController {
 			QueryException {
 		Map<String, Object> resultMap = WhoisUtil
 				.processError(WhoisUtil.COMMENDRRORCODE);
-		viewResolver.writeResponse(getFormatType(request), request, response,
-				resultMap, 0);
+		viewResolver.writeResponse(getFormatType(request), getQueryType(request),
+				request, response, resultMap);
 	}
 
 	public static String getFormatCookie(HttpServletRequest request) {
@@ -113,6 +114,16 @@ public class BaseController {
 			format = "application/json";
 		}
 		return FormatType.getFormatType(format);
+	}
+	
+	public static QueryType getQueryType(HttpServletRequest request) {
+		if (request.getAttribute("queryType") != null) {
+			String queryType = (String) request.getAttribute("queryType");
+			return QueryType.getQueryType(queryType);			
+		} else {
+			QueryParam param = (QueryParam) request.getAttribute("queryPara");
+		    return param.getQueryType();
+		}		
 	}
 
 	public static boolean isWebBrowser(HttpServletRequest request) {

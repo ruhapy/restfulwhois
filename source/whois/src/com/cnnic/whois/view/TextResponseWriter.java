@@ -8,7 +8,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.WhoisUtil;
+
 @Component("textResponseWriter")
 public class TextResponseWriter extends AbstractResponseWriter {
 	private static TextResponseWriter writer = new TextResponseWriter();
@@ -32,7 +32,7 @@ public class TextResponseWriter extends AbstractResponseWriter {
 
 	@Override
 	public void writeResponse(HttpServletRequest request,
-			HttpServletResponse response, Map<String, Object> map, int queryType) 
+			HttpServletResponse response, Map<String, Object> map) 
 		throws IOException, ServletException {
 			request.setCharacterEncoding("utf-8");
 			response.setCharacterEncoding("utf-8");
@@ -74,32 +74,6 @@ public class TextResponseWriter extends AbstractResponseWriter {
 			
 			response.setHeader("Content-Type", FormatType.TEXTPLAIN.getName());
 			out.write(getPresentationFromMap(map, 0));
-	}
-
-	public void displayErrorMessage(HttpServletRequest request, HttpServletResponse response, FilterChain chain, 
-			String queryType, String role) throws IOException, ServletException{
-		request.setCharacterEncoding("utf-8");
-		response.setCharacterEncoding("utf-8");
-		
-		Map<String, Object> map = new LinkedHashMap<String, Object>();
-		
-		try {
-			map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
-		} catch (QueryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		PrintWriter out = response.getWriter();
-		request.setAttribute("queryFormat", FormatType.TEXTPLAIN.getName());
-		response.setHeader("Access-Control-Allow-Origin", "*");
-		
-		if(isLegalType(queryType)){
-			chain.doFilter(request, response);
-		}else{
-			response.setHeader("Content-Type", FormatType.TEXTPLAIN.getName());
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			out.write(getPresentationFromMap(map, 0));
-		}
 	}
 	
 	public void displayOverTimeMessage(HttpServletRequest request, HttpServletResponse response, 
