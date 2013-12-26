@@ -26,7 +26,7 @@ public abstract class AbstractCacheQueryDao implements QueryDao {
 	@Autowired
 	@Qualifier("dbQueryExecutor")
 	protected DbQueryExecutor dbQueryExecutor;
-	private static Jedis cache = new Jedis(WhoisProperties.getCacheIp(),
+	private static Jedis cache = new Jedis(WhoisProperties.getCacheIP(),
 			Integer.valueOf(WhoisProperties.getCachePort()));
 
 	public AbstractCacheQueryDao() {

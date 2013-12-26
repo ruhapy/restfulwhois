@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import com.cnnic.whois.util.DataFormat;
 import com.cnnic.whois.util.WhoisUtil;
+
 @Component("htmlResponseWriter")
 public class HtmlResponseWriter extends AbstractResponseWriter {
 	private static HtmlResponseWriter writer = new HtmlResponseWriter();
@@ -30,7 +31,7 @@ public class HtmlResponseWriter extends AbstractResponseWriter {
 
 	@Override
 	public void writeResponse(HttpServletRequest request,
-			HttpServletResponse response, Map<String, Object> map, int queryType)
+			HttpServletResponse response, Map<String, Object> map)
 		throws IOException, ServletException {
 		request.setCharacterEncoding("utf-8");
 		response.setCharacterEncoding("utf-8");

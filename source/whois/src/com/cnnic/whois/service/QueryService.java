@@ -24,8 +24,8 @@ public class QueryService {
 	private static Long MAX_AS_NUM = 4294967295L;
 	@Autowired
 	private QueryEngine queryEngine ;
-	public static int MAX_SIZE_FUZZY_QUERY = WhoisProperties
-			.getMaxSizeFuzzyQuery();
+	public static int MAX_SIZE_FUZZY_QUERY = Integer.parseInt(WhoisProperties
+			.getMaxFuzzyQuery());
 
 	public Map<String, Object> queryIP(IpQueryParam ipQueryParam) throws QueryException,
 		RedirectExecption {
