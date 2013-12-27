@@ -20,7 +20,7 @@
 		class="org.springframework.web.servlet.i18n.CookieLocaleResolver" />
 	<bean
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="prefix" value="/" />
+		<property name="prefix" value="/WEB-INF/pages/" />
 		<property name="suffix" value=".jsp" />
 	</bean>
 
