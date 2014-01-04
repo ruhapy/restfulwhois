@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -55,6 +56,7 @@ public class OAuthProvider {
 	
 	private static Properties consumerProperties = null;
 
+	@PostConstruct
 	public void loadConsumers()
 			throws IOException {
 		Properties p = consumerProperties;
