@@ -58,6 +58,7 @@ public class QueryController extends BaseController {
 		Map<String, Object> resultMap = null;
 		DomainQueryParam domainQueryParam = super
 				.praseDomainQueryParams(request);
+		request.setAttribute("queryType", "domain");
 		try {
 			punyDomainName = IDN.toASCII(name);// long lable exception
 		} catch (Exception e) {// TODO:delete ,exception filter
@@ -76,7 +77,6 @@ public class QueryController extends BaseController {
 			request.setAttribute("pageBean", domainQueryParam.getPage());
 			request.setAttribute("queryPath", "domains");
 		}
-		request.setAttribute("queryType", "domain");
 		renderResponse(request, response, resultMap, domainQueryParam);
 	}
 
@@ -93,6 +93,7 @@ public class QueryController extends BaseController {
 		Map<String, Object> resultMap = null;
 		DomainQueryParam domainQueryParam = super
 				.praseDomainQueryParams(request);
+		request.setAttribute("queryType", "domain");
 		try {
 			domainName = WhoisUtil.toChineseUrl(domainName);
 			punyDomainName = IDN.toASCII(domainName);// long lable exception
@@ -109,7 +110,6 @@ public class QueryController extends BaseController {
 			domainQueryParam.setDomainPuny(punyDomainName);
 			resultMap = queryService.queryDomain(domainQueryParam);
 		}
-		request.setAttribute("queryType", "domain");
 		renderResponse(request, response, resultMap, domainQueryParam);
 	}
 
@@ -121,6 +121,7 @@ public class QueryController extends BaseController {
 			throws QueryException, SQLException, IOException, ServletException {
 		Map<String, Object> resultMap = null;
 		EntityQueryParam queryParam = super.praseEntityQueryParams(request);
+		request.setAttribute("queryType", "entity");
 		if (StringUtils.isBlank(fn) && StringUtils.isBlank(handle)) {
 			super.renderResponseError400(request, response);
 			return;
@@ -143,7 +144,6 @@ public class QueryController extends BaseController {
 		resultMap = queryService.fuzzyQueryEntity(queryParam);
 		request.setAttribute("pageBean", queryParam.getPage());
 		request.setAttribute("queryPath", "entities");
-		request.setAttribute("queryType", "entity");
 		request.setAttribute("queryPara", paramName + ":" + decodeQ);
 		renderResponse(request, response, resultMap, queryParam);
 	}
@@ -180,6 +180,7 @@ public class QueryController extends BaseController {
 		String decodeQ = WhoisUtil.toChineseUrl(name);
 		String punyQ = IDN.toASCII(decodeQ);	
 		request.setAttribute("queryPara", decodeQ);
+		request.setAttribute("queryType", "nameserver");
 		if (!ValidateUtils.verifyNameServer(punyQ)) {
 			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);	
 		} else {
@@ -190,7 +191,6 @@ public class QueryController extends BaseController {
 			setMaxRecordsForFuzzyQ(queryParam);
 			resultMap = queryService.fuzzyQueryNameServer(queryParam);
 		}
-		request.setAttribute("queryType", "nameserver");
 		renderResponse(request, response, resultMap, queryParam);
 	}
 
@@ -205,6 +205,7 @@ public class QueryController extends BaseController {
 		String punyNsName = IDN.toASCII(WhoisUtil.toChineseUrl(nsName));
 		Map<String, Object> resultMap = null;
 		QueryParam queryParam = super.praseQueryParams(request);
+		request.setAttribute("queryType", "nameserver");
 		if (!ValidateUtils.verifyNameServer(punyNsName)) {
 			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 		} else {
@@ -213,7 +214,6 @@ public class QueryController extends BaseController {
 			resultMap = queryService.query(queryParam);
 			request.setAttribute("queryPara", IDN.toUnicode(punyNsName));
 		}
-		request.setAttribute("queryType", "nameserver");
 		renderResponse(request, response, resultMap, queryParam);
 	}
 
@@ -287,6 +287,8 @@ public class QueryController extends BaseController {
 		Map<String, Object> resultMap = null;
 		IpQueryParam queryParam = super.praseIpQueryParams(request);
 		String strInfo = ip;
+		request.setAttribute("queryPara", ip);
+		request.setAttribute("queryType", "ip");
 		if (!ValidateUtils.verifyIP(strInfo, ipLength)) {
 			super.renderResponseError400(request, response);
 			return;
@@ -295,8 +297,6 @@ public class QueryController extends BaseController {
 		queryParam.setIpInfo(strInfo);
 		queryParam.setIpLength(Integer.parseInt(ipLength));
 		resultMap = queryService.queryIP(queryParam);
-		request.setAttribute("queryPara", ip);
-		request.setAttribute("queryType", "ip");
 		viewResolver.writeResponse(queryParam.getFormat(), queryParam.getQueryType(),
 				request, response, resultMap);
 	}
