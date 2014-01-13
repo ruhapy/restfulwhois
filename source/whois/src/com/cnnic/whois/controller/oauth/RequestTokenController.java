@@ -39,14 +39,14 @@ public class RequestTokenController {
 	@Autowired
 	private OAuthProvider oauthProvider;
 	
-	@PostConstruct
-	public void init() throws ServletException {
-      try{
-    	  oauthProvider.loadConsumers();
-      }catch(IOException e){
-          throw new ServletException(e.getMessage());
-      }
-	}
+//	@PostConstruct
+//	public void init() throws ServletException {
+//      try{
+//    	  oauthProvider.loadConsumers();
+//      }catch(IOException e){
+//          throw new ServletException(e.getMessage());
+//      }
+//	}
     
     @RequestMapping(value = "/request_token")
 	public void request_token(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception{

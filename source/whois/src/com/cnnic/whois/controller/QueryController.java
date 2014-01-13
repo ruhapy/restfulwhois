@@ -227,6 +227,7 @@ public class QueryController extends BaseController {
 		queryParam.setQ(autnum);
 		Map<String, Object> resultMap = queryService.queryAS(queryParam);
 		request.setAttribute("queryType", "autnum");
+		request.setAttribute("queryPara", autnum);
 		renderResponse(request, response, resultMap, queryParam);
 	}
 
