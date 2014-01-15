@@ -22,5 +22,5 @@ public interface ResponseWriter {
 			String role) 
 					throws IOException, ServletException;
 	
-	Map<String, Object> getMapField(QueryType queryType, Map<String, Object> map);
+	Map<String, Object> getMapKey(QueryType queryType, Map<String, Object> map);
 }

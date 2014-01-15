@@ -71,4 +71,9 @@ public class SearchNsQueryDao extends AbstractSearchQueryDao {
 	public boolean supportType(QueryType queryType) {
 		return QueryType.SEARCHNS.equals(queryType);
 	}
+	
+	@Override
+	public String getMapKey() {
+		return "nameserverSearchResults";
+	}
 }

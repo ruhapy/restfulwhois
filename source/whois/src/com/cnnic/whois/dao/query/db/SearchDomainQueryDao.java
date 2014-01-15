@@ -2,6 +2,7 @@ package com.cnnic.whois.dao.query.db;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Repository;
@@ -12,6 +13,7 @@ import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.bean.index.Index;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.index.SearchResult;
+import com.cnnic.whois.util.PermissionCache;
 
 @Repository("db.searchDomainQueryDao")
 public class SearchDomainQueryDao extends AbstractSearchQueryDao {
@@ -57,5 +59,10 @@ public class SearchDomainQueryDao extends AbstractSearchQueryDao {
 	@Override
 	public boolean supportType(QueryType queryType) {
 		return QueryType.SEARCHDOMAIN.equals(queryType);
+	}
+	
+	@Override
+	public String getMapKey() {
+		return "domainSearchResults";
 	}
 }

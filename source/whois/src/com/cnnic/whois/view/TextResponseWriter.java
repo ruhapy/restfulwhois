@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Component;
 
+import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.WhoisUtil;
 
@@ -178,5 +179,9 @@ public class TextResponseWriter extends AbstractResponseWriter {
 			}
 		}
 		return sb.toString();
+	}
+	
+	public Map<String, Object> getMultiMapKey(QueryType queryType, Map<String, Object> map) {
+		return map;
 	}
 }

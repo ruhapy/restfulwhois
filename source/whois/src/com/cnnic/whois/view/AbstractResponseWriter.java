@@ -2,6 +2,7 @@ package com.cnnic.whois.view;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -26,7 +27,12 @@ public abstract class AbstractResponseWriter implements ResponseWriter {
 	}
 	
 	@Override
-	public Map<String, Object> getMapField(QueryType queryType, Map<String, Object> map) {
+	public Map<String, Object> getMapKey(QueryType queryType, Map<String, Object> map) {
+		Map<String, Object> result = getMultiMapKey(queryType, map);
+		return result;
+	}
+	
+	protected Map<String, Object> getMultiMapKey(QueryType queryType, Map<String, Object> map) {
 		if(null != queryType){
 			Iterator<String> iterr = map.keySet().iterator();
 			String multiKey = null;
@@ -38,15 +44,9 @@ public abstract class AbstractResponseWriter implements ResponseWriter {
 			}
 			if( null != multiKey){
 				Object jsonObj = map.get(multiKey);
+				String mapKey = dbQueryExecutor.getMapKey(queryType);
 				map.remove(multiKey);
-				if(queryType.equals(QueryType.SEARCHDOMAIN))
-					map.put("domainSearchResults", jsonObj);
-				else if(queryType.equals(QueryType.SEARCHENTITY))
-					map.put("entitySearchResults", jsonObj);
-				else if(queryType.equals(QueryType.SEARCHNS))
-					map.put("nameserverSearchResults", jsonObj);
-				else
-					map.put(multiKey.substring(WhoisUtil.MULTIPRX.length()), jsonObj);
+				map.put(mapKey, jsonObj);
 			}
 		} 
 		return map;

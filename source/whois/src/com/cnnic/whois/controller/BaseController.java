@@ -105,15 +105,17 @@ public class BaseController {
 		}
 		if(isWebBrowser(request)){
 			return FormatType.HTML;
-		}
-		String acceptHeader = request.getHeader("Accept");
-		if (StringUtils.isNotBlank(acceptHeader) && acceptHeader.contains("html")) {
-			format = FormatType.HTML.getName();
-		}
-		if (StringUtils.isBlank(acceptHeader)) {
-			format = "application/json";
-		}
-		return FormatType.getFormatType(format);
+		} else
+			return FormatType.TEXTPLAIN;
+		
+//		String acceptHeader = request.getHeader("Accept");
+//		if (StringUtils.isNotBlank(acceptHeader) && acceptHeader.contains("html")) {
+//			format = FormatType.HTML.getName();
+//		}
+//		if (StringUtils.isBlank(acceptHeader)) {
+//			format = "application/json";
+//		}
+//		return FormatType.getFormatType(format);
 	}
 	
 	public static QueryType getQueryType(HttpServletRequest request) {
