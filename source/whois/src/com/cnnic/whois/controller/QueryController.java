@@ -53,22 +53,15 @@ public class QueryController extends BaseController {
 			throws QueryException, RedirectExecption, IOException,
 			ServletException {
 		name = StringUtils.trim(name);
-		name = super.getNormalization(name);
 		String punyDomainName = name;
 		Map<String, Object> resultMap = null;
 		DomainQueryParam domainQueryParam = super
 				.praseDomainQueryParams(request);
 		request.setAttribute("queryType", "domain");
-		try {
-			punyDomainName = IDN.toASCII(name);// long lable exception
-		} catch (Exception e) {// TODO:delete ,exception filter
-			super.renderResponseError400(request, response);
-			return;
-		}
 		request.setAttribute("queryPara", IDN.toUnicode(punyDomainName));
-		if (!ValidateUtils.validateDomainName(punyDomainName)) {
-			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
-		} else {
+//		if (!ValidateUtils.validateDomainName(punyDomainName)) {
+//			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
+//		} else {
 			domainQueryParam.setQueryType(QueryType.SEARCHDOMAIN);
 			domainQueryParam.setQ(name);
 			domainQueryParam.setDomainPuny(punyDomainName);
@@ -76,7 +69,7 @@ public class QueryController extends BaseController {
 			resultMap = queryService.query(domainQueryParam);
 			request.setAttribute("pageBean", domainQueryParam.getPage());
 			request.setAttribute("queryPath", "domains");
-		}
+//		}
 		renderResponse(request, response, resultMap, domainQueryParam);
 	}
 
