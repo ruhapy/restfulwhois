@@ -2,7 +2,6 @@ package com.cnnic.whois.view;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -12,8 +11,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import org.springframework.stereotype.Component;
 
+import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.WhoisUtil;
 
@@ -71,7 +74,7 @@ public class TextResponseWriter extends AbstractResponseWriter {
 				map.remove(multiKey);
 				map.put(multiKey.substring(WhoisUtil.MULTIPRX.length()), jsonObj);
 			}
-			
+							
 			response.setHeader("Content-Type", FormatType.TEXTPLAIN.getName());
 			out.write(getPresentationFromMap(map, 0));
 	}
@@ -114,69 +117,150 @@ public class TextResponseWriter extends AbstractResponseWriter {
 
 		while (iterr.hasNext()) {
 			String key = (String) iterr.next();
-			for(int i = 0; i < iMode; i++){
-				sb.append(WhoisUtil.BLANKSPACE);
+			if (key.equals("rdapConformance")){
+				continue;
+			}
+			if (key.equals("vcardArray")){
+				sb.append(getPresentationFromVcard(map.get(key), iMode));
+				continue;
 			}
 			
 			if (map.get(key) instanceof Map) {
-				sb.append(delTrim(key) + ":\n");
+				for(int i = 0; i < iMode; i++){
+					sb.append(WhoisUtil.BLANKSPACE);
+				}
+				sb.append(delTrim(key) + " : \n");
 				sb.append(getPresentationFromMap(
 						(Map<String, Object>) map.get(key), iMode + 1));	
 			}else if (map.get(key) instanceof Object[]) {
-				sb.append(delTrim(key) + ":\n");
 				for (Object obj : (Object[]) map.get(key)) {
 					if (obj instanceof Map) {
+						for(int i = 0; i < iMode; i++){
+							sb.append(WhoisUtil.BLANKSPACE);
+						}
+						sb.append(delTrim(key) + " : \n");
 						sb.append(getPresentationFromMap(
 								(Map<String, Object>) obj, iMode + 1));
-					}else{
+					} else if (obj instanceof List) {
+						if (obj instanceof JSONArray){
+							sb.append(parseJSONArray(map.get(key), key, iMode + 1));
+						}
+					} else {
 						if(obj != null && !obj.toString().trim().equals("")){
 							for(int i = 0; i < iMode; i++){
 								sb.append(WhoisUtil.BLANKSPACE);
 							}
-							if (key.equals("vcardArray")){
-								sb.append(getPresentationFromVcard(obj));								
-							}else {
-								sb.append(obj + "\n");
-							}	
+							sb.append(delTrim(key) + " : " + obj + "\n");
 						}
 					}
 				}
-			}else {
-				sb.append(delTrim(key) + ":");
-				sb.append(map.get(key) + "\n");
+			} else if (map.get(key) instanceof List) {
+				if (map.get(key) instanceof JSONArray){
+					sb.append(parseJSONArray(map.get(key), key, iMode));
+				}			
+			}else {	
+				if(map.get(key) != null && !map.get(key).toString().trim().equals("")){
+					for(int i = 0; i < iMode; i++){
+						sb.append(WhoisUtil.BLANKSPACE);
+					}
+					sb.append(delTrim(key) + " : " + map.get(key) + "\n");
+				}	
 			}
 		}
 		return sb.toString();
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected String getPresentationFromVcard(Object VcardData) {
-		StringBuffer sb = new StringBuffer();
+	protected String getPresentationFromVcard(Object VcardData, int iMode) {
+		StringBuffer sb = new StringBuffer();		
+		Object[] VcardValueArray;
 		
-		if (!(VcardData instanceof ArrayList)){
-			sb.append(WhoisUtil.BLANKSPACE);
-			sb.append(VcardData + "\n");
-		}else{									
-			List<List<Object>> listVcard = new ArrayList<List<Object>>();
-			listVcard = (ArrayList<List<Object>>)VcardData;
-			for (int m = 0; m < listVcard.size(); m++){
-				List<Object> listElement;
-				listElement = listVcard.get(m);
-				if (listElement.get(0).equals("adr")){
-					List<List<Object>> listAdr = new ArrayList<List<Object>>();
-					listAdr = (ArrayList<List<Object>>)listElement.get(3);
-					sb.append(WhoisUtil.BLANKSPACE + WhoisUtil.BLANKSPACE);
-					sb.append("adr:"+listAdr.get(0));
-					for (int n = 1; n < listAdr.size(); n++){
-						sb.append("," + listAdr.get(n));
+		if (VcardData instanceof JSONArray){
+			VcardValueArray = ((JSONArray) VcardData).toArray();
+	    } else {
+		    VcardValueArray = (Object [])VcardData;
+	    }
+		
+		List<Object> VcardValueList = (List<Object>)VcardValueArray[1];
+	    for (int i = 0; i < VcardValueList.size(); i++){
+	    	List<Object> vcard = (List<Object>)VcardValueList.get(i);
+		    for (int j = 0; j < vcard.size(); j++) {
+				String keyName = (String) vcard.get(j);				
+				if (vcard.get(j).equals("adr")) {
+					Object value = vcard.get(3);
+					List<String> valueList = (List<String>)value; 	
+					for (int k = 1; k < valueList.size(); k++){
+						if(valueList.get(k) != null && !valueList.get(k).toString().trim().equals("")){
+							for(int l = 0; l < iMode; l++){
+								sb.append(WhoisUtil.BLANKSPACE);
+							}
+							sb.append(keyName + " : " + valueList.get(k) + "\n");
+					    }
 					}
-					sb.append("\n");
-					continue;
+					continue;				
+				} else if (vcard.get(j).equals("tel")) {
+					if (((String) vcard.get(j + 1)).indexOf("work") != -1) {
+						keyName = "office";
+					} else if (((String) vcard.get(j + 1)).indexOf("fax") != -1) {
+						keyName = "fax";
+					} else if (((String) vcard.get(j + 1)).indexOf("cell") != -1) {
+						keyName = "moblie";
+					} else {
+						keyName = "phonesId";
+					}
 				}
-				sb.append(WhoisUtil.BLANKSPACE + WhoisUtil.BLANKSPACE);
-				sb.append(listElement.get(0) + ":" + listElement.get(3) +"\n");
+				if(vcard.get(j + 3) != null && !vcard.get(j + 3).toString().trim().equals("")){
+					for(int k = 0; k < iMode; k++){
+						sb.append(WhoisUtil.BLANKSPACE);
+					}
+					sb.append(keyName + " : " + vcard.get(j + 3) + "\n");
+			    }	
+			}
+	    }	    
+	    return sb.toString();		
+	}
+	
+	protected StringBuffer parseJSONObject(Object object, int iMode){
+		StringBuffer sb = new StringBuffer();		
+		JSONObject jsonObject = (JSONObject) object;				
+		Map<String, Object> map = new LinkedHashMap<String, Object>(); 
+		
+		Iterator<?> iterator = jsonObject.keys();   
+        while(iterator.hasNext()){ 
+            String key = (String) iterator.next().toString();                         
+            Object obj = jsonObject.get(key); 
+            map.put(key, obj);
+        }
+        sb.append(getPresentationFromMap(map, iMode));
+		return sb;
+	}
+	
+	protected StringBuffer parseJSONArray(Object object, String key, int iMode){
+		StringBuffer sb = new StringBuffer();		
+		JSONArray jsonArray = (JSONArray) object;
+	
+		if (jsonArray.get(0) instanceof JSONObject){
+			for(int i = 0; i < iMode; i++){
+				sb.append(WhoisUtil.BLANKSPACE);
+			}
+			sb.append(delTrim(key) + " : \n");
+			for (int i = 0; i < jsonArray.size(); i++) {
+				sb.append(parseJSONObject(jsonArray.get(i), iMode + 1)); 
+			}
+		} else {
+			for (int i = 0; i < jsonArray.size(); i++) {
+				if(jsonArray.get(i) != null && !jsonArray.get(i).toString().trim().equals("")){
+					for(int j = 0; j < iMode; j++){
+						sb.append(WhoisUtil.BLANKSPACE);
+					}
+					sb.append(delTrim(key) + " : " + jsonArray.get(i) + "\n");			
+				}	
 			}
 		}
-		return sb.toString();
+        return sb;
+	}
+	
+	public Map<String, Object> getMultiMapKey(QueryType queryType, Map<String, Object> map) {
+		return map;
 	}
 }

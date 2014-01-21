@@ -60,4 +60,9 @@ public class SearchEntityQueryDao extends AbstractSearchQueryDao {
 	public boolean supportType(QueryType queryType) {
 		return QueryType.SEARCHENTITY.equals(queryType);
 	}
+	
+	@Override
+	public String getMapKey() {
+		return "entitySearchResults";
+	}
 }

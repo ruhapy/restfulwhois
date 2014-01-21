@@ -228,6 +228,10 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 		throw new UnsupportedOperationException();
 	}
 	
+	public String getMapKey() {
+		throw new UnsupportedOperationException();
+	}
+	
 	protected Map<String, Object> formatValue(Map<String, Object> map){
 		return map;
 	}
