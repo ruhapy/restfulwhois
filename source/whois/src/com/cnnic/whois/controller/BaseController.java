@@ -103,15 +103,16 @@ public class BaseController {
 		if (StringUtils.isNotBlank(format)) {
 			return FormatType.getFormatType(format);
 		}
-		if(isWebBrowser(request)){
+		if(isWebBrowser(request)){	
 			return FormatType.HTML;
-		}
+		} 		
 		String acceptHeader = request.getHeader("Accept");
-		if (StringUtils.isNotBlank(acceptHeader) && acceptHeader.contains("html")) {
+		if (StringUtils.isNotBlank(acceptHeader) && acceptHeader.contains("text")) {
+			format = FormatType.TEXTPLAIN.getName();
+		} else if (StringUtils.isNotBlank(acceptHeader) && acceptHeader.contains("html")) {
 			format = FormatType.HTML.getName();
-		}
-		if (StringUtils.isBlank(acceptHeader)) {
-			format = "application/json";
+		}else if (StringUtils.isBlank(acceptHeader)) {
+			format = FormatType.JSON.getName();
 		}
 		return FormatType.getFormatType(format);
 	}

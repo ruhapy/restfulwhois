@@ -55,6 +55,15 @@ public class DbQueryExecutor implements QueryExecutor {
 		}
 		return new ArrayList<String>();
 	}
+	
+	public String getMapKey(QueryType queryType) {
+		for (AbstractDbQueryDao queryDao : dbQueryDaos) {
+			if (queryDao.supportType(queryType)) {
+				return queryDao.getMapKey();
+			}
+		}
+		return "";
+	}
 
 	public Map<String, Object> formatValue(QueryType queryType,
 			Map<String, Object> map) {

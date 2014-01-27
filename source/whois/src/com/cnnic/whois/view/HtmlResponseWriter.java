@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Component;
 
+import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.util.DataFormat;
 import com.cnnic.whois.util.WhoisUtil;
 
@@ -112,5 +113,9 @@ public class HtmlResponseWriter extends AbstractResponseWriter {
 	@Override
 	public boolean support(FormatType formatType) {
 		return null != formatType && formatType.isHtmlFormat();
+	}
+	
+	public Map<String, Object> getMultiMapKey(QueryType queryType, Map<String, Object> map) {
+		return map;
 	}
 }

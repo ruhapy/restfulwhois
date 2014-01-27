@@ -43,7 +43,7 @@ public class QueryController extends BaseController {
 
 	@RequestMapping(value = {"/",""}, method = RequestMethod.GET)
 	public String index() {
-		return "/dot/index";
+		return "/doc/index";
 	}
 			
 	@RequestMapping(value = "/domains", method = RequestMethod.GET)

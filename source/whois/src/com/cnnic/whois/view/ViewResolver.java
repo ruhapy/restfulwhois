@@ -54,12 +54,8 @@ public class ViewResolver {
 		Map<String, Object> result = new LinkedHashMap<String, Object>();
 		for (ResponseWriter writer : responseWriters) {
 			if (writer.support(formatType)) {
-				if (formatType.isJsonFormat() || formatType.isXmlFormat()) {
-					result = writer.getMapField(queryType, map);
-				    writer.writeResponse(request, response, result);
-				} else {
-					writer.writeResponse(request, response, map);
-				}
+				result = writer.getMapKey(queryType, map);
+			    writer.writeResponse(request, response, result);
 			}
 		}
 	}
