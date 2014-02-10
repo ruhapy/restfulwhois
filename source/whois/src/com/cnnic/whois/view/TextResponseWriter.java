@@ -52,12 +52,7 @@ public class TextResponseWriter extends AbstractResponseWriter {
 					errorCode = map.get("errorCode").toString();
 				if (map.containsKey("Error Code"))
 					errorCode = map.get("Error Code").toString();
-				if (errorCode.equals(WhoisUtil.ERRORCODE)){
-					response.setStatus(404);
-				}
-				if (errorCode.equals(WhoisUtil.COMMENDRRORCODE)){
-					response.setStatus(400);
-				}
+				response.setStatus(Integer.valueOf(errorCode));
 			}
 			
 			//multi-responses

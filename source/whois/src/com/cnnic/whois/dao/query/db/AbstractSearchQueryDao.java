@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cnnic.whois.bean.QueryJoinType;
@@ -83,10 +84,10 @@ public abstract class AbstractSearchQueryDao extends AbstractDbQueryDao{
 				return null;
 			}
 			Map<String, Object> mapInfo = new LinkedHashMap<String, Object>();
-			if (list.size() > 1) {
-				mapInfo.put(keyName, list.toArray());
-			} else {
+			if (StringUtils.isBlank(keyName) && list.size() == 1) {//not multi search: entity query
 				mapInfo = list.get(0);
+			}else{//multi search
+				mapInfo.put(keyName, list.toArray());
 			}
 			return mapInfo;
 	}

@@ -47,14 +47,8 @@ public class JsonResponseWriter extends AbstractResponseWriter {
 				errorCode = map.get("Error_Code").toString();
 			if (map.containsKey("Error Code"))
 				errorCode = map.get("Error Code").toString();
-			if (errorCode.equals(WhoisUtil.ERRORCODE)){
-				response.setStatus(404);
-			}
-			if (errorCode.equals(WhoisUtil.COMMENDRRORCODE)){
-				response.setStatus(400);
-			}
+			response.setStatus(Integer.valueOf(errorCode));
 		}
-		
 		response.setHeader("Content-Type", FormatType.JSON.getName());
 		out.print(DataFormat.getJsonObject(map));
 	}

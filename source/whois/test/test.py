@@ -41,7 +41,7 @@ def send(testData):
 def getTestData(line):
     cols = line.split(",")
     print "path:" + cols[0] + ",accept:" + cols[1] + ",param:" + cols[2] + ",status:" + cols[3]
-    return TestData("/.well-known/rdap"+cols[0], cols[1], cols[2], cols[3], cols[4])
+    return TestData(cols[0], cols[1], cols[2], cols[3], cols[4])
 def sendAll(filePath):
     f = file(filePath)
     f.readline()  # skip title

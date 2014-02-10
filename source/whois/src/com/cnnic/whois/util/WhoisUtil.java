@@ -1,6 +1,11 @@
 package com.cnnic.whois.util;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.context.ContextLoader;
 
 import com.cnnic.whois.execption.QueryException;
@@ -23,7 +29,7 @@ public class WhoisUtil {
 	public static final String QUERY_TYPE = "queryType";
 	public static final String QUERY_JOIN_TYPE = "queryJoinType";
 	public static final String BLANKSPACE = "    ";
-	
+
 	public static final String FUZZY_DOMAINS = "domains";
 	public static final String FUZZY_NAMESERVER = "nameservers";
 	public static final String FUZZY_ENTITIES = "entities";
@@ -105,7 +111,7 @@ public class WhoisUtil {
 	public static final String SELECT_JOIN_LIST_SECUREDNS = "select if(Zone_Signed=0,'false','true') as Zone_Signed, if(Delegation_Signed=0,'false','true') as Delegation_Signed, Max_SigLife, secureDNS.secureDNSID, Handle, m2m_secureDNS.SecureDNSID, type from secureDNS join m2m_secureDNS on m2m_secureDNS.secureDNSID=secureDNS.secureDNSID and  m2m_secureDNS.Handle=";
 	public static final String SELECT_JOIN_LIST_DSDATA = "select * from dsData join m2m_dsData on m2m_dsData.dsDataID=dsData.dsDataID and  m2m_dsData.Handle=";
 	public static final String SELECT_JOIN_LIST_KEYDATA = "select * from keyData join m2m_keyData on m2m_keyData.keyDataID=keyData.keyDataID and  m2m_keyData.Handle=";
-	
+
 	public static final String SELECT_JOIN_LIST_REGISTRAR = "select * from registrar join m2m_registrar on m2m_registrar.registrarHandle=registrar.Handle and  m2m_registrar.Handle=";
 	public static final String SELECT_JOIN_LIST_JOINNAMESERVER = "select * from nameserver join m2m_nameserver on m2m_nameserver.nameserverHandle=nameserver.Handle and m2m_nameserver.Handle=";
 	public static final String SELECT_JOIN_LIST_VARIANTS = "select * from variants join m2m_variants on m2m_variants.variantsId=variants.variantsId and m2m_variants.Handle=";
@@ -122,7 +128,7 @@ public class WhoisUtil {
 	public static final String SELECT_LIST_NOTICES = "select * from notices where noticesId=";
 	public static final String SELECT_LIST_JOIN_REGISTRAR = "select * from registrar where Handle=";
 	public static final String SELECT_LIST_REGISTRAR = "select * from registrar where Entity_Names=";
-	
+
 	public static final String SELECT_LIST_REMARKS = "select * from remarks where remarksId=";
 	public static final String SELECT_LIST_EVENTS = "select * from events where eventsId=";
 	public static final String SELECT_HELP = "select * from notices where noticesId=";
@@ -131,26 +137,29 @@ public class WhoisUtil {
 	public static final String JOINFILEDPRX = "$join$";
 	public static final String EXTENDPRX = "$x$";
 	public static final String MULTIPRX = "$mul$";
-	
+
 	public static final String MULTIPRXIP = "$mul$" + "IP";
 	public static final String MULTIPRXDMOAIN = "$mul$" + DMOAIN;
 	public static final String MULTIPRXENTITY = "$mul$" + ENTITY;
 	public static final String MULTIPRXAUTNUM = "$mul$" + AUTNUM;
-	public static final String MULTIPRXNAMESERVER = "$mul$" +"nameServer";
+	public static final String MULTIPRXNAMESERVER = "$mul$" + "nameServer";
 	public static final String MULTIPRXLINK = "$mul$" + LINK;
 	public static final String MULTIPRXPHONES = "$mul$" + PHONES;
-	public static final String MULTIPRXPOSTALASSDESS = "$mul$" + "postalAddress";
+	public static final String MULTIPRXPOSTALASSDESS = "$mul$"
+			+ "postalAddress";
 	public static final String MULTIPRXVARIANTS = "$mul$" + VARIANTS;
-	public static final String MULTIPRXDELEGATIONKEY = "$mul$" +"delegationKeys";
+	public static final String MULTIPRXDELEGATIONKEY = "$mul$"
+			+ "delegationKeys";
 	public static final String MULTIPRXNOTICES = "$mul$" + "notices";
 	public static final String MULTIPRXREGISTRAR = "$mul$" + "registrar";
 	public static final String MULTIPRXREMARKS = "$mul$" + REMARKS;
 	public static final String MULTIPRXEVENTS = "$mul$" + VARIANTS;
-	
+
 	public static final String JOINENTITESFILED = JOINFILEDPRX + "entities";
 	public static final String JOINLINKFILED = JOINFILEDPRX + "links";
 	public static final String JOINPHONFILED = JOINFILEDPRX + "phones";
-	public static final String JOINPOSTATLADDRESSFILED = JOINFILEDPRX + "postalAddress";
+	public static final String JOINPOSTATLADDRESSFILED = JOINFILEDPRX
+			+ "postalAddress";
 	public static final String JOINVARIANTS = JOINFILEDPRX + "variants";
 	public static final String JOINNAMESERVER = JOINFILEDPRX + "nameServer";
 	public static final String JOINNAREGISTRAR = JOINFILEDPRX + "registrar";
@@ -161,13 +170,17 @@ public class WhoisUtil {
 	public static final String JOINSECUREDNS = JOINFILEDPRX + "secureDNS";
 	public static final String JOINDSDATA = JOINFILEDPRX + "dsData";
 	public static final String JOINKEYDATA = JOINFILEDPRX + "keyData";
-	public static final String JOINDALEGATIONKEYS = JOINFILEDPRX + "delegationKeys";
-//	public static final String[] JOIN_FIELDS_WITH_CAMEL_STYLE = new String[]{"postalAddress","nameServer","publicIds"
-//		,"secureDNS","dsData","keyData","delegationKeys"};
-	public static final List<String> JOIN_FIELDS_WITH_CAMEL_STYLE = Arrays.asList(new String[]{"postalAddress","nameServer","publicIds"
-			,"secureDNS","dsData","keyData","delegationKeys","ipAddresses","rdapConformance","vcardArray"
-			,"asEventActor"});
-	
+	public static final String JOINDALEGATIONKEYS = JOINFILEDPRX
+			+ "delegationKeys";
+	// public static final String[] JOIN_FIELDS_WITH_CAMEL_STYLE = new
+	// String[]{"postalAddress","nameServer","publicIds"
+	// ,"secureDNS","dsData","keyData","delegationKeys"};
+	public static final List<String> JOIN_FIELDS_WITH_CAMEL_STYLE = Arrays
+			.asList(new String[] { "postalAddress", "nameServer", "publicIds",
+					"secureDNS", "dsData", "keyData", "delegationKeys",
+					"ipAddresses", "rdapConformance", "vcardArray",
+					"asEventActor" });
+
 	public static final String VALUEARRAYPRX = "'~'";
 	public static final String HANDLE = "Handle";
 	public static final String LINEBREAK = "<br/>";
@@ -176,43 +189,51 @@ public class WhoisUtil {
 	public static final String IPPREFIX = "ipAddresses";
 	public static final String IPV4PREFIX = "v4";
 	public static final String IPV6PREFIX = "v6";
-	
+
 	public static final String SEARCHDOMAIN = "domains";
 
-	public static String[] IPKeyFileds = { JOINNANOTICES, "Handle", "StartHighAddress",
-			"StartLowAddress", "EndLowAddress", "EndHighAddress", "Lang",
-			"IP_Version", "Name", //ARRAYFILEDPRX + "Description",
+	public static String[] IPKeyFileds = { JOINNANOTICES, "Handle",
+			"StartHighAddress", "StartLowAddress", "EndLowAddress",
+			"EndHighAddress", "Lang",
+			"IP_Version",
+			"Name", // ARRAYFILEDPRX + "Description",
 			"Type", "Country", "Parent_Handle", JOINREMARKS,
 			ARRAYFILEDPRX + "Status", JOINEVENTS, JOINENTITESFILED,
 			JOINLINKFILED };
 
 	public static String[] DNREntityKeyFileds = { "Handle",
 			ARRAYFILEDPRX + "Entity_Names", "Lang", JOINNANOTICES,
-			ARRAYFILEDPRX + "Status", ARRAYFILEDPRX + "Roles", JOINPOSTATLADDRESSFILED,
-			ARRAYFILEDPRX + "Emails", JOINPHONFILED, JOINREMARKS,
-			JOINLINKFILED, "Port43", JOINEVENTS, JOINNAREGISTRAR,JOINPUBLICIDS , "Bday", "Anniversary", "Gender", "Kind",
-			"Language_Tag_1", "Pref1", "Language_Tag_2", "Pref2", "Org", "Title", "Role", "Geo", "Key", "Tz", "Url"};
+			ARRAYFILEDPRX + "Status", ARRAYFILEDPRX + "Roles",
+			JOINPOSTATLADDRESSFILED, ARRAYFILEDPRX + "Emails", JOINPHONFILED,
+			JOINREMARKS, JOINLINKFILED, "Port43", JOINEVENTS, JOINNAREGISTRAR,
+			JOINPUBLICIDS, "Bday", "Anniversary", "Gender", "Kind",
+			"Language_Tag_1", "Pref1", "Language_Tag_2", "Pref2", "Org",
+			"Title", "Role", "Geo", "Key", "Tz", "Url" };
 
 	public static String[] RIREntityKeyFileds = { "Handle",
 			ARRAYFILEDPRX + "Entity_Names", "Lang", JOINNANOTICES,
 			ARRAYFILEDPRX + "Roles", JOINPOSTATLADDRESSFILED,
 			ARRAYFILEDPRX + "Emails", JOINPHONFILED, JOINREMARKS,
-			JOINLINKFILED, JOINEVENTS, JOINPUBLICIDS, "Bday", "Anniversary", "Gender", "Kind",
-			"Language_Tag_1", "Pref1", "Language_Tag_2", "Pref2", "Org", "Title", "Role", "Geo", "Key", "Tz", "Url"};
+			JOINLINKFILED, JOINEVENTS, JOINPUBLICIDS, "Bday", "Anniversary",
+			"Gender", "Kind", "Language_Tag_1", "Pref1", "Language_Tag_2",
+			"Pref2", "Org", "Title", "Role", "Geo", "Key", "Tz", "Url" };
 
 	public static String[] DNRDomainKeyFileds = { "Handle", "Ldh_Name",
 			"Unicode_Name", "Lang", JOINNANOTICES, JOINVARIANTS,
-			ARRAYFILEDPRX + "Status", JOINNAMESERVER, //JOINDALEGATIONKEYS,
+			ARRAYFILEDPRX + "Status",
+			JOINNAMESERVER, // JOINDALEGATIONKEYS,
 			"Port43", JOINEVENTS, JOINENTITESFILED, JOINNAREGISTRAR,
-			JOINLINKFILED, JOINREMARKS, JOINPUBLICIDS, JOINSECUREDNS};
+			JOINLINKFILED, JOINREMARKS, JOINPUBLICIDS, JOINSECUREDNS };
 
 	public static String[] RIRDomainKeyFileds = { "Handle", "Ldh_Name", "Lang",
-			JOINNANOTICES, JOINNAMESERVER, //JOINDALEGATIONKEYS, 
-			JOINREMARKS, JOINLINKFILED, JOINEVENTS, JOINENTITESFILED, JOINPUBLICIDS, JOINSECUREDNS};
+			JOINNANOTICES,
+			JOINNAMESERVER, // JOINDALEGATIONKEYS,
+			JOINREMARKS, JOINLINKFILED, JOINEVENTS, JOINENTITESFILED,
+			JOINPUBLICIDS, JOINSECUREDNS };
 
 	public static String[] ASKeyFileds = { "Handle", "Start_Autnum",
 			"End_Autnum", "Name", "Lang", JOINNANOTICES,
-			//ARRAYFILEDPRX + "Description", 
+			// ARRAYFILEDPRX + "Description",
 			"Type", ARRAYFILEDPRX + "Status", "Country", JOINREMARKS,
 			JOINLINKFILED, JOINEVENTS, JOINENTITESFILED };
 
@@ -227,9 +248,9 @@ public class WhoisUtil {
 
 	public static String[] variantsKeyFileds = { ARRAYFILEDPRX + "Relation",
 			ARRAYFILEDPRX + "Variant_Names", "variantsId", "IDNTable" };
-	
-	public static String[] ErrorMessageKeyFileds = { "Error_Code", "Title", "Lang",
-		ARRAYFILEDPRX + "Description", JOINNANOTICES};
+
+	public static String[] ErrorMessageKeyFileds = { "Error_Code", "Title",
+			"Lang", ARRAYFILEDPRX + "Description", JOINNANOTICES };
 
 	public static String[] linkKeyFileds = { "Value", "Rel", "Href", "linkId",
 			"$array$hreflang", "$array$title", "media", "type" };
@@ -238,61 +259,70 @@ public class WhoisUtil {
 			"Street2", "City", "SP", "Postal_Code", "Country",
 			"postalAddressId" };
 
-	public static String[] registrarKeyFileds = { "Handle",
-			"Entity_Names", ARRAYFILEDPRX + "Status", "Roles",
-			JOINPOSTATLADDRESSFILED, ARRAYFILEDPRX + "Emails", JOINPHONFILED,
-			JOINREMARKS, JOINLINKFILED, "Port43", JOINEVENTS };
+	public static String[] registrarKeyFileds = { "Handle", "Entity_Names",
+			ARRAYFILEDPRX + "Status", "Roles", JOINPOSTATLADDRESSFILED,
+			ARRAYFILEDPRX + "Emails", JOINPHONFILED, JOINREMARKS,
+			JOINLINKFILED, "Port43", JOINEVENTS };
 
 	public static String[] noticesKeyFileds = { "Title",
 			ARRAYFILEDPRX + "Description", "noticesId", JOINLINKFILED };
-	
-	public static String[] publicIdsKeyFileds = { "type", "identifier"};
-	
-	public static String[] secureDNSKeyFileds = {"Zone_Signed", "Delegation_Signed", "Max_SigLife", "SecureDNSID", JOINDSDATA, JOINKEYDATA};
-	
-	public static String[] dsDataKeyFileds = { "Key_Tag", "Algorithm", "Digest", "Digest_Type", "DsDataID", JOINEVENTS};
-	
-	public static String[] keyDataKeyFileds = { "Flags", "Protocol", "Public_Key", "Algorithm", "KeyDataID", JOINEVENTS};
+
+	public static String[] publicIdsKeyFileds = { "type", "identifier" };
+
+	public static String[] secureDNSKeyFileds = { "Zone_Signed",
+			"Delegation_Signed", "Max_SigLife", "SecureDNSID", JOINDSDATA,
+			JOINKEYDATA };
+
+	public static String[] dsDataKeyFileds = { "Key_Tag", "Algorithm",
+			"Digest", "Digest_Type", "DsDataID", JOINEVENTS };
+
+	public static String[] keyDataKeyFileds = { "Flags", "Protocol",
+			"Public_Key", "Algorithm", "KeyDataID", JOINEVENTS };
 
 	public static String[] remarksKeyFileds = { "Title",
 			ARRAYFILEDPRX + "Description", "remarksId", JOINLINKFILED };
 
 	public static String[] eventsKeyFileds = { "Event_Action", "Event_Actor",
 			"Event_Date", "eventsId" };
-	
+
 	public static String[] helpKeyFileds = { JOINNANOTICES };
 
 	public static String[] queryTypes = { "autnum", "domain", "dsData",
-			"entity", "events", "help", "ip", "keyData", "links", "nameserver", "notices",
-			"phones", "postalAddress", "registrar", "remarks", "secureDNS", "variants",  };
+			"entity", "events", "help", "ip", "keyData", "links", "nameserver",
+			"notices", "phones", "postalAddress", "registrar", "remarks",
+			"secureDNS", "variants", };
 
-	public static String[] extendColumnTableTypes = { "autnum", "dnrdomain", 
-		"dnrentity", "dsData", "errormessage", "events", "help", "ip", "keyData", "link",
-			"nameserver", "notices", "phones", "postaladdress", "publicIds", "registrar",
-			"remarks", "rirdomain", "rirentity", "secureDNS", "variants"};
+	public static String[] extendColumnTableTypes = { "autnum", "dnrdomain",
+			"dnrentity", "dsData", "errormessage", "events", "help", "ip",
+			"keyData", "link", "nameserver", "notices", "phones",
+			"postaladdress", "publicIds", "registrar", "remarks", "rirdomain",
+			"rirentity", "secureDNS", "variants" };
 
-	public static String[][] keyFiledsSet = { ASKeyFileds, DNRDomainKeyFileds, DNREntityKeyFileds, 
-		dsDataKeyFileds, ErrorMessageKeyFileds, eventsKeyFileds, helpKeyFileds,
-			IPKeyFileds, keyDataKeyFileds, linkKeyFileds, nameServerKeyFileds, noticesKeyFileds,
-			phonesKeyFileds, postalAddressKeyFileds, publicIdsKeyFileds, registrarKeyFileds,
-			remarksKeyFileds, RIRDomainKeyFileds, RIREntityKeyFileds, secureDNSKeyFileds,
-			variantsKeyFileds};
+	public static String[][] keyFiledsSet = { ASKeyFileds, DNRDomainKeyFileds,
+			DNREntityKeyFileds, dsDataKeyFileds, ErrorMessageKeyFileds,
+			eventsKeyFileds, helpKeyFileds, IPKeyFileds, keyDataKeyFileds,
+			linkKeyFileds, nameServerKeyFileds, noticesKeyFileds,
+			phonesKeyFileds, postalAddressKeyFileds, publicIdsKeyFileds,
+			registrarKeyFileds, remarksKeyFileds, RIRDomainKeyFileds,
+			RIREntityKeyFileds, secureDNSKeyFileds, variantsKeyFileds };
+
+	public static final String UNPROCESSABLEERRORCODE = "422";
 
 	public static final String ERRORCODE = "404";
 	public static final String ERRORTITLE = "Error Message";
-	public static final String [] ERRORDESCRIPTION = {"NOT FOUND"};
+	public static final String[] ERRORDESCRIPTION = { "NOT FOUND" };
 
 	public static final String COMMENDRRORCODE = "400";
 	public static final String OMMENDERRORTITLE = "Error Message";
-	public static final String [] OMMENDERRORDESCRIPTION = {"BAD REQUEST"};
+	public static final String[] OMMENDERRORDESCRIPTION = { "BAD REQUEST" };
 
 	public static final String UNCOMMENDRRORCODE = "4145";
 	public static final String UNOMMENDERRORTITLE = "Error Message";
-	public static final String [] UNOMMENDERRORDESCRIPTION = {"UNKNOWN_COMMAND"};
-	
+	public static final String[] UNOMMENDERRORDESCRIPTION = { "UNKNOWN_COMMAND" };
+
 	public static final String RATELIMITECODE = "429";
 	public static final String RATELIMITEERRORTITLE = "Error Message";
-	public static final String [] RATELIMITEERRORDESCRIPTION = {"RATE LIMIT"};
+	public static final String[] RATELIMITEERRORDESCRIPTION = { "RATE LIMIT" };
 
 	public static final String ADDCOLUMN1 = "alter table ";
 	public static final String ADDCOLUMN2 = " add column ";
@@ -379,7 +409,7 @@ public class WhoisUtil {
 	public static final String SELECT_PERMISSION = "select * from permissions where tableName = ?";
 
 	public static final String SELECT_PERMISSION_ISNULL = "select columnName from permissions where tableName = ? and columnName=?";
-	
+
 	public static final Map<String, Long> queryRemoteIPMap = new HashMap<String, Long>();
 
 	/**
@@ -408,7 +438,7 @@ public class WhoisUtil {
 	 */
 	public static String toChineseUrl(String url)
 			throws UnsupportedEncodingException {
-		//%E4%E5
+		// %E4%E5
 		String parra = "";
 		java.util.List<Byte> values = new ArrayList<Byte>();
 		boolean flag = true;
@@ -444,7 +474,7 @@ public class WhoisUtil {
 		}
 		return parra;
 	}
-	
+
 	/**
 	 * Changes will be part of the data into the VCard style
 	 * 
@@ -491,7 +521,7 @@ public class WhoisUtil {
 					nameList.add(names);
 					list.add(nameList);
 				}
-			}else{
+			} else {
 				List<Object> nameList = new ArrayList<Object>();
 				nameList.add("fn");
 				nameList.add("{}");
@@ -501,7 +531,7 @@ public class WhoisUtil {
 			}
 			map.remove(getDisplayKeyName("Entity_Names"));
 		}
-		
+
 		if (Bday != null) {
 			if (isArray(Bday)) {
 				String[] BdayArray = parseStringArray(Bday);
@@ -513,7 +543,7 @@ public class WhoisUtil {
 					BdayList.add(BdayEle);
 					list.add(BdayList);
 				}
-			}else{
+			} else {
 				List<Object> BdayList = new ArrayList<Object>();
 				BdayList.add("bday");
 				BdayList.add("{}");
@@ -523,7 +553,7 @@ public class WhoisUtil {
 			}
 			map.remove(getDisplayKeyName("Bday"));
 		}
-		
+
 		if (Anniversary != null) {
 			if (isArray(Anniversary)) {
 				String[] AnniversaryArray = parseStringArray(Anniversary);
@@ -535,7 +565,7 @@ public class WhoisUtil {
 					AnniversaryList.add(AnniversaryEle);
 					list.add(AnniversaryList);
 				}
-			}else{
+			} else {
 				List<Object> AnniversaryList = new ArrayList<Object>();
 				AnniversaryList.add("anniversary");
 				AnniversaryList.add("{}");
@@ -545,7 +575,7 @@ public class WhoisUtil {
 			}
 			map.remove(getDisplayKeyName("Anniversary"));
 		}
-		
+
 		if (Gender != null) {
 			if (isArray(Gender)) {
 				String[] GenderArray = parseStringArray(Gender);
@@ -557,7 +587,7 @@ public class WhoisUtil {
 					GenderList.add(GenderEle);
 					list.add(GenderList);
 				}
-			}else{
+			} else {
 				List<Object> GenderList = new ArrayList<Object>();
 				GenderList.add("gender");
 				GenderList.add("{}");
@@ -567,7 +597,7 @@ public class WhoisUtil {
 			}
 			map.remove(getDisplayKeyName("Gender"));
 		}
-		
+
 		if (Kind != null) {
 			if (isArray(Kind)) {
 				String[] KindArray = parseStringArray(Kind);
@@ -579,7 +609,7 @@ public class WhoisUtil {
 					KindList.add(KindEle);
 					list.add(KindList);
 				}
-			}else{
+			} else {
 				List<Object> KindList = new ArrayList<Object>();
 				KindList.add("kind");
 				KindList.add("{}");
@@ -589,66 +619,68 @@ public class WhoisUtil {
 			}
 			map.remove(getDisplayKeyName("Kind"));
 		}
-		
+
 		if ((Language_Tag_1 != null) && (Pref1 != null)) {
 			List<Object> LanguageTagList = new ArrayList<Object>();
 			LanguageTagList.add("lang");
-			LanguageTagList.add("{\"pref\":" + "\"" + (String)Pref1 + "\"" + "}");
+			LanguageTagList.add("{\"pref\":" + "\"" + (String) Pref1 + "\""
+					+ "}");
 			LanguageTagList.add("language-tag");
-			LanguageTagList.add((String)Language_Tag_1);
-			list.add(LanguageTagList);			
+			LanguageTagList.add((String) Language_Tag_1);
+			list.add(LanguageTagList);
 			map.remove(getDisplayKeyName("Language_Tag_1"));
 			map.remove(getDisplayKeyName("Pref1"));
 		}
-		
+
 		if ((Language_Tag_2 != null) && (Pref2 != null)) {
 			List<Object> LanguageTagList = new ArrayList<Object>();
 			LanguageTagList.add("lang");
-			LanguageTagList.add("{\"pref\":"  + "\"" + (String)Pref2 + "\"" + "}");
+			LanguageTagList.add("{\"pref\":" + "\"" + (String) Pref2 + "\""
+					+ "}");
 			LanguageTagList.add("language-tag");
-			LanguageTagList.add((String)Language_Tag_2);
-			list.add(LanguageTagList);			
+			LanguageTagList.add((String) Language_Tag_2);
+			list.add(LanguageTagList);
 			map.remove(getDisplayKeyName("Language_Tag_2"));
 			map.remove(getDisplayKeyName("Pref2"));
 		}
-		
+
 		if (Org != null) {
 			List<Object> OrgList = new ArrayList<Object>();
 			OrgList.add("org");
 			OrgList.add("{\"type\":\"work\"}");
 			OrgList.add("text");
-			OrgList.add((String)Org);
-			list.add(OrgList);	
+			OrgList.add((String) Org);
+			list.add(OrgList);
 			map.remove(getDisplayKeyName("Org"));
 		}
-		
+
 		if (Title != null) {
 			List<Object> TitleList = new ArrayList<Object>();
 			TitleList.add("title");
 			TitleList.add("{}");
 			TitleList.add("text");
-			TitleList.add((String)Title);
-			list.add(TitleList);	
+			TitleList.add((String) Title);
+			list.add(TitleList);
 			map.remove(getDisplayKeyName("Title"));
 		}
-		
+
 		if (Role != null) {
 			List<Object> RoleList = new ArrayList<Object>();
 			RoleList.add("role");
 			RoleList.add("{}");
 			RoleList.add("text");
-			RoleList.add((String)Role);
-			list.add(RoleList);	
+			RoleList.add((String) Role);
+			list.add(RoleList);
 			map.remove(getDisplayKeyName("Role"));
 		}
-		
+
 		if (postalAddress != null) {
 			if (postalAddress instanceof Map) {
 				List<Object> nameList = new ArrayList<Object>();
 				nameList.add("adr");
 				nameList.add("{\"type\":\"work\"}");
 				nameList.add("text");
-				
+
 				List<Object> AddressList = new ArrayList<Object>();
 				AddressList.add("");
 				String KeyName = "";
@@ -657,34 +689,34 @@ public class WhoisUtil {
 				KeyName = getDisplayKeyName("Street1");
 				Element = ((Map) postalAddress).get(KeyName).toString();
 				Result = Result + Element;
-				Result = Result + (String)",";
-				
+				Result = Result + (String) ",";
+
 				KeyName = getDisplayKeyName("Street2");
 				Element = ((Map) postalAddress).get(KeyName).toString();
 				Result = Result + Element;
 				AddressList.add(Result);
-				
+
 				KeyName = getDisplayKeyName("Street");
 				Element = ((Map) postalAddress).get(KeyName).toString();
 				AddressList.add(Element);
-				
+
 				KeyName = getDisplayKeyName("City");
 				Element = ((Map) postalAddress).get(KeyName).toString();
 				AddressList.add(Element);
-				
+
 				KeyName = getDisplayKeyName("SP");
 				Element = ((Map) postalAddress).get(KeyName).toString();
 				AddressList.add(Element);
-				
+
 				KeyName = getDisplayKeyName("Postal_Code");
 				Element = ((Map) postalAddress).get(KeyName).toString();
 				AddressList.add(Element);
-				
+
 				KeyName = getDisplayKeyName("Country");
 				Element = ((Map) postalAddress).get(KeyName).toString();
 				AddressList.add(Element);
 				nameList.add(AddressList);
-				list.add(nameList);	
+				list.add(nameList);
 				map.remove("postalAddress");
 			} else if (postalAddress instanceof Object[]) {
 				for (Object postalAddressObject : ((Object[]) postalAddress)) {
@@ -692,50 +724,57 @@ public class WhoisUtil {
 					nameList.add("adr");
 					nameList.add("{\"type\":\"work\"}");
 					nameList.add("text");
-					
+
 					List<Object> AddressList = new ArrayList<Object>();
 					AddressList.add("");
 					String KeyName = "";
 					String Element = "";
 					String Result = "";
 					KeyName = getDisplayKeyName("Street1");
-					Element = ((Map) postalAddressObject).get(KeyName).toString();
+					Element = ((Map) postalAddressObject).get(KeyName)
+							.toString();
 					Result = Result + Element;
-					Result = Result + (String)",";
-					
+					Result = Result + (String) ",";
+
 					KeyName = getDisplayKeyName("Street2");
-					Element = ((Map) postalAddressObject).get(KeyName).toString();
+					Element = ((Map) postalAddressObject).get(KeyName)
+							.toString();
 					Result = Result + Element;
 					AddressList.add(Result);
-					
+
 					KeyName = getDisplayKeyName("Street");
-					Element = ((Map) postalAddressObject).get(KeyName).toString();
+					Element = ((Map) postalAddressObject).get(KeyName)
+							.toString();
 					AddressList.add(Element);
-					
+
 					KeyName = getDisplayKeyName("City");
-					Element = ((Map) postalAddressObject).get(KeyName).toString();
+					Element = ((Map) postalAddressObject).get(KeyName)
+							.toString();
 					AddressList.add(Element);
-					
+
 					KeyName = getDisplayKeyName("SP");
-					Element = ((Map) postalAddressObject).get(KeyName).toString();
+					Element = ((Map) postalAddressObject).get(KeyName)
+							.toString();
 					AddressList.add(Element);
-					
+
 					KeyName = getDisplayKeyName("Postal_Code");
-					Element = ((Map) postalAddressObject).get(KeyName).toString();
+					Element = ((Map) postalAddressObject).get(KeyName)
+							.toString();
 					AddressList.add(Element);
-					
+
 					KeyName = getDisplayKeyName("Country");
-					Element = ((Map) postalAddressObject).get(KeyName).toString();
+					Element = ((Map) postalAddressObject).get(KeyName)
+							.toString();
 					AddressList.add(Element);
 					nameList.add(AddressList);
-					list.add(nameList);					
+					list.add(nameList);
 				}
 				map.remove(getDisplayKeyName("postal_Address"));
-			}			
+			}
 		}
 		;
 		if (emails != null) {
-			String[] namesArray = parseStringArray(emails);//(String[]) emails;
+			String[] namesArray = parseStringArray(emails);// (String[]) emails;
 			for (String names : namesArray) {
 				List<Object> nameList = new ArrayList<Object>();
 				nameList.add("email");
@@ -752,7 +791,7 @@ public class WhoisUtil {
 				Set<String> key = ((Map) phones).keySet();
 				List<Object> nameList = new ArrayList<Object>();
 				for (String name : key) {
-					if(isNotEntityField(name)){
+					if (isNotEntityField(name)) {
 						continue;
 					}
 					Object values = ((Map) phones).get(name);
@@ -789,7 +828,7 @@ public class WhoisUtil {
 					Set<String> key = ((Map) phonesObject).keySet();
 					List<Object> nameList = new ArrayList<Object>();
 					for (String name : key) {
-						if(isNotEntityField(name)){
+						if (isNotEntityField(name)) {
 							continue;
 						}
 						Object values = ((Map) phonesObject).get(name);
@@ -822,7 +861,7 @@ public class WhoisUtil {
 			}
 			map.remove(getDisplayKeyName("phones"));
 		}
-		
+
 		if (Geo != null) {
 			if (isArray(Geo)) {
 				String[] GeoArray = parseStringArray(Geo);
@@ -834,7 +873,7 @@ public class WhoisUtil {
 					GeoList.add(GeoEle);
 					list.add(GeoList);
 				}
-			}else{
+			} else {
 				List<Object> GeoList = new ArrayList<Object>();
 				GeoList.add("geo");
 				GeoList.add("{\"type\":\"work\"}");
@@ -844,7 +883,7 @@ public class WhoisUtil {
 			}
 			map.remove(getDisplayKeyName("Geo"));
 		}
-		
+
 		if (Key != null) {
 			if (isArray(Key)) {
 				String[] KeyArray = parseStringArray(Key);
@@ -856,7 +895,7 @@ public class WhoisUtil {
 					KeyList.add(KeyEle);
 					list.add(KeyList);
 				}
-			}else{
+			} else {
 				List<Object> KeyList = new ArrayList<Object>();
 				KeyList.add("key");
 				KeyList.add("{\"type\":\"work\"}");
@@ -866,7 +905,7 @@ public class WhoisUtil {
 			}
 			map.remove(getDisplayKeyName("Key"));
 		}
-		
+
 		if (Tz != null) {
 			if (isArray(Tz)) {
 				String[] TzArray = parseStringArray(Tz);
@@ -878,7 +917,7 @@ public class WhoisUtil {
 					TzList.add(TzEle);
 					list.add(TzList);
 				}
-			}else{
+			} else {
 				List<Object> TzList = new ArrayList<Object>();
 				TzList.add("tz");
 				TzList.add("{}");
@@ -888,7 +927,7 @@ public class WhoisUtil {
 			}
 			map.remove(getDisplayKeyName("Tz"));
 		}
-		
+
 		if (Url != null) {
 			if (isArray(Url)) {
 				String[] UrlArray = parseStringArray(Url);
@@ -900,7 +939,7 @@ public class WhoisUtil {
 					UrlList.add(UrlEle);
 					list.add(UrlList);
 				}
-			}else{
+			} else {
 				List<Object> UrlList = new ArrayList<Object>();
 				UrlList.add("url");
 				UrlList.add("{\"type\":\"home\"}");
@@ -917,31 +956,34 @@ public class WhoisUtil {
 	}
 
 	private static boolean isNotEntityField(String name) {
-		return QUERY_JOIN_TYPE.equals(name)||QUERY_TYPE.equals(name)||name.endsWith("Id");
+		return QUERY_JOIN_TYPE.equals(name) || QUERY_TYPE.equals(name)
+				|| name.endsWith("Id");
 	}
 
 	private static boolean isArray(Object object) {
 		return object instanceof String[] || object instanceof JSONArray;
 	}
-	
-	private static String[] parseStringArray(Object object){
-		if(object instanceof JSONArray){
+
+	private static String[] parseStringArray(Object object) {
+		if (object instanceof JSONArray) {
 			JSONArray jsonArray = (JSONArray) object;
 			String[] result = new String[jsonArray.size()];
-			for(int i=0;i<jsonArray.size();i++){
-				result[i] = (String)jsonArray.get(i);
+			for (int i = 0; i < jsonArray.size(); i++) {
+				result[i] = (String) jsonArray.get(i);
 			}
 			return result;
-		}else if(isArray(object)){
-			return (String[])object;
+		} else if (isArray(object)) {
+			return (String[]) object;
 		}
 		throw new IllegalArgumentException("param is not an array");
 	}
+
 	public static String getDisplayKeyName(String name) {
 		return name;
 	}
-	
-	public static void clearFormatCookie(HttpServletRequest request, HttpServletResponse response){
+
+	public static void clearFormatCookie(HttpServletRequest request,
+			HttpServletResponse response) {
 		Cookie[] cookies = request.getCookies();
 
 		if (cookies != null) {
@@ -953,33 +995,115 @@ public class WhoisUtil {
 			}
 		}
 	}
-	
+
 	/**
 	 * Determine what kind of role the user
 	 * 
 	 * @param request
 	 * @return role
 	 */
-	public static String getUserRole(HttpServletRequest request){
+	public static String getUserRole(HttpServletRequest request) {
 		String role = "anonymous";
-		if (request.isUserInRole("authenticated") || request.getSession().getAttribute("openIdUser") != null){ //determine what kind of role
+		if (request.isUserInRole("authenticated")
+				|| request.getSession().getAttribute("openIdUser") != null) { // determine
+																				// what
+																				// kind
+																				// of
+																				// role
 			role = "authenticated";
-		}else if (request.isUserInRole("root")){
+		} else if (request.isUserInRole("root")) {
 			role = "root";
 		}
 		return role;
 	}
-	
+
 	/**
 	 * The processing Error
 	 * 
 	 * @return error map collection
-	 * @throws QueryException 
+	 * @throws QueryException
 	 */
-	public static Map<String, Object> processError(String errorCode) throws QueryException {
-		Map<String, Object>ErrorMessageMap = null;
-		QueryService queryService = (QueryService) ContextLoader.getCurrentWebApplicationContext().getBean("queryService");
+	public static Map<String, Object> processError(String errorCode)
+			throws QueryException {
+		Map<String, Object> ErrorMessageMap = null;
+		QueryService queryService = (QueryService) ContextLoader
+				.getCurrentWebApplicationContext().getBean("queryService");
 		ErrorMessageMap = queryService.queryError(errorCode);
 		return ErrorMessageMap;
+	}
+
+	private static String decodeFromUTF8(String iso8859Str)
+			throws UnsupportedEncodingException {
+		if (StringUtils.isBlank(iso8859Str)) {
+			return iso8859Str;
+		}
+		byte[] nameBytes = iso8859Str.getBytes("iso-8859-1");
+		return new String(nameBytes, "UTF-8");
+	}
+
+	private static boolean isValidUTF8(String iso8859Str)
+			throws UnsupportedEncodingException {
+		if (StringUtils.isBlank(iso8859Str)) {
+			return true;
+		}
+		byte[] bytes = iso8859Str.getBytes("iso-8859-1");
+		CharsetDecoder cs = Charset.forName("UTF-8").newDecoder();
+		try {
+			cs.decode(ByteBuffer.wrap(bytes));
+			return true;
+		} catch (CharacterCodingException e) {
+			return false;
+		}
+	}
+
+	public static String getLowerCaseByLabel(String str){
+		if (StringUtils.isBlank(str)) {
+			return str;
+		}
+		String[] splits = StringUtils.split(str,".");
+		StringBuffer result = new StringBuffer();
+		if(str.startsWith(".")){
+			str = str.replaceFirst("\\.", "");
+			result.append(".");
+		}
+		for(String split:splits){
+			split = getLowerCaseIfAllAscii(split);
+			result.append(split);
+			result.append(".");
+		}
+		String resultStr = result.toString();
+		if(!str.endsWith(".") && resultStr.endsWith(".")){
+			resultStr = resultStr.substring(0,resultStr.length()-1);
+		}
+		return resultStr;
+	}
+	
+	public static String getLowerCaseIfAllAscii(String str){
+		if(isAllASCII(str)){
+			return StringUtils.lowerCase(str);
+		}
+		return str;
+	}
+
+	private static boolean isAllASCII(String input) {
+		if (StringUtils.isBlank(input)) {
+			return false;
+		}
+		boolean isASCII = true;
+		for (int i = 0; i < input.length(); i++) {
+			int c = input.charAt(i);
+			if (c > 0x7F) {
+				isASCII = false;
+				break;
+			}
+		}
+		return isASCII;
+	}
+	
+	public static String urlDecode(String str) throws UnsupportedEncodingException{
+		if(StringUtils.isBlank(str)){
+			return str;
+		}
+		return URLDecoder.decode(str, "UTF-8");
 	}
 }
