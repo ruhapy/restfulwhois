@@ -32,8 +32,10 @@ public class DomainQueryDao extends AbstractSearchQueryDao<DomainIndex> {
 		q = escapeSolrChar(q);
 		String domainPuny = domainQueryParam.getDomainPuny();
 		domainPuny = escapeSolrChar(domainPuny);
-		String queryStr = "ldhName:" + domainPuny
-				+ " OR unicodeName:" + q;
+		String queryStr = 
+//				"ldhName:" + domainPuny
+//				+ " OR " + 
+				"unicodeName:" + q;
 		SearchResult<DomainIndex> result = query(queryStr, page);
 		return result;
 	}

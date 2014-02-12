@@ -1,2 +1,2 @@
 path,Accept,param,status,mark
-/nameservers,application/rdap+json,,400,BAD REQUEST
+/.well-known/rdap/domain/nonexist.cn,application/rdap+json,unkonwParam=zzz&a=b,404,NOT FOUND

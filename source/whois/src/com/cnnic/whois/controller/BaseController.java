@@ -84,6 +84,15 @@ public class BaseController {
 		viewResolver.writeResponse(getFormatType(request), getQueryType(request),
 				request, response, resultMap);
 	}
+	
+	protected void renderResponseError422(HttpServletRequest request,
+			HttpServletResponse response) throws IOException, ServletException,
+			QueryException {
+		Map<String, Object> resultMap = WhoisUtil
+				.processError(WhoisUtil.UNPROCESSABLEERRORCODE);
+		viewResolver.writeResponse(getFormatType(request), getQueryType(request),
+				request, response, resultMap);
+	}
 
 	public static String getFormatCookie(HttpServletRequest request) {
 		Cookie[] cookies = request.getCookies();
@@ -111,7 +120,7 @@ public class BaseController {
 			format = FormatType.TEXTPLAIN.getName();
 		} else if (StringUtils.isNotBlank(acceptHeader) && acceptHeader.contains("html")) {
 			format = FormatType.HTML.getName();
-		}else if (StringUtils.isBlank(acceptHeader)) {
+		}else {
 			format = FormatType.JSON.getName();
 		}
 		return FormatType.getFormatType(format);
@@ -146,6 +155,6 @@ public class BaseController {
 		if (StringUtils.isBlank(str)) {
 			return str;
 		}
-		return Normalizer.normalize(str, Form.NFD);
+		return Normalizer.normalize(str, Form.NFKC);
 	}
 }

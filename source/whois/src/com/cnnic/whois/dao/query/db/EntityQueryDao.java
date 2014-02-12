@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -32,7 +33,7 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 				searchEntityQueryDao.preciseQueryEntitiesByHandleOrName(param);
 		Map<String, Object> map = null;
 		try {
-			map = fuzzyQuery(result, MAP_KEY);
+			map = fuzzyQuery(result, StringUtils.EMPTY);//mark as not multi search
 			if(null != map){
 				map = rdapConformance(map);
 			}

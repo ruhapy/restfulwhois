@@ -1,40 +1,74 @@
 path,Accept,param,status,mark
-/domain/z.cn,application/rdap+json,unkonwParam=zzz&a=b,200,Handle
-/domain/z.cn,application/json,unkonwParam=zzz,200,Handle
-/domain/z.cn,application/rdap+json;application/json,unkonwParam=zzz,200,Handle
-/domain/z.cn,application/rdap+json,unknowParam,200,Handle
-/domain/z.cn,application/rdap+json,unknowParam=zzz,200,Handle
-/unknowPath/z.cn,application/rdap+json,unkonwParam=zzz,400,
-?a=b&c=d,application/json,,400,
-/domain/nonexist.cn,application/rdap+json,unkonwParam=zzz&a=b,404,NOT FOUND
-/domain/xn--sälen.com,application/json,,400,BAD REQUEST
-/domain/longlabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabel.com,application/json,,400,BAD REQUEST
+#api index
+,application/json,,200,index
+/,application/json,,200,index
+/?,application/json,,200,index
+/?a=b&cc=dd,application/json,,200,index
+/.well-known/rdap,application/json,,200,index
+/.well-known/rdap/,application/json,,200,index
+/.well-known/rdap?,application/json,,200,index
+/.well-known/rdap/?,application/json,,200,index
+/.well-known/rdap?a=b&cc=dd,application/json,,200,index
+/.well-known/rdap/?a=b&cc=dd,application/json,,200,index
+#accept
+/.well-known/rdap,application/json,,200,index
+/.well-known/rdap,application/rdap+json,,200,index
+/.well-known/rdap,application/rdap+json;application/json,,200,index
+/.well-known/rdap,,,200,index
+/.well-known/rdap,unknownOrOtherAcceptHeader-as json,,200,index
 #
-/ip,application/rdap+json,,400,BAD REQUEST
-/ip/1.1.1.1/23\x00,application/rdap+json,,400,BAD REQUEST
-/ip/1.1.1.1,application/rdap+json,,200,rdapConformance
-/ip/invalidIpv4,application/rdap+json,,400,
-/ip/invalid.1.1.1,application/rdap+json,,400,
-/ip/1111,application/rdap+json,,400,
-/ip/1.0.0.0/8,application/rdap+json,,200,rdapConformance
-/ip/1.0.0.0/8,application/rdap+json,,200,rdapConformance
-/ip/39.1.2.3/8,application/rdap+json,,200,rdapConformance
+/.well-known/rdap/domain/xn--xkry9kk1bz66a.xn--fiqs8s,application/rdap+json,unkonwParam=zzz,200,Handle
+/.well-known/rdap/malformedQueries/z.cn,application/rdap+json,unkonwParam=zzz,400,BAD REQUEST
+/.well-known/rdap/domain/z.cn,application/rdap+json,unkonwParam=zzz&a=b,200,Handle
+/.well-known/rdap/domain/z.cn,application/json,unkonwParam=zzz,200,Handle
+/.well-known/rdap/domain/z.cn,application/rdap+json;application/json,unkonwParam=zzz,200,Handle
+/.well-known/rdap/domain/z.cn,application/rdap+json,unknowParam,200,Handle
+/.well-known/rdap/domain/z.cn,application/rdap+json,unknowParam=zzz,200,Handle
+/.well-known/rdap/unknowPath/z.cn,application/rdap+json,unkonwParam=zzz,400,
+/.well-known/rdap/domain/nonexist.cn,application/rdap+json,unkonwParam=zzz&a=b,404,NOT FOUND
+/.well-known/rdap/domain/xn--sälen.com,application/json,,400,BAD REQUEST
+/.well-known/rdap/domain/*&^.cn,application/json,,400,BAD REQUEST
+/.well-known/rdap/domain/longlabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabel.cn,application/json,,400,BAD REQUEST
+/.well-known/rdap/domain/longlabel.11111111111111111111.1111111111111111111111111111111111111111111111111111111111111111111111111111.11111111111111111111111111111111111111111111111111111111111111111111111111111111111111.111111111111111111111111111111111111111111111111111.cn",application/rdap+json,,400,
+#v4
+/.well-known/rdap/ip,application/rdap+json,,400,BAD REQUEST
+#404?
+/.well-known/rdap/ip/0.0.0.0,application/rdap+json,,400,
+/.well-known/rdap/ip/1.1.1.1/23\x00,application/rdap+json,,400,
+/.well-known/rdap/ip/1.1.1.1,application/rdap+json,,200,rdapConformance
+/.well-known/rdap/ip/1.0.0.0/31,application/rdap+json,,200,rdapConformance
+/.well-known/rdap/ip/1.0.0.0/23,application/rdap+json,,200,rdapConformance
+/.well-known/rdap/ip/1.255.255.255,application/rdap+json,,200,rdapConformance
+/.well-known/rdap/ip/invalidIpv4,application/rdap+json,,400,
+/.well-known/rdap/ip/invalid.1.1.1,application/rdap+json,,400,
+/.well-known/rdap/ip/ip/1.000.0.0,application/rdap+json,,400,BAD REQUEST
+/.well-known/rdap/ip/1111,application/rdap+json,,400,
+/.well-known/rdap/ip/1.0.0.0/8,application/rdap+json,,200,rdapConformance
+/.well-known/rdap/ip/1.0.0.0/8,application/rdap+json,,200,rdapConformance
+/.well-known/rdap/ip/39.1.2.3/8,application/rdap+json,,200,rdapConformance
+#v6
+/.well-known/rdap/ip/2001:6a8:0:1:210:4bff:fe4b:4c61,application/rdap+json,,200,
+/.well-known/rdap/ip/2001:6a8:0:1:210:4bff:,application/rdap+json,,400,BAD REQUEST
 #
-/entity,application/rdap+json,,400,BAD REQUEST
-/entity/APNIC,application/rdap+json,,200,entity
-/entity/bu1048055833141,application/rdap+json,,200,bu1048055833141
-/entity/s1265874462073,application/rdap+json,,200,vcardArray
+/.well-known/rdap/entity,application/rdap+json,,400,BAD REQUEST
+/.well-known/rdap/entity/APNIC,application/rdap+json,,200,entity
+/.well-known/rdap/entity/bu1048055833141,application/rdap+json,,200,bu1048055833141
+/.well-known/rdap/entity/s1265874462073,application/rdap+json,,200,vcardArray
+/.well-known/rdap/entity/  ,application/rdap+json,,400,
 #
-/autnum,application/rdap+json,,400,BAD REQUEST
-/autnum/1223,application/rdap+json,,200,handle
-/autnum/2569,application/rdap+json,,200,handle
-/autnum/3661,application/rdap+json,,200,handle
-/autnum/0,application/rdap+json,,400,BAD REQUEST
-/autnum/4294967296,application/rdap+json,,400,BAD REQUEST
-/autnum/03661,application/rdap+json,,400,BAD REQUEST
+/.well-known/rdap/autnum,application/rdap+json,,400,BAD REQUEST
+/.well-known/rdap/autnum/1223,application/rdap+json,,200,handle
+/.well-known/rdap/autnum/2569,application/rdap+json,,200,handle
+/.well-known/rdap/autnum/3661,application/rdap+json,,200,handle
+/.well-known/rdap/autnum/0,application/rdap+json,,400,BAD REQUEST
+/.well-known/rdap/autnum/4294967296,application/rdap+json,,400,BAD REQUEST
+/.well-known/rdap/autnum/03661,application/rdap+json,,400,BAD REQUEST
+/.well-known/rdap/autnum/&*,application/rdap+json,,400,BAD REQUEST
 #
-/nameserver,application/rdap+json,,400,BAD REQUEST
-/nameserver/ns2.ee28.cn,application/rdap+json,,200,handle
-/nameserver/ns1.google.com,application/rdap+json,,200,handle
-#/domain/z.cn,application/rdap+json,unkonwParam=zzz&a=b,200,Handle
-#/domain/z.cn,application/rdap+json,unkonwParam=zzz&a=b,429,RATE LIMIT
+/.well-known/rdap/nameserver,application/rdap+json,,400,BAD REQUEST
+/.well-known/rdap/nameserver/ns1.ee28.cn,application/rdap+json,,200,handle
+/.well-known/rdap/nameserver/ns2.sina.com.cn,application/rdap+json,,200,handle
+/.well-known/rdap/nameserver/@#$,application/rdap+json,,400,BAD REQUEST
+
+#/.well-known/rdap/domain/z.cn,application/rdap+json,unkonwParam=zzz&a=b,200,Handle
+#/.well-known/rdap/domain/z.cn,application/rdap+json,unkonwParam=zzz&a=b,429,RATE LIMIT

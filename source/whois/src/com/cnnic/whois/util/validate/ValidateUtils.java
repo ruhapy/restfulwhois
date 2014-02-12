@@ -2,6 +2,8 @@ package com.cnnic.whois.util.validate;
 
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.cnnic.whois.util.IpUtil;
 
 public class ValidateUtils {
@@ -26,11 +28,10 @@ public class ValidateUtils {
 	 * @return The correct parity returns true, failure to return false
 	 */
 	public static boolean isCommonInvalidStr(String parm) {
-		String strReg = "^[a-zA-Z\\d\\*]{1}([\\w\\-\\.\\_\\*]*)$";
-
-		if (parm.equals("") || parm == null)
+		String strReg = "^[\u0391-\uFFE5a-zA-Z\\d\\*]{1}([\u0391-\uFFE5\\w\\-\\.\\_\\*]*)$";
+		if (StringUtils.isBlank(parm)){
 			return false;
-
+		}
 		return parm.matches(strReg);
 	}
 	
@@ -41,16 +42,38 @@ public class ValidateUtils {
 	 * @return The correct parity returns true, failure to return false
 	 */
 	public static boolean verifyNameServer(String queryPara) {
+		if(StringUtils.isBlank(queryPara)){
+			return false;
+		}
 		if (!isCommonInvalidStr(queryPara)){
 			return false;
 		}
 		if(queryPara.length() > 255){
 			return false;
 		}
-		String fuzzyReg = "^(?!-.)(?!.*?-$)((\\*)?[0-9a-zA-Z][0-9a-zA-Z-]{0,62}(\\*)?\\.)+([0-9a-zA-Z][0-9a-zA-Z-]{0,62}\\*?)?$";
+		String fuzzyReg = "^(?!-.)(?!.*?-$)((\\*)?[\u0391-\uFFE50-9a-zA-Z-]{0,62}(\\*)?)+(\\.[\u0391-\uFFE50-9a-zA-Z-]{0,62}\\*?)*$";
 		if (queryPara.matches(fuzzyReg))
 			return true;
 		return false;
+	}
+	
+	public static boolean verifyFuzzyDomain(String queryPara) {
+		if(StringUtils.isBlank(queryPara)){
+			return false;
+		}
+		if (!isCommonInvalidStr(queryPara)){
+			return false;
+		}
+		if(queryPara.length() > 255){
+			return false;
+		}
+		String[] labels = queryPara.split(".");
+		for(String label:labels){
+			if(label.length()>62){
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	/**
