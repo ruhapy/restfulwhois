@@ -4,7 +4,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 
-import org.springframework.jdbc.core.RowCallbackHandler;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Repository;
 
 import com.cnnic.whois.bean.IpQueryParam;
@@ -14,19 +16,16 @@ import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.util.WhoisUtil;
+
 @Repository
 public class IpRedirectionQueryDao extends AbstractDbQueryDao {
 
-//	TODO : not sure if this part is correct
 	@Override
-	public Map<String, Object> query(final QueryParam param) throws QueryException, RedirectExecption {
+	public Map<String, Object> query(final QueryParam param)
+			throws QueryException, RedirectExecption {
 		IpQueryParam ipParam = (IpQueryParam) param;
 		long startHighAddr = ipParam.getStartHighAddr();
 		long startLowAddr = ipParam.getStartLowAddr();
-//		Connection connection = null;
-//		PreparedStatement stmt = null;
-//		ResultSet results = null;
-
 		String selectSql = "";
 		if (startHighAddr == 0) {
 			selectSql = (WhoisUtil.SELECT_URL_IPV4_REDIRECTION1 + startLowAddr
@@ -41,42 +40,24 @@ public class IpRedirectionQueryDao extends AbstractDbQueryDao {
 					+ WhoisUtil.SELECT_URL_IPV6_REDIRECTION6 + startLowAddr
 					+ WhoisUtil.SELECT_URL_IPV6_REDIRECTION7;
 		}
-		
-		this.getJdbcTemplate().query(selectSql, new RowCallbackHandler() {
-		    @Override
-		    public void processRow(ResultSet results) throws SQLException {
-		try {
-//			connection = ds.getConnection();
-//			stmt = connection.prepareStatement(selectSql);
-//			results = stmt.executeQuery();
-			if (results.next()) {
-				String redirectUrl = results.getString("redirectURL");
-				if (!(redirectUrl.endsWith("/"))) {
-					redirectUrl += "/";
-				}
-				try {
-					throw new RedirectExecption(redirectUrl+param.getQ());
-				} catch (RedirectExecption e) {
-					e.printStackTrace();
-				}
+
+		String redirectUrl = this.getJdbcTemplate().query(selectSql,
+				new ResultSetExtractor<String>() {
+					@Override
+					public String extractData(ResultSet results)
+							throws SQLException, DataAccessException {
+						if (results.next()) {
+							return results.getString("redirectURL");
+						}
+						return StringUtils.EMPTY;
+					}
+				});
+		if (StringUtils.isNotBlank(redirectUrl)) {
+			if (!(redirectUrl.endsWith("/"))) {
+				redirectUrl += "/";
 			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-			try {
-				throw new QueryException(e);
-			} catch (QueryException e1) {
-				e1.printStackTrace();
-			}
-		} 
-//		finally {
-//			if (connection != null) {
-//				try {
-//					connection.close();
-//				} catch (SQLException se) {
-//				}
-			}
-		});
+			throw new RedirectExecption(redirectUrl + param.getQ());
+		}
 		return null;
 	}
 
@@ -97,7 +78,8 @@ public class IpRedirectionQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Object querySpecificJoinTable(String key, String handle) throws SQLException {
+	public Object querySpecificJoinTable(String key, String handle)
+			throws SQLException {
 		throw new UnsupportedOperationException();
 	}
 }
