@@ -192,9 +192,9 @@ public class WhoisUtil {
 
 	public static final String SEARCHDOMAIN = "domains";
 
-	public static String[] IPKeyFileds = { JOINNANOTICES, "Handle",
+	public static String[] IPKeyFileds = { "Handle",
 			"StartHighAddress", "StartLowAddress", "EndLowAddress",
-			"EndHighAddress", "Lang",
+			"EndHighAddress", "Lang",JOINNANOTICES,
 			"IP_Version",
 			"Name", // ARRAYFILEDPRX + "Description",
 			"Type", "Country", "Parent_Handle", JOINREMARKS,
