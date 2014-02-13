@@ -13,6 +13,7 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.index.SearchCondition;
 import com.cnnic.whois.service.index.SearchResult;
+import com.cnnic.whois.util.validate.ValidateUtils;
 
 public abstract class AbstractSearchQueryDao<T> implements SearchQueryDao {
 	private CommonsHttpSolrServer server;
@@ -33,8 +34,21 @@ public abstract class AbstractSearchQueryDao<T> implements SearchQueryDao {
 		int start = startPage * page.getMaxRecords();
 		searchCondition.setStart(start);
 		searchCondition.setRow(page.getMaxRecords());
-		SolrQuery solrQuery = new SolrQuery();
-		solrQuery.setQuery(searchCondition.getSearchword());
+		SolrQuery solrQuery = null;
+		
+		q = q.replace("\\:", ":");
+		if(ValidateUtils.isIpv4(q)){
+			String ipV4 = "ipV4Address:*" + q + " OR ipV4Address:" + q + "* OR ipV4Address:*" + q + "*";
+			solrQuery = new SolrQuery(ipV4 );			
+		}else if(ValidateUtils.isIPv6(q)){
+			q = q.replace(":","\\:");
+			String ipV6 = "ipV6Address:*" + q + " OR ipV6Address:" + q + "* OR ipV6Address:*" + q + "*";
+			solrQuery = new SolrQuery(ipV6);
+		}else {
+			solrQuery = new SolrQuery();
+			solrQuery.setQuery(searchCondition.getSearchword());
+		}
+		
 		solrQuery.setStart(Integer.valueOf(searchCondition.getStart()));
 		solrQuery.setRows(Integer.valueOf(searchCondition.getRow()));
 		QueryResponse queryResponse = null;

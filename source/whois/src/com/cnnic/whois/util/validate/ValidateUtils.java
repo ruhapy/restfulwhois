@@ -103,6 +103,19 @@ public class ValidateUtils {
 	}
 	
 	/**
+	 * Verifying the IPv4 parameters
+	 */
+	public static boolean isIpv4(String address) {
+		String regex = "^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])\\." 
+                + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\." 
+                + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\." 
+                + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)$"; 
+		if (address.matches(regex))
+			return true;
+		return false;
+	}
+	
+	/**
 	 * Verifying the IPv6 parameters
 	 * 
 	 * @param address
@@ -180,4 +193,13 @@ public class ValidateUtils {
 		}
 		return map;
 	}
+	
+	public static void main(String[] args) {
+		
+		System.out.println(ValidateUtils.verifyIP("1292.167.0.1", "0"));
+		
+		System.out.println(ValidateUtils.isIPv6("2adc::0001"));
+		
+	}
+	
 }
