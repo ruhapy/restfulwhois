@@ -61,6 +61,7 @@
 			<list>
 				<ref bean="asQueryDao" />
 				<ref bean="dnrDomainQueryDao" />
+				<ref bean="rirDomainQueryDao" />
 				<ref bean="dnrEntityQueryDao" />
 				<ref bean="dsDataQueryDao" />
 				<ref bean="entityQueryDao" />
