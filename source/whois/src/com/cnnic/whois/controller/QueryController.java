@@ -220,7 +220,7 @@ public class QueryController extends BaseController {
 			if (!ValidateUtils.verifyFuzzyDomain(name)) {
 				resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 			} else {
-				nameserversName(queryParam, punyQ, request);
+				geneNsQByName(queryParam, punyQ, request);
 				resultMap = queryService.fuzzyQueryNameServer(queryParam);
 			}
 		}
@@ -230,13 +230,13 @@ public class QueryController extends BaseController {
 				super.renderResponseError400(request, response);
 				return;
 			}
-			nameserversIp(queryParam, ip, request);
+			geneNsQByIp(queryParam, ip, request);
 			resultMap = queryService.fuzzyQueryNameServer(queryParam);
 		}
 		renderResponse(request, response, resultMap, queryParam);
 	}
 	
-	private void nameserversName(QueryParam queryParam, String punyQ, HttpServletRequest request){
+	private void geneNsQByName(QueryParam queryParam, String punyQ, HttpServletRequest request){
 		queryParam.setQueryType(QueryType.SEARCHNS);
 		queryParam.setQ(punyQ);
 		request.setAttribute("pageBean", queryParam.getPage());
@@ -244,7 +244,7 @@ public class QueryController extends BaseController {
 		setMaxRecordsForFuzzyQ(queryParam);
 	}
 	
-	private void nameserversIp(QueryParam queryParam, String ip, HttpServletRequest request){
+	private void geneNsQByIp(QueryParam queryParam, String ip, HttpServletRequest request){
 		String punyQ = ip;
 		request.setAttribute("queryPara", ip);
 		queryParam.setQueryType(QueryType.SEARCHNS);
