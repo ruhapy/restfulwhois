@@ -182,45 +182,76 @@ public class QueryController extends BaseController {
 
 	@RequestMapping(value = "/nameservers", method = RequestMethod.GET)
 	@ResponseBody
-	public void fuzzyQueryNs(@RequestParam(required = false) String name,
+	public void fuzzyQueryNs(@RequestParam(required = false) String name, 
+			@RequestParam(required = false) String ip,
 			HttpServletRequest request, HttpServletResponse response)
 			throws QueryException, SQLException, IOException, ServletException,
 			RedirectExecption {
 		Map<String, Object> resultMap = null;
 		QueryParam queryParam = super.praseQueryParams(request);
-		name = WhoisUtil.urlDecode(name);
-		name = StringUtils.trim(name);
 		request.setAttribute("queryType", "nameserver");
-		if (StringUtils.isBlank(name)) {
+		if (StringUtils.isBlank(name) && StringUtils.isBlank(ip)) {
+			super.renderResponseError400(request, response);
+			return;
+		}else if(StringUtils.isNotBlank(name) && StringUtils.isNotBlank(ip)){
 			super.renderResponseError400(request, response);
 			return;
 		}
-		name = super.getNormalization(name);
-		if ("*".equals(name)) {
-			super.renderResponseError422(request, response);
-			return;
+		
+		String net = "0";
+		if(StringUtils.isNotBlank(name)){
+			name = WhoisUtil.urlDecode(name);
+			name = StringUtils.trim(name);
+			name = super.getNormalization(name);
+			if ("*".equals(name)) {
+				super.renderResponseError422(request, response);
+				return;
+			}
+			name = WhoisUtil.getLowerCaseByLabel(name);
+			String punyQ = name;
+			try {
+				// long lable exception/not utf8 exception
+				punyQ = IDN.toASCII(name);
+			} catch (Exception e) {
+				super.renderResponseError400(request, response);
+				return;
+			}
+			request.setAttribute("queryPara", name);
+			if (!ValidateUtils.verifyFuzzyDomain(name)) {
+				resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
+			} else {
+				geneNsQByName(queryParam, punyQ, request);
+				resultMap = queryService.fuzzyQueryNameServer(queryParam);
+			}
 		}
-		name = WhoisUtil.getLowerCaseByLabel(name);
-		String punyQ = name;
-		try {
-			// long lable exception/not utf8 exception
-			punyQ = IDN.toASCII(name);
-		} catch (Exception e) {
-			super.renderResponseError400(request, response);
-			return;
-		}
-		request.setAttribute("queryPara", name);
-		if (!ValidateUtils.verifyFuzzyDomain(name)) {
-			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
-		} else {
-			queryParam.setQueryType(QueryType.SEARCHNS);
-			queryParam.setQ(punyQ);
-			request.setAttribute("pageBean", queryParam.getPage());
-			request.setAttribute("queryPath", "nameservers");
-			setMaxRecordsForFuzzyQ(queryParam);
+		
+		if(StringUtils.isNotBlank(ip)){
+			if (!ValidateUtils.verifyIP(ip, net)) {
+				super.renderResponseError400(request, response);
+				return;
+			}
+			geneNsQByIp(queryParam, ip, request);
 			resultMap = queryService.fuzzyQueryNameServer(queryParam);
 		}
 		renderResponse(request, response, resultMap, queryParam);
+	}
+	
+	private void geneNsQByName(QueryParam queryParam, String punyQ, HttpServletRequest request){
+		queryParam.setQueryType(QueryType.SEARCHNS);
+		queryParam.setQ(punyQ);
+		request.setAttribute("pageBean", queryParam.getPage());
+		request.setAttribute("queryPath", "nameservers");
+		setMaxRecordsForFuzzyQ(queryParam);
+	}
+	
+	private void geneNsQByIp(QueryParam queryParam, String ip, HttpServletRequest request){
+		String punyQ = ip;
+		request.setAttribute("queryPara", ip);
+		queryParam.setQueryType(QueryType.SEARCHNS);
+		queryParam.setQ(punyQ);
+		request.setAttribute("pageBean", queryParam.getPage());
+		request.setAttribute("queryPath", "nameservers");
+		setMaxRecordsForFuzzyQ(queryParam);
 	}
 
 	@RequestMapping(value = "/nameserver/{nsName}", method = RequestMethod.GET)
