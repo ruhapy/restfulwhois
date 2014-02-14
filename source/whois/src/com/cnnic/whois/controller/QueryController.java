@@ -187,6 +187,9 @@ public class QueryController extends BaseController {
 			HttpServletRequest request, HttpServletResponse response)
 			throws QueryException, SQLException, IOException, ServletException,
 			RedirectExecption {
+		Map<String, Object> resultMap = null;
+		QueryParam queryParam = super.praseQueryParams(request);
+		request.setAttribute("queryType", "nameserver");
 		if (StringUtils.isBlank(name) && StringUtils.isBlank(ip)) {
 			super.renderResponseError400(request, response);
 			return;
@@ -196,8 +199,6 @@ public class QueryController extends BaseController {
 		}
 		
 		String net = "0";
-		Map<String, Object> resultMap = null;
-		QueryParam queryParam = super.praseQueryParams(request);
 		if(StringUtils.isNotBlank(name)){
 			name = WhoisUtil.urlDecode(name);
 			name = StringUtils.trim(name);
@@ -223,8 +224,6 @@ public class QueryController extends BaseController {
 				resultMap = queryService.fuzzyQueryNameServer(queryParam);
 			}
 		}
-		
-		request.setAttribute("queryType", "nameserver");
 		
 		if(StringUtils.isNotBlank(ip)){
 			if (!ValidateUtils.verifyIP(ip, net)) {
