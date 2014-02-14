@@ -38,12 +38,9 @@ public abstract class AbstractSearchQueryDao<T> implements SearchQueryDao {
 		
 		q = q.replace("\\:", ":");
 		if(ValidateUtils.isIpv4(q)){
-			String ipV4 = "ipV4Address:*" + q + " OR ipV4Address:" + q + "* OR ipV4Address:*" + q + "*";
-			solrQuery = new SolrQuery(ipV4 );			
+			solrQuery = new SolrQuery(EntityQueryDao.preciseQueryNameServersByIp4(q));			
 		}else if(ValidateUtils.isIPv6(q)){
-			q = q.replace(":","\\:");
-			String ipV6 = "ipV6Address:*" + q + " OR ipV6Address:" + q + "* OR ipV6Address:*" + q + "*";
-			solrQuery = new SolrQuery(ipV6);
+			solrQuery = new SolrQuery(EntityQueryDao.preciseQueryNameServersByIp6(q));
 		}else {
 			solrQuery = new SolrQuery();
 			solrQuery.setQuery(searchCondition.getSearchword());

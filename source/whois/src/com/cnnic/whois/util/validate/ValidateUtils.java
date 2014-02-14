@@ -193,13 +193,4 @@ public class ValidateUtils {
 		}
 		return map;
 	}
-	
-	public static void main(String[] args) {
-		
-		System.out.println(ValidateUtils.verifyIP("1292.167.0.1", "0"));
-		
-		System.out.println(ValidateUtils.isIPv6("2adc::0001"));
-		
-	}
-	
 }

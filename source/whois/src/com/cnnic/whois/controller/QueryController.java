@@ -190,7 +190,7 @@ public class QueryController extends BaseController {
 		if (StringUtils.isBlank(name) && StringUtils.isBlank(ip)) {
 			super.renderResponseError400(request, response);
 			return;
-		}else if(!StringUtils.isBlank(name) && !StringUtils.isBlank(ip)){
+		}else if(StringUtils.isNotBlank(name) && StringUtils.isNotBlank(ip)){
 			super.renderResponseError400(request, response);
 			return;
 		}
@@ -198,7 +198,7 @@ public class QueryController extends BaseController {
 		String net = "0";
 		Map<String, Object> resultMap = null;
 		QueryParam queryParam = super.praseQueryParams(request);
-		if(!StringUtils.isBlank(name)){
+		if(StringUtils.isNotBlank(name)){
 			name = WhoisUtil.urlDecode(name);
 			name = StringUtils.trim(name);
 			name = super.getNormalization(name);
@@ -219,32 +219,40 @@ public class QueryController extends BaseController {
 			if (!ValidateUtils.verifyFuzzyDomain(name)) {
 				resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 			} else {
-				queryParam.setQueryType(QueryType.SEARCHNS);
-				queryParam.setQ(punyQ);
-				request.setAttribute("pageBean", queryParam.getPage());
-				request.setAttribute("queryPath", "nameservers");
-				setMaxRecordsForFuzzyQ(queryParam);
+				nameserversName(queryParam, punyQ, request);
 				resultMap = queryService.fuzzyQueryNameServer(queryParam);
 			}
 		}
 		
 		request.setAttribute("queryType", "nameserver");
 		
-		if(!StringUtils.isBlank(ip)){
+		if(StringUtils.isNotBlank(ip)){
 			if (!ValidateUtils.verifyIP(ip, net)) {
 				super.renderResponseError400(request, response);
 				return;
 			}
-			String punyQ = ip;
-			request.setAttribute("queryPara", ip);
-			queryParam.setQueryType(QueryType.SEARCHNS);
-			queryParam.setQ(punyQ);
-			request.setAttribute("pageBean", queryParam.getPage());
-			request.setAttribute("queryPath", "nameservers");
-			setMaxRecordsForFuzzyQ(queryParam);
+			nameserversIp(queryParam, ip, request);
 			resultMap = queryService.fuzzyQueryNameServer(queryParam);
 		}
 		renderResponse(request, response, resultMap, queryParam);
+	}
+	
+	private void nameserversName(QueryParam queryParam, String punyQ, HttpServletRequest request){
+		queryParam.setQueryType(QueryType.SEARCHNS);
+		queryParam.setQ(punyQ);
+		request.setAttribute("pageBean", queryParam.getPage());
+		request.setAttribute("queryPath", "nameservers");
+		setMaxRecordsForFuzzyQ(queryParam);
+	}
+	
+	private void nameserversIp(QueryParam queryParam, String ip, HttpServletRequest request){
+		String punyQ = ip;
+		request.setAttribute("queryPara", ip);
+		queryParam.setQueryType(QueryType.SEARCHNS);
+		queryParam.setQ(punyQ);
+		request.setAttribute("pageBean", queryParam.getPage());
+		request.setAttribute("queryPath", "nameservers");
+		setMaxRecordsForFuzzyQ(queryParam);
 	}
 
 	@RequestMapping(value = "/nameserver/{nsName}", method = RequestMethod.GET)
