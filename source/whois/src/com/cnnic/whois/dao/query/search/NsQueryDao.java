@@ -5,6 +5,7 @@ import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.bean.index.NameServerIndex;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.index.SearchResult;
+import com.cnnic.whois.util.validate.ValidateUtils;
 
 public class NsQueryDao extends AbstractSearchQueryDao<NameServerIndex> {
 
@@ -26,7 +27,14 @@ public class NsQueryDao extends AbstractSearchQueryDao<NameServerIndex> {
 	public SearchResult<NameServerIndex> search(QueryParam param)
 			throws QueryException {
 		String q = param.getQ();
-		q = escapeSolrChar(q);
+		q = q.replace("\\:", ":");
+		if(ValidateUtils.isIpv4(q)){
+			q = EntityQueryDao.geneNsQByPreciseIpv4(q);			
+		}else if (ValidateUtils.isIPv6(q)){
+			q = EntityQueryDao.geneNsQByPreciseIpv6(q);
+		} else {
+			q = escapeSolrChar(q);
+		}
 		SearchResult<NameServerIndex> result = query(q, param.getPage());
 		return result;
 	}
