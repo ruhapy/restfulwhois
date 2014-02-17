@@ -1005,11 +1005,7 @@ public class WhoisUtil {
 	public static String getUserRole(HttpServletRequest request) {
 		String role = "anonymous";
 		if (request.isUserInRole("authenticated")
-				|| request.getSession().getAttribute("openIdUser") != null) { // determine
-																				// what
-																				// kind
-																				// of
-																				// role
+				|| request.getSession().getAttribute("openIdUser") != null) {
 			role = "authenticated";
 		} else if (request.isUserInRole("root")) {
 			role = "root";

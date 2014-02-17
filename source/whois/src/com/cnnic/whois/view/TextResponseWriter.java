@@ -214,10 +214,8 @@ public class TextResponseWriter extends AbstractResponseWriter {
 			if(object instanceof JSONArray){
 				object = convertJsonArrayToList((JSONArray)object);
 				objList.add((List<Object>) object);
-			}else if(object instanceof String){
-				objList.add(object);
 			}else{
-				System.err.println();
+				objList.add(object);
 			}
 		}
 		obj = objList;
