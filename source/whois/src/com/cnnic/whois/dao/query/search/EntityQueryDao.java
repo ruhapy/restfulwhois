@@ -72,4 +72,15 @@ public class EntityQueryDao extends AbstractSearchQueryDao<EntityIndex> {
 		page.setRecordsCount(Long.valueOf(result.getTotalResults()).intValue());
 		return result;
 	}
+	
+	public static String geneNsQByPreciseIpv4(String param){
+		String ipV4 = "ipV4Address:*" + param + " OR ipV4Address:" + param + "* OR ipV4Address:*" + param + "*";
+		return ipV4;
+	}
+	
+	public static String geneNsQByPreciseIpv6(String param){
+		param = param.replace(":","\\:");
+		String ipV6 = "ipV6Address:*" + param + " OR ipV6Address:" + param + "* OR ipV6Address:*" + param + "*";
+		return ipV6;
+	}
 }

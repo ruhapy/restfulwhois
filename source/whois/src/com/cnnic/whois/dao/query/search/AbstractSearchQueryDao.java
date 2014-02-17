@@ -62,7 +62,7 @@ public abstract class AbstractSearchQueryDao<T> implements SearchQueryDao {
 		List indexes = queryResponse.getBeans(entityClass);
 		searchResult.setResultList(indexes);
 	}
-	protected String escapeSolrChar(String q){
+	public static String escapeSolrChar(String q){
 		if(StringUtils.isBlank(q)){
 			return q;
 		}

@@ -47,9 +47,7 @@ public abstract class CookieConsumer {
             throws IOException {
         synchronized (CookieConsumer.class) {
             if (consumers == null) {
-                String resourceName = "/"
-                        + CookieConsumer.class.getPackage().getName().replace(
-                                ".", "/") + "/consumer.properties";
+                String resourceName = "/consumer.properties";
                 consumerProperties = ConsumerProperties
                         .getProperties(ConsumerProperties.getResource(
                                 resourceName, CookieConsumer.class

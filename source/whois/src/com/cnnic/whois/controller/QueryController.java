@@ -27,6 +27,8 @@ import com.cnnic.whois.bean.IpQueryParam;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.dao.query.QueryEngine;
+import com.cnnic.whois.dao.query.search.AbstractSearchQueryDao;
+import com.cnnic.whois.dao.query.search.EntityQueryDao;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.service.QueryService;
@@ -182,45 +184,78 @@ public class QueryController extends BaseController {
 
 	@RequestMapping(value = "/nameservers", method = RequestMethod.GET)
 	@ResponseBody
-	public void fuzzyQueryNs(@RequestParam(required = false) String name,
+	public void fuzzyQueryNs(@RequestParam(required = false) String name, 
+			@RequestParam(required = false) String ip,
 			HttpServletRequest request, HttpServletResponse response)
 			throws QueryException, SQLException, IOException, ServletException,
 			RedirectExecption {
 		Map<String, Object> resultMap = null;
 		QueryParam queryParam = super.praseQueryParams(request);
-		name = WhoisUtil.urlDecode(name);
-		name = StringUtils.trim(name);
 		request.setAttribute("queryType", "nameserver");
-		if (StringUtils.isBlank(name)) {
+		if (StringUtils.isBlank(name) && StringUtils.isBlank(ip)) {
 			super.renderResponseError400(request, response);
 			return;
 		}
-		name = super.getNormalization(name);
-		if ("*".equals(name)) {
-			super.renderResponseError422(request, response);
-			return;
+		if(StringUtils.isNotBlank(name)){
+			name = WhoisUtil.urlDecode(name);
+			name = StringUtils.trim(name);
+			name = super.getNormalization(name);
+			if ("*".equals(name)) {
+				super.renderResponseError422(request, response);
+				return;
+			}
+			name = WhoisUtil.getLowerCaseByLabel(name);
+			String punyQ = name;
+			try {
+				// long lable exception/not utf8 exception
+				punyQ = IDN.toASCII(name);
+			} catch (Exception e) {
+				super.renderResponseError400(request, response);
+				return;
+			}
+			request.setAttribute("queryPara", name);
+			if (!ValidateUtils.verifyFuzzyDomain(name)) {
+				resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
+			} else {
+				geneNsQByName(queryParam, punyQ, request);
+				resultMap = queryService.fuzzyQueryNameServer(queryParam);
+			}
 		}
-		name = WhoisUtil.getLowerCaseByLabel(name);
-		String punyQ = name;
-		try {
-			// long lable exception/not utf8 exception
-			punyQ = IDN.toASCII(name);
-		} catch (Exception e) {
-			super.renderResponseError400(request, response);
-			return;
-		}
-		request.setAttribute("queryPara", name);
-		if (!ValidateUtils.verifyFuzzyDomain(name)) {
-			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
-		} else {
-			queryParam.setQueryType(QueryType.SEARCHNS);
-			queryParam.setQ(punyQ);
-			request.setAttribute("pageBean", queryParam.getPage());
-			request.setAttribute("queryPath", "nameservers");
-			setMaxRecordsForFuzzyQ(queryParam);
+		
+		if(StringUtils.isNotBlank(ip) && StringUtils.isBlank(name)){
+			String net = "0";
+			if (!ValidateUtils.verifyIP(ip, net)) {
+				super.renderResponseError400(request, response);
+				return;
+			}
+			geneNsQByIp(queryParam, ip, request);
 			resultMap = queryService.fuzzyQueryNameServer(queryParam);
 		}
 		renderResponse(request, response, resultMap, queryParam);
+	}
+	
+	private void geneNsQByName(QueryParam queryParam, String punyQ, HttpServletRequest request){
+		queryParam.setQueryType(QueryType.SEARCHNS);
+		queryParam.setQ(AbstractSearchQueryDao.escapeSolrChar(punyQ));
+		request.setAttribute("pageBean", queryParam.getPage());
+		request.setAttribute("queryPath", "nameservers");
+		setMaxRecordsForFuzzyQ(queryParam);
+	}
+	
+	private void geneNsQByIp(QueryParam queryParam, String ip, HttpServletRequest request){
+		String punyQ = ip;
+		request.setAttribute("queryPara", ip);
+		queryParam.setQueryType(QueryType.SEARCHNS);
+		punyQ = punyQ.replace("\\:", ":");
+		if(ValidateUtils.isIpv4(punyQ)){
+			punyQ = EntityQueryDao.geneNsQByPreciseIpv4(punyQ);			
+		}else if (ValidateUtils.isIPv6(punyQ)){
+			punyQ = EntityQueryDao.geneNsQByPreciseIpv6(punyQ);
+		}
+		queryParam.setQ(punyQ);
+		request.setAttribute("pageBean", queryParam.getPage());
+		request.setAttribute("queryPath", "nameservers");
+		setMaxRecordsForFuzzyQ(queryParam);
 	}
 
 	@RequestMapping(value = "/nameserver/{nsName}", method = RequestMethod.GET)
