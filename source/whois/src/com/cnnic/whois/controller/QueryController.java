@@ -193,12 +193,7 @@ public class QueryController extends BaseController {
 		if (StringUtils.isBlank(name) && StringUtils.isBlank(ip)) {
 			super.renderResponseError400(request, response);
 			return;
-		}else if(StringUtils.isNotBlank(name) && StringUtils.isNotBlank(ip)){
-			super.renderResponseError400(request, response);
-			return;
 		}
-		
-		String net = "0";
 		if(StringUtils.isNotBlank(name)){
 			name = WhoisUtil.urlDecode(name);
 			name = StringUtils.trim(name);
@@ -225,7 +220,8 @@ public class QueryController extends BaseController {
 			}
 		}
 		
-		if(StringUtils.isNotBlank(ip)){
+		if(StringUtils.isNotBlank(ip) && StringUtils.isBlank(name)){
+			String net = "0";
 			if (!ValidateUtils.verifyIP(ip, net)) {
 				super.renderResponseError400(request, response);
 				return;
