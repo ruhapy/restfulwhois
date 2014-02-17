@@ -26,7 +26,6 @@ public class NsQueryDao extends AbstractSearchQueryDao<NameServerIndex> {
 	public SearchResult<NameServerIndex> search(QueryParam param)
 			throws QueryException {
 		String q = param.getQ();
-		q = escapeSolrChar(q);
 		SearchResult<NameServerIndex> result = query(q, param.getPage());
 		return result;
 	}
