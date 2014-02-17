@@ -258,7 +258,42 @@ whois -h rdap.restfulwhois.org qq.cn
 whois -h rdap.restfulwhois.org entity APNIC
 whois -h rdap.restfulwhois.org as 1223
 whois -h rdap.restfulwhois.org ns ns2.ee28.cn
-</pre></div>
+</pre><h3>Configuration Restful Whois OauthAPI SDK Demo</h3>
+
+<ul>
+	<li>download the consumer project, find consumer.properties file
+		modify "sample.serviceProvider.baseURL" value, the value from whois project url
+		Following is an example of user configuration.
+	</li>
+</ul>
+<pre>
+	sample.serviceProvider.baseURL: http://localhost:8080/
+</pre>
+
+<ul>
+	<li>modify "sample.consumerKey、sample.consumerSecret" value
+		to database : whois --> table : oauth_users_app --> column value : app_key, app_secret
+		Following is an example of user configuration.
+	</li>
+</ul>
+<pre>
+	sample.consumerKey: key1385973838215
+	sample.consumerSecret: secret1385973838215
+</pre>
+<ul>
+	<li>install jdk、tomcat、mysql、apache 
+	refer to "software installation" of https://github.com/cnnic/restfulwho
+	</li>
+</ul>
+
+<ul>
+	<li>install jdk、tomcat、mysql、apache 
+	refer to "software installation" of https://github.com/cnnic/restfulwho
+	</li>
+</ul>
+
+
+</div>
           
         
 
