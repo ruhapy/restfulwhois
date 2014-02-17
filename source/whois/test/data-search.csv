@@ -61,11 +61,16 @@ path,Accept,param,status,mark
 /.well-known/rdap/entities,application/json,handle=notUTF8%E6%B8%85%E5%8D*,400,BAD REQUEST
 #name server search
 .well-known/rdap/nameservers?ip=1.0.0.0,application/rdap+json,,200,Handle
+.well-known/rdap/nameservers?ip=1.0.0.1,application/rdap+json,,200,Handle
+.well-known/rdap/nameservers?ip=1.0.0.2,application/rdap+json,,200,Handle
 .well-known/rdap/nameservers?ip=1.*,application/rdap+json,,400,BAD REQUEST
 .well-known/rdap/nameservers?ip=2001:6a8:0:1:210:4bff:fe4b:4c61,application/rdap+json,,200,Handle
-.well-known/rdap/nameservers?ip=2001:6a8:0:1:210:4bff:fe4b:4c61x,application/rdap+json,,400,BAD REQUEST
-.well-known/rdap/nameservers?name=c.cnnic.cn&ip=1.1.1.1,application/rdap+json,,400,BAD REQUEST
+.well-known/rdap/nameservers?ip=2002:6a8:0:1:210:4bff:fe4b:4c61,application/rdap+json,,200,Handle
+.well-known/rdap/nameservers?ip=2001:5a8:0:1:210:4bff:fe4b:4c61,application/rdap+json,,200,Handle
+.well-known/rdap/nameservers?ip=2001:6a8:0:1:210:4bff:fe4b:*,application/rdap+json,,400,BAD REQUEST
+.well-known/rdap/nameservers?name=c.cnnic.cn&ip=1.1.1.1,application/rdap+json,,200,Handle
 .well-known/rdap/nameservers?ip=1.1.1.1,application/rdap+json,,404,NOT FOUND
+.well-known/rdap/nameservers?ip=3002:6a8:0:1:210:4bff:fe4b:4c61,application/rdap+json,,404,NOT FOUND
 
 
 
