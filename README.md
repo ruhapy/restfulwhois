@@ -286,12 +286,6 @@ whois -h rdap.restfulwhois.org ns ns2.ee28.cn
 	</li>
 </ul>
 
-<ul>
-	<li>install jdk、tomcat、mysql、apache 
-	refer to "software installation" of https://github.com/cnnic/restfulwho
-	</li>
-</ul>
-
 
 </div>
           
