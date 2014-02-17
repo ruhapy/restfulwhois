@@ -27,6 +27,8 @@ import com.cnnic.whois.bean.IpQueryParam;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.dao.query.QueryEngine;
+import com.cnnic.whois.dao.query.search.AbstractSearchQueryDao;
+import com.cnnic.whois.dao.query.search.EntityQueryDao;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.service.QueryService;
@@ -234,7 +236,7 @@ public class QueryController extends BaseController {
 	
 	private void geneNsQByName(QueryParam queryParam, String punyQ, HttpServletRequest request){
 		queryParam.setQueryType(QueryType.SEARCHNS);
-		queryParam.setQ(punyQ);
+		queryParam.setQ(AbstractSearchQueryDao.escapeSolrChar(punyQ));
 		request.setAttribute("pageBean", queryParam.getPage());
 		request.setAttribute("queryPath", "nameservers");
 		setMaxRecordsForFuzzyQ(queryParam);
@@ -244,6 +246,12 @@ public class QueryController extends BaseController {
 		String punyQ = ip;
 		request.setAttribute("queryPara", ip);
 		queryParam.setQueryType(QueryType.SEARCHNS);
+		punyQ = punyQ.replace("\\:", ":");
+		if(ValidateUtils.isIpv4(punyQ)){
+			punyQ = EntityQueryDao.geneNsQByPreciseIpv4(punyQ);			
+		}else if (ValidateUtils.isIPv6(punyQ)){
+			punyQ = EntityQueryDao.geneNsQByPreciseIpv6(punyQ);
+		}
 		queryParam.setQ(punyQ);
 		request.setAttribute("pageBean", queryParam.getPage());
 		request.setAttribute("queryPath", "nameservers");
