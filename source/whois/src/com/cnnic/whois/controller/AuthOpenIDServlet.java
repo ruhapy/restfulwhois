@@ -15,9 +15,11 @@ import org.openid4java.discovery.DiscoveryInformation;
 import org.openid4java.message.AuthRequest;
 import org.openid4java.message.ax.FetchRequest;
 
+import com.cnnic.whois.util.WhoisProperties;
+
 public class AuthOpenIDServlet extends HttpServlet {
 	private ConsumerManager manager = new ConsumerManager();
-	private String returnToUrl = "http://rdap.restfulwhois.org/authOpenIdClientServlet.do";
+	private String returnToUrl = WhoisProperties.getServerurl() + "/authOpenIdClientServlet.do";
 
 	/**
 	 * Called by the server (via the service method) to allow a servlet to
