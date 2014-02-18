@@ -18,7 +18,7 @@ path,Accept,param,status,mark
 /.well-known/rdap,unknownOrOtherAcceptHeader-as json,,200,index
 #
 /.well-known/rdap/domain/清华大学.中国,application/rdap+json,,200,rdapConformance
-/.well-known/rdap/domain/xn--xkry9kk1bz66a.xn--fiqs8s,application/rdap+json,unkonwParam=zzz,200,Handle
+/.well-known/rdap/domain/xn--xkry9kk1bz66a.xn--fiqs8s,application/rdap+json,unkonwParam=zzz,200,ldhName
 /.well-known/rdap/malformedQueries/z.cn,application/rdap+json,unkonwParam=zzz,400,BAD REQUEST
 /.well-known/rdap/domain/z.cn,application/rdap+json,unkonwParam=zzz&a=b,200,Handle
 /.well-known/rdap/domain/z.cn,application/json,unkonwParam=zzz,200,Handle

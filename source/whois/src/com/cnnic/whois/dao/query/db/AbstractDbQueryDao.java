@@ -217,7 +217,7 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 		if(null != map){
 			result.putAll(map);
 		}
-		return map;
+		return result;
 	}
 	
 	public List<String> getKeyFields(String role) {
