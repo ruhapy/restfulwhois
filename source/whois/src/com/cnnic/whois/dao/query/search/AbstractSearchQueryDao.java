@@ -9,10 +9,12 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.util.ClientUtils;
 
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.index.SearchCondition;
 import com.cnnic.whois.service.index.SearchResult;
+import com.cnnic.whois.util.WhoisUtil;
 
 public abstract class AbstractSearchQueryDao<T> implements SearchQueryDao {
 	private CommonsHttpSolrServer server;
@@ -63,9 +65,6 @@ public abstract class AbstractSearchQueryDao<T> implements SearchQueryDao {
 		searchResult.setResultList(indexes);
 	}
 	public static String escapeSolrChar(String q){
-		if(StringUtils.isBlank(q)){
-			return q;
-		}
-		return q.replace(" ", "\\ ").replace(":", "\\:").replace("-", "\\-");
+		return WhoisUtil.escapeQueryChars(q);
 	}
 }

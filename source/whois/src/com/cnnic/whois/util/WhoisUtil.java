@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONArray;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.solr.client.solrj.util.ClientUtils;
 import org.springframework.web.context.ContextLoader;
 
 import com.cnnic.whois.execption.QueryException;
@@ -1101,5 +1102,11 @@ public class WhoisUtil {
 			return str;
 		}
 		return URLDecoder.decode(str, "UTF-8");
+	}
+	public static String escapeQueryChars(String q){
+		if(StringUtils.isBlank(q)){
+			return q;
+		}
+		return ClientUtils.escapeQueryChars(q).replace("\\*", "*");
 	}
 }
