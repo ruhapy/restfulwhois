@@ -261,7 +261,7 @@ whois -h rdap.restfulwhois.org ns ns2.ee28.cn
 </pre><h3>Configuration Restful Whois OauthAPI SDK Demo</h3>
 
 <ul>
-	<li>download the consumer project, find consumer.properties file
+	<li>download the consumer project, find src/consumer.properties file
 		modify "sample.serviceProvider.baseURL" value, the value from whois project url
 		Following is an example of user configuration.
 	</li>
@@ -280,11 +280,6 @@ whois -h rdap.restfulwhois.org ns ns2.ee28.cn
 	sample.consumerKey: key1385973838215
 	sample.consumerSecret: secret1385973838215
 </pre>
-<ul>
-	<li>install jdk、tomcat、mysql、apache 
-	refer to "software installation" of https://github.com/cnnic/restfulwho
-	</li>
-</ul>
 
 
 </div>
