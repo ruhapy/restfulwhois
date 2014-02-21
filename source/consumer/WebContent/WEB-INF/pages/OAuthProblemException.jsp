@@ -4,7 +4,12 @@
 <%@page import="net.oauth.server.OAuthServlet"%>
 <HTML>
 <body>
-OAuthProblemException:<br/>
+
+<div align="center" style="margin-top: 70px;font-size: 20px;">
+	OAuthProblemException: Response Data was NULL, Please Confirm !
+</div>
+
+<%-- 
 <form>
 <table>
 <%
@@ -32,5 +37,6 @@ OAuthProblemException:<br/>
 %>
 </table>
 </form>
+--%>
 </body>
 </HTML>
