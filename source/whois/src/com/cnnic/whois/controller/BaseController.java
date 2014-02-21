@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cnnic.whois.bean.DomainQueryParam;
@@ -29,6 +31,9 @@ public class BaseController {
 	@Autowired
 	protected ViewResolver viewResolver;
 
+	private static Logger logger = LoggerFactory
+			.getLogger(BaseController.class);
+
 	protected void setMaxRecordsForFuzzyQ(QueryParam queryParam) {
 		if (queryParam.getFormat().isJsonOrXmlFormat()) {
 			queryParam.getPage().setMaxRecords(
@@ -38,6 +43,7 @@ public class BaseController {
 
 	protected DomainQueryParam praseDomainQueryParams(HttpServletRequest request) {
 		FormatType formatType = getFormatType(request);
+		logger.info("formatType:" + formatType);
 		PageBean page = getPageParam(request);
 		return new DomainQueryParam(formatType, page);
 	}
@@ -72,8 +78,8 @@ public class BaseController {
 	protected void renderResponse(HttpServletRequest request,
 			HttpServletResponse response, Map<String, Object> resultMap,
 			QueryParam queryParam) throws IOException, ServletException {
-		viewResolver.writeResponse(queryParam.getFormat(), queryParam.getQueryType(),
-				request, response, resultMap);
+		viewResolver.writeResponse(queryParam.getFormat(),
+				queryParam.getQueryType(), request, response, resultMap);
 	}
 
 	protected void renderResponseError400(HttpServletRequest request,
@@ -81,17 +87,17 @@ public class BaseController {
 			QueryException {
 		Map<String, Object> resultMap = WhoisUtil
 				.processError(WhoisUtil.COMMENDRRORCODE);
-		viewResolver.writeResponse(getFormatType(request), getQueryType(request),
-				request, response, resultMap);
+		viewResolver.writeResponse(getFormatType(request),
+				getQueryType(request), request, response, resultMap);
 	}
-	
+
 	protected void renderResponseError422(HttpServletRequest request,
 			HttpServletResponse response) throws IOException, ServletException,
 			QueryException {
 		Map<String, Object> resultMap = WhoisUtil
 				.processError(WhoisUtil.UNPROCESSABLEERRORCODE);
-		viewResolver.writeResponse(getFormatType(request), getQueryType(request),
-				request, response, resultMap);
+		viewResolver.writeResponse(getFormatType(request),
+				getQueryType(request), request, response, resultMap);
 	}
 
 	public static String getFormatCookie(HttpServletRequest request) {
@@ -112,28 +118,30 @@ public class BaseController {
 		if (StringUtils.isNotBlank(format)) {
 			return FormatType.getFormatType(format);
 		}
-		if(isWebBrowser(request)){	
+		if (isWebBrowser(request)) {
 			return FormatType.HTML;
-		} 		
+		}
 		String acceptHeader = request.getHeader("Accept");
-		if (StringUtils.isNotBlank(acceptHeader) && acceptHeader.contains("text")) {
+		if (StringUtils.isNotBlank(acceptHeader)
+				&& acceptHeader.contains("text")) {
 			format = FormatType.TEXTPLAIN.getName();
-		} else if (StringUtils.isNotBlank(acceptHeader) && acceptHeader.contains("html")) {
+		} else if (StringUtils.isNotBlank(acceptHeader)
+				&& acceptHeader.contains("html")) {
 			format = FormatType.HTML.getName();
-		}else {
+		} else {
 			format = FormatType.JSON.getName();
 		}
 		return FormatType.getFormatType(format);
 	}
-	
+
 	public static QueryType getQueryType(HttpServletRequest request) {
 		if (request.getAttribute("queryType") != null) {
 			String queryType = (String) request.getAttribute("queryType");
-			return QueryType.getQueryType(queryType);			
+			return QueryType.getQueryType(queryType);
 		} else {
 			QueryParam param = (QueryParam) request.getAttribute("queryPara");
-		    return param.getQueryType();
-		}		
+			return param.getQueryType();
+		}
 	}
 
 	public static boolean isWebBrowser(HttpServletRequest request) {
@@ -150,8 +158,8 @@ public class BaseController {
 		}
 		return false;
 	}
-	
-	protected String getNormalization(String str){
+
+	protected String getNormalization(String str) {
 		if (StringUtils.isBlank(str)) {
 			return str;
 		}

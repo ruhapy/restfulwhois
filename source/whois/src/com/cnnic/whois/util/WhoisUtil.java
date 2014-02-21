@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONArray;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.solr.client.solrj.util.ClientUtils;
 import org.springframework.web.context.ContextLoader;
 
 import com.cnnic.whois.execption.QueryException;
@@ -192,9 +193,9 @@ public class WhoisUtil {
 
 	public static final String SEARCHDOMAIN = "domains";
 
-	public static String[] IPKeyFileds = { JOINNANOTICES, "Handle",
+	public static String[] IPKeyFileds = { "Handle",
 			"StartHighAddress", "StartLowAddress", "EndLowAddress",
-			"EndHighAddress", "Lang",
+			"EndHighAddress", "Lang",JOINNANOTICES,
 			"IP_Version",
 			"Name", // ARRAYFILEDPRX + "Description",
 			"Type", "Country", "Parent_Handle", JOINREMARKS,
@@ -1005,11 +1006,7 @@ public class WhoisUtil {
 	public static String getUserRole(HttpServletRequest request) {
 		String role = "anonymous";
 		if (request.isUserInRole("authenticated")
-				|| request.getSession().getAttribute("openIdUser") != null) { // determine
-																				// what
-																				// kind
-																				// of
-																				// role
+				|| request.getSession().getAttribute("openIdUser") != null) {
 			role = "authenticated";
 		} else if (request.isUserInRole("root")) {
 			role = "root";
@@ -1105,5 +1102,11 @@ public class WhoisUtil {
 			return str;
 		}
 		return URLDecoder.decode(str, "UTF-8");
+	}
+	public static String escapeQueryChars(String q){
+		if(StringUtils.isBlank(q)){
+			return q;
+		}
+		return ClientUtils.escapeQueryChars(q).replace("\\*", "*");
 	}
 }

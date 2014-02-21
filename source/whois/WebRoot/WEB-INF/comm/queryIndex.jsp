@@ -45,6 +45,9 @@
 			}else if(request.getSession().getAttribute("openIdUser") != null){
 				openIdName = "openIdName";
 				username = (String)request.getSession().getAttribute("openIdUser");
+				if(username != null && username.startsWith("http://")){
+					username = username.substring("http://".length());
+				}
 			}
 			
 			request.setAttribute("user", user);
@@ -98,7 +101,7 @@
 							</dt>
 						</dl>
 					</li>
-					<%} else if( openIdName != null){%>
+					<%} else {%>
 					<li class="six">
 						<dl>
 							<dt>
@@ -111,21 +114,11 @@
 					<li class="five">
 						<dl>
 							<dt>
-								<a href="<c:url value='/'/>">logout</a>
+								<a href="<c:url value='/adv/logout.jsp'/>">logout</a>
 							</dt>
 						</dl>
 					</li>
-					<%} else {%>
-					<li class="three">
-						<dl>
-							<dt>
-								<font>Current User: <big style="color: red"><%=username%></big>
-
-								</font>
-							</dt>
-						</dl>
-					</li>
-					<% }%>
+					<%}%>
 				</ul>
 			</div>
 			<div id="sidebar">

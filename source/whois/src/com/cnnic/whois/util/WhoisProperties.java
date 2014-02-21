@@ -47,6 +47,8 @@ public class WhoisProperties {
 	 */
 	private static String rdapUrl;
 	
+	private static String serverurl;
+	
 	public void setAnonymousExpireTime(String time) {
 	    anonymousExpireTime = time;
 	}
@@ -116,5 +118,13 @@ public class WhoisProperties {
 	 
 	public static String getRdapUrl() {
 	    return rdapUrl;
+	}
+
+	public static String getServerurl() {
+		return serverurl;
+	}
+
+	public void setServerurl(String serverurl) {
+		WhoisProperties.serverurl = serverurl;
 	}
 }

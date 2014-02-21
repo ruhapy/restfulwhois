@@ -210,13 +210,14 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 	}
 
 	public static Map<String, Object> rdapConformance(Map<String, Object> map){
-		if(map == null){
-			map = new LinkedHashMap<String, Object>();
-		}
+		Map result = new LinkedHashMap<String, Object>();
 		Object[] conform = new Object[1];
 		conform[0] = WhoisUtil.RDAPCONFORMANCE;
-		map.put(WhoisUtil.RDAPCONFORMANCEKEY, conform);
-		return map;
+		result.put(WhoisUtil.RDAPCONFORMANCEKEY, conform);
+		if(null != map){
+			result.putAll(map);
+		}
+		return result;
 	}
 	
 	public List<String> getKeyFields(String role) {

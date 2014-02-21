@@ -197,8 +197,8 @@ public class QueryController extends BaseController {
 			return;
 		}
 		if(StringUtils.isNotBlank(name)){
-			name = WhoisUtil.urlDecode(name);
 			name = StringUtils.trim(name);
+			name = WhoisUtil.urlDecode(name);
 			name = super.getNormalization(name);
 			if ("*".equals(name)) {
 				super.renderResponseError422(request, response);
@@ -219,6 +219,8 @@ public class QueryController extends BaseController {
 			} else {
 				geneNsQByName(queryParam, punyQ, request);
 				resultMap = queryService.fuzzyQueryNameServer(queryParam);
+				renderResponse(request, response, resultMap, queryParam);
+				return;
 			}
 		}
 		
@@ -230,13 +232,13 @@ public class QueryController extends BaseController {
 			}
 			geneNsQByIp(queryParam, ip, request);
 			resultMap = queryService.fuzzyQueryNameServer(queryParam);
+			renderResponse(request, response, resultMap, queryParam);
 		}
-		renderResponse(request, response, resultMap, queryParam);
 	}
 	
 	private void geneNsQByName(QueryParam queryParam, String punyQ, HttpServletRequest request){
 		queryParam.setQueryType(QueryType.SEARCHNS);
-		queryParam.setQ(AbstractSearchQueryDao.escapeSolrChar(punyQ));
+		queryParam.setQ(WhoisUtil.escapeQueryChars(punyQ));
 		request.setAttribute("pageBean", queryParam.getPage());
 		request.setAttribute("queryPath", "nameservers");
 		setMaxRecordsForFuzzyQ(queryParam);
