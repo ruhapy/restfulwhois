@@ -145,7 +145,7 @@ note that this tomcat use port '9090'.
 bin/shutdown.sh
 </pre><h2 id="SystemDeployment">System Deployment</h2>
 <h3 id="ImportdatatoMysql">Import data to Mysql</h3>
-<ul><li>Download the whois.sql under the directory of <a class="ext-link" href="http://restfulwhois.org/trac/RestfulWhois/browser/source"><span class="icon">​</span>Source Code</a>.
+<ul><li>Download the whois.sql from: deployment/whois.sql.
 </li><li>Import data to the database.
 </li></ul><pre class="wiki">$ source whois.sql
 </pre><h3 id="Tomcatconfiguration">Tomcat configuration</h3>
