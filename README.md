@@ -26,7 +26,7 @@ RESTful Whois is written in JAVA and needs a database which MySQL is selected. Y
             <a href="#MysqlInstallation">Mysql Installation</a>
           </li>
           <li>
-            <a href="#SolrInstallation">Appache Installation</a>
+            <a href="#SolrInstallation">Solr Installation</a>
           </li>
         </ol>
       </li>
@@ -129,7 +129,7 @@ If the status is [FAILED], please start the Mysql service.
 </p>
 </blockquote>
 <pre class="wiki">$ service mysql start
-</pre><h3 id="ApacheTomcatConnector">Solr Install</h3>
+</pre><h3 id="ApacheTomcatConnector">Solr Installation</h3>
 <ul><li> download tomcat-solr: deployment/apache-tomcat-solr.tar.gz
 </li></ul><ul><li>Install and start up
 </li></ul>
