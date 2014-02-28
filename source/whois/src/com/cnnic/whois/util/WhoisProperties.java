@@ -25,17 +25,8 @@ public class WhoisProperties {
 	/*
 	 * Domain Solr Url
 	 */
-	private static String domainSolrUrl;
+	private static String solrUrl;
 	
-	/*
-	 * Entity Solr Url
-	 */
-	private static String entitySolrUrl;
-	
-	/*
-	 * Name Server Solr Url
-	 */
-	private static String nameServerSolrUrl;
 	
 	/*
 	 * Max Length for fuzzy query
@@ -81,27 +72,20 @@ public class WhoisProperties {
 	    return expireTime;
 	}
 	
-	public void setDomainSolrUrl(String url) {
-		domainSolrUrl = url;
+	public void setSolrUrl(String url) {
+		solrUrl = url;
 	}
 	 
 	public static String getDomainSolrUrl() {
-	    return domainSolrUrl;
+	    return solrUrl + "/domain";
 	}
 	
-	public void setEntitySolrUrl(String url) {
-		entitySolrUrl = url;
-	}
-	 
 	public static String getEntitySolrUrl() {
-	    return entitySolrUrl;
-	}
-	public void setNameServerSolrUrl(String url) {
-		nameServerSolrUrl = url;
+	    return solrUrl + "/entity";
 	}
 	 
 	public static String getNameServerSolrUrl() {
-	    return nameServerSolrUrl;
+	    return solrUrl + "/nameserver";
 	}
 	
 	public void setMaxFuzzyQuery(String num) {
