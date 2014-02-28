@@ -17,8 +17,8 @@ import com.cnnic.whois.view.ViewResolver;
 public class QueryEngine {
 	private static QueryEngine engine = new QueryEngine();
 	@Autowired
-	@Qualifier("cacheQueryExecutor")
-//	@Qualifier("dbQueryExecutor")
+//	@Qualifier("cacheQueryExecutor")
+	@Qualifier("dbQueryExecutor")
 	private QueryExecutor queryExecutor;
 	@Autowired
 	private ViewResolver viewResolver ;

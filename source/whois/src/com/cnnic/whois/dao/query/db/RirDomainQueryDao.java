@@ -24,8 +24,9 @@ public class RirDomainQueryDao extends AbstractDomainQueryDao {
 		try {
 			List<String> keyFields = ColumnCache.getColumnCache()
 					.getRIRDomainKeyFileds();
+			String sql = String.format(WhoisUtil.SELECT_LIST_RIRDOMAIN, param.getQ());
 			Map<String, Object> domainMap = query(
-					WhoisUtil.SELECT_LIST_RIRDOMAIN, keyFields, param.getQ());
+					sql, keyFields, param.getQ());
 			if (domainMap != null) {
 				map = rdapConformance(map);
 				map.putAll(domainMap);
