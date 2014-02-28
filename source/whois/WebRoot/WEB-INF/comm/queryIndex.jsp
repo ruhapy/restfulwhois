@@ -60,7 +60,9 @@
 			String queryFormat = "";
 			if (request.getAttribute("queryType") != null){
 				queryType = (String)request.getAttribute("queryType");
-				queryPara = (String)request.getAttribute("queryPara");
+				if(null != request.getAttribute("queryPara")){
+					queryPara = (String)request.getAttribute("queryPara");
+				}
 				queryFormat = (String)request.getAttribute("queryFormat");
 			}
 		%>
