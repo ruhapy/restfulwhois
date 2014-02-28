@@ -7,22 +7,20 @@
 		   http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd"
 	default-autowire="byName" default-lazy-init="false">
 	<bean id="searchDomainQueryDao" class="com.cnnic.whois.dao.query.search.DomainQueryDao">
-		<constructor-arg value="${solr.url.domain}" />
+		<constructor-arg value="${solr.url}/domain" />
 	</bean>
 	<bean id="searchEntityQueryDao" class="com.cnnic.whois.dao.query.search.EntityQueryDao">
-		<constructor-arg value="${solr.url.entity}" />
+		<constructor-arg value="${solr.url}/entity" />
 	</bean>
 	<bean id="searchNsQueryDao" class="com.cnnic.whois.dao.query.search.NsQueryDao">
-		<constructor-arg value="${solr.url.nameserver}" />
+		<constructor-arg value="${solr.url}/nameserver" />
 	</bean>
 	<bean id="whoisProperties" class="com.cnnic.whois.util.WhoisProperties">
 	    <property name="anonymousExpireTime" value="${anonymous_expire_time}" />
         <property name="authenticatedExpireTime" value="${authenticated_expire_time}" />
         <property name="rootExpireTime" value="${root_expire_time}" />
         <property name="expireTime" value="${expire_time}" />
-        <property name="domainSolrUrl" value="${solr.url.domain}" />
-        <property name="entitySolrUrl" value="${solr.url.entity}" />
-        <property name="nameServerSolrUrl" value="${solr.url.nameserver}" />
+        <property name="solrUrl" value="${solr.url}" />
         <property name="maxFuzzyQuery" value="${maxsize.fuzzyquery}" />
         <property name="rdapUrl" value="${well.known}" />
         <property name="serverurl" value="${serverurl}" />
