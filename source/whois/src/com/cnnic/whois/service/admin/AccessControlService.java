@@ -19,6 +19,8 @@ public class AccessControlService {
 	
 	@Autowired
 	private AccessControlDAO accessControlDAO;
+	@Autowired
+	private PermissionCache permissionCache;
 
 	/**
 	 * List permission information
@@ -68,7 +70,6 @@ public class AccessControlService {
 	 * @param tableName
 	 */
 	private void setPermissionList(String tableName) {
-		PermissionCache permissionCache = PermissionCache.getPermissionCache();
 		
 		int typeBinary = Arrays.binarySearch(WhoisUtil.extendColumnTableTypes, tableName);//to determine what type of collection
 		

@@ -16,6 +16,8 @@ public class ExColumnService {
 	
 	@Autowired
 	private ExColumnDAO exColumnDao;
+	@Autowired
+	private ColumnCache columnCache;
 
 	/**
 	 * Add the extension field
@@ -80,7 +82,6 @@ public class ExColumnService {
 	 * @param tableName
 	 */
 	private void setColumnExtendList(String tableName) {
-		ColumnCache columnCache = ColumnCache.getColumnCache();
 		int typeBinary = Arrays.binarySearch(WhoisUtil.extendColumnTableTypes,
 				tableName);
 		switch (typeBinary) {
