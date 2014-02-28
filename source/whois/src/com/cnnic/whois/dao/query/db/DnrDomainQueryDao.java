@@ -21,8 +21,9 @@ public class DnrDomainQueryDao extends AbstractDomainQueryDao {
 		try {
 			List<String> keyFields = ColumnCache.getColumnCache()
 					.getDNRDomainKeyFileds();
+			String sql = String.format(WhoisUtil.SELECT_LIST_DNRDOMAIN, param.getQ(),param.getQ());
 			Map<String, Object> domainMap = query(
-					WhoisUtil.SELECT_LIST_DNRDOMAIN, keyFields, param.getQ());
+					sql, keyFields, param.getQ());
 			if (domainMap != null) {
 				map = rdapConformance(map);
 				map.putAll(domainMap);

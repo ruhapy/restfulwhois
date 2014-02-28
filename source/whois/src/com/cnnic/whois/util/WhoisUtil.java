@@ -91,8 +91,8 @@ public class WhoisUtil {
 
 	public static final String SELECT_LIST_RIRENTITY = "select * from RIREntity where Handle=";
 	public static final String SELECT_LIST_DNRENTITY = "select * from DNREntity where Handle=";
-	public static final String SELECT_LIST_RIRDOMAIN = "select * from RIRDomain where Ldh_Name=";
-	public static final String SELECT_LIST_DNRDOMAIN = "select * from DNRDomain where Ldh_Name=";
+	public static final String SELECT_LIST_RIRDOMAIN = "select * from RIRDomain where Ldh_Name='%s'";
+	public static final String SELECT_LIST_DNRDOMAIN = "select * from DNRDomain where Ldh_Name='%s' or unicode_name='%s'";
 	public static final String SELECT_LIST_NAMESREVER = "select * from nameServer where Ldh_Name=";
 	public static final String SELECT_LIST_ERRORMESSAGE = "select * from errormessage where Error_Code=";
 
