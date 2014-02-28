@@ -168,7 +168,24 @@ rm -rf /usr/tomcat/webapps/ROOT/*
 unzip whois.war
 cp -r whois/*  /usr/tomcat/webapps/ROOT/
 </pre>
-</li><li>Restart tomcat.
+</li>
+
+<li>config file: WEB-INF/classes/whois.properties
+<pre class='wiki'>
+solr.url：change to solr service url
+serverurl: change to rdap service url
+</pre>
+</li>
+
+<li>config file: WEB-INF/classes/jdbc.properties
+<pre class='wiki'>
+jdbc.url：change to mysql service url
+jdbc.username: change to mysql username
+jdbc.password: change to mysql password
+</pre>
+</li>
+
+<li>Restart tomcat.
 </li></ul><h3 id="Port43WhoisProxy">Port43 Whois Proxy</h3>
 <ul><li>Copy all the files under the directory of deployment/Whois43Proxy to /usr/whoisProxy.
 </li><li>Configure environment parameter.
