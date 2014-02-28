@@ -26,10 +26,7 @@ RESTful Whois is written in JAVA and needs a database which MySQL is selected. Y
             <a href="#MysqlInstallation">Mysql Installation</a>
           </li>
           <li>
-            <a href="#AppacheInstallation">Appache Installation</a>
-          </li>
-          <li>
-            <a href="#ApacheTomcatConnector">Apache Tomcat Connector</a>
+            <a href="#SolrInstallation">Appache Installation</a>
           </li>
         </ol>
       </li>
@@ -132,74 +129,20 @@ If the status is [FAILED], please start the Mysql service.
 </p>
 </blockquote>
 <pre class="wiki">$ service mysql start
-</pre><h3 id="AppacheInstallation">Appache Installation</h3>
-<ul><li>Download file httpd-2.2.10.tar.gz.
-</li><li>Decompress this file and install.
-</li></ul><pre class="wiki">$ tar xvf httpd-2.2.10.tar.gz
-$ cd httpd-2.2.10
-$ sudo ./configure --prefix=/usr/local/apache2 --enable-module=so
-$ sudo make
-$ sudo make install
-</pre><ul><li>Modify the server address in the configuration file.
-</li></ul><pre class="wiki">$ vi /usr/local/apache2/conf/httpd.conf
-</pre><blockquote>
-<p>
-Configure the server name.
-</p>
-</blockquote>
-<pre class="wiki">ServerName 127.0.0.1:80
-</pre><blockquote>
-<p>
-Start the server.
-</p>
-</blockquote>
-<pre class="wiki">$ sudo /usr/local/apache2/bin/httpd -k start 
-</pre><h3 id="ApacheTomcatConnector">Apache Tomcat Connector</h3>
-<ul><li> Install Tomcat connector.
-</li></ul><pre class="wiki">$ tar -xvf tomcat-connectors-1.2.37-src.tar 
-$ cd tomcat-connectors-1.2.32-src/native
-$ sudo ./configure --with-apxs=/usr/local/apache2/bin/apxs --with-java-home=/usr/java/jdk1.6.0_30/
-$ sudo make
-$ sudo make install
-</pre><ul><li>Configuration
-</li></ul><blockquote>
-<p>
-Create and edit file mod_jk.conf.
-</p>
-</blockquote>
-<pre class="wiki">$ vi /conf/mod_jk.conf
-</pre><blockquote>
-<p>
-Add the following content.
-</p>
-</blockquote>
-<pre class="wiki">LoadModule jk_module modules/mod_jk.so
-JkWorkersFile conf/workers.properties
-JkLogFile logs/mod_jk.log
-JkLogLevel info
-JkLogStampFormat "[%a %b %d %H:%M:%S %Y] "
-JkOptions +ForwardKeySize +ForwardURICompat -ForwardDirectories
-JkRequestLogFormat "%w %V %T"
-JkMount /* tomcat
-</pre><blockquote>
-<p>
-Create and edit file workers.properties.
-</p>
-</blockquote>
-<pre class="wiki">$ vi /conf/workers.properties
-</pre><blockquote>
-<p>
-Add the following content.
-</p>
-</blockquote>
-<pre class="wiki">worker.list=tomcat
-worker.jvm1.type=ajp13
-worker.jvm1.port=8009
-worker.jvm1.host=127.0.0.1
-worker.jvm1.lbfactor=1
-</pre><ul><li>Start and shutdown service.
-</li></ul><pre class="wiki">$ /usr/local/apache2/bin/apachectl start 
-$ /usr/local/apache2/bin/apachectl stop 
+</pre><h3 id="ApacheTomcatConnector">Solr Install</h3>
+<ul><li> download tomcat-solr: deployment/apache-tomcat-solr.tar.gz
+</li></ul><ul><li>Install and start up
+</li></ul>
+<pre class="wiki"> 
+tar -zxvf apache-tomcat-solr.tar.gz
+cd  apache-tomcat-solr
+bin/startup.sh
+note that this tomcat use port '9090'.
+</pre>
+<blockquote>
+<ul><li>shutdown service.
+</li></ul><pre class="wiki">
+bin/shutdown.sh
 </pre><h2 id="SystemDeployment">System Deployment</h2>
 <h3 id="ImportdatatoMysql">Import data to Mysql</h3>
 <ul><li>Download the whois.sql under the directory of <a class="ext-link" href="http://restfulwhois.org/trac/RestfulWhois/browser/source"><span class="icon">​</span>Source Code</a>.
