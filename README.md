@@ -149,19 +149,8 @@ bin/shutdown.sh
 </li><li>Import data to the database.
 </li></ul><pre class="wiki">$ source whois.sql
 </pre><h3 id="Tomcatconfiguration">Tomcat configuration</h3>
-<ul><li>Modify the following information in the file of server.xml
-</li></ul><pre class="wiki">&lt;Resource name="jdbc/mysql" auth="Container" 
-                type="javax.sql.DataSource"
-                driverClassName="com.mysql.jdbc.Driver"
-  	password="Your password"			
-                maxIdle="200"
-	        maxWaite="200"
-                username="root"
-                url="jdbc:mysql://DBServerIP:3306/whois"  
-                maxActive="100" /&gt;
-&lt;/GlobalNamingResources&gt;
-</pre><ul><li>Add the following information in the file of context.xml
-</li></ul><pre class="wiki">&lt;ResourceLink name="jdbc/DataSource" global="jdbc/mysql"  type="javax.sql.DataSource"/&gt; 
+<ul><li>Modify conf/server.xml,add following to 'Connector' element:
+</li></ul><pre class="wiki">URIEncoding="UTF-8"
 </pre><ul><li>Configure the user roles of digest authentication in tomcat-user.xml file. Currently, there are 3 types of roles, they are root, authenticated and administrator. Anonymous, authenticated and root user can access the rdap.restfulwhois.org to make queries. Administrators can access rdap.restfulwhois.org/admin to log in and configure the system parameters of back end. Following is an example of user configuration.
 </li></ul><pre class="wiki">&lt;role rolename="authenticated"/&gt;
 &lt;role rolename="root"/&gt;
@@ -173,7 +162,12 @@ bin/shutdown.sh
 &lt;user username="admin" password="admin" roles="administrator"/&gt;
 </pre><ul><li>Restart Tomcat.
 </li></ul><h3 id="RDAPWeb">RDAP Web</h3>
-<ul><li>Copy all the files under the directory of deployment/ROOT to /usr/tomcat/webapps/ROOT.
+<ul><li>download war from:deployment/whois.war,unzip and copy to /usr/tomcat/webapps/ROOT.
+<pre class='wiki'>
+rm -rf /usr/tomcat/webapps/ROOT/*
+unzip whois.war
+cp -r whois/*  /usr/tomcat/webapps/ROOT/
+</pre>
 </li><li>Restart tomcat.
 </li></ul><h3 id="Port43WhoisProxy">Port43 Whois Proxy</h3>
 <ul><li>Copy all the files under the directory of deployment/Whois43Proxy to /usr/whoisProxy.
