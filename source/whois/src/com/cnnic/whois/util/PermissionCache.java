@@ -20,7 +20,9 @@ import com.cnnic.whois.bean.index.NameServerIndex;
 @Component
 public class PermissionCache {
 	@Autowired
-	JdbcUtils jdbcUtils;
+	private JdbcUtils jdbcUtils;
+	
+	private PermissionCache permissionCache;
 
 	private Map<String, List<String>> IPMap = new HashMap<String, List<String>>();
 	private Map<String, List<String>> DNREntityMap = new HashMap<String, List<String>>();
@@ -101,8 +103,8 @@ public class PermissionCache {
 	 * 
 	 * @return PermissionCache objects
 	 */
-	public static PermissionCache getPermissionCache() {
-		return null;
+	public PermissionCache getPermissionCache() {
+		return permissionCache;
 	}
 
 	/**

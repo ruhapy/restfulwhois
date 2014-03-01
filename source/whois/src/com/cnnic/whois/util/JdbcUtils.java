@@ -16,12 +16,11 @@ public class JdbcUtils implements ApplicationContextAware {
 
 	private ApplicationContext applicationContext;
 	
-	private static BasicDataSource dataSource = null;
-	
 	private JdbcUtils() { }
 
 	public Connection getConnection() {
 		Connection conn = null;
+		BasicDataSource dataSource = null;
 		try {
 			dataSource = (BasicDataSource) applicationContext.getBean("dataSource");  
 			conn = dataSource.getConnection();

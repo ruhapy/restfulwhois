@@ -14,7 +14,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ColumnCache {
 	@Autowired
-	JdbcUtils jdbcUtils;
+	private JdbcUtils jdbcUtils;
+	
 	private ColumnCache columnCache ;
 	private List<String> IPKeyFileds = new ArrayList<String>();
 	private List<String> DNREntityKeyFileds = new ArrayList<String>();
@@ -75,8 +76,8 @@ public class ColumnCache {
 	 * 
 	 * @return ColumnCache objects
 	 */
-	public static ColumnCache getColumnCache() {
-		return null;
+	public ColumnCache getColumnCache() {
+		return columnCache;
 	}
 
 	/**
