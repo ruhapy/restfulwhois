@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Component;
 
+import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.DataFormat;
 import com.cnnic.whois.util.WhoisUtil;
@@ -54,14 +55,14 @@ public class JsonResponseWriter extends AbstractResponseWriter {
 	}
 	
 	public void displayOverTimeMessage(HttpServletRequest request, HttpServletResponse response,  
-			String role) throws IOException, ServletException{
+			String role,QueryParam queryParam) throws IOException, ServletException{
 		request.setCharacterEncoding("utf-8");
 		response.setCharacterEncoding("utf-8");
 		
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
 		
 		try {
-			map = WhoisUtil.processError(WhoisUtil.RATELIMITECODE);
+			map = WhoisUtil.processError(WhoisUtil.RATELIMITECODE,queryParam);
 		} catch (QueryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
