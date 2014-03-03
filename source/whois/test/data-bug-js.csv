@@ -1,0 +1,3 @@
+path,Accept,param,status,mark
+/.well-known/rdap/domain/z.cn,application/rdap+json,,200,"handle":";"entities":[
+/.well-known/rdap/unknowPath/z.cn,application/rdap+json,unkonwParam=zzz,400,"errorCode":";"title":";"description":;"lang":

@@ -45,15 +45,7 @@ public class XmlResponseWriter extends AbstractResponseWriter {
 		
 		request.setAttribute("queryFormat", FormatType.XML.getName());
 		response.setHeader("Access-Control-Allow-Origin", "*");
-		
-		//set response status
-		if(map.containsKey("errorCode") || map.containsKey("Error Code")){
-			if(map.containsKey("errorCode")) 
-				errorCode = map.get("errorCode").toString();
-			if (map.containsKey("Error Code"))
-				errorCode = map.get("Error Code").toString();
-			response.setStatus(Integer.valueOf(errorCode));
-		}
+		errorCode = writeResponseCode(response, map, errorCode);
 		
 		response.setHeader("Content-Type", FormatType.XML.getName());
 		out.write(getXMLFromMap(map, 0));

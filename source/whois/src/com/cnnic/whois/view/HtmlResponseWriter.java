@@ -48,13 +48,7 @@ public class HtmlResponseWriter extends AbstractResponseWriter {
 		
 		//set response status
 		htmlMap.remove("queryType");
-		if(map.containsKey("Error_Code") || map.containsKey("Error Code")){
-			if(map.containsKey("Error_Code"))
-				errorCode = map.get("Error_Code").toString();
-			if (map.containsKey("Error Code"))
-				errorCode = map.get("Error Code").toString();
-			response.setStatus(Integer.valueOf(errorCode));
-		}
+		errorCode = writeResponseCode(response, map, errorCode);
 		
 		//multi-responses
 		Iterator<String> iterr = map.keySet().iterator();
