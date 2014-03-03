@@ -101,13 +101,13 @@ public class IpUtil {
 			0xFFFFFFFFFFFFFFFEl, // 63
 			0xFFFFFFFFFFFFFFFFl // 64
 	};
-
 	public static long[] parsingIp(String ipInfo, int ipLength) {
 		long startHighAddr = 0, endHighAddr = 0, startLowAddr = 0, endLowAddr = 0;
 		long[] ipInfoLong = iptolong(ipInfo);
 		if (ipLength != 0) {
 			if (ipInfo.indexOf(":") != -1) {
 				if (ipLength < 65) {
+					ipLength = ipLength -1;
 					startHighAddr = ipInfoLong[0] & IPV6Array[ipLength];
 					startLowAddr = ipInfoLong[1];
 
@@ -115,6 +115,7 @@ public class IpUtil {
 					endHighAddr = ipInfoLong[0] | inversion;
 					endLowAddr = startLowAddr;
 				} else {
+					ipLength = ipLength - 65;
 					startHighAddr = ipInfoLong[0];
 					startLowAddr = ipInfoLong[1] & IPV6Array[ipLength];
 
@@ -124,7 +125,7 @@ public class IpUtil {
 				}
 
 			} else {
-
+				ipLength = ipLength - 1;
 				startLowAddr = ipInfoLong[0] & IPV4Array[ipLength];
 				long inversion = (~IPV4Array[ipLength]) & 0xFFFF;
 				endLowAddr = ipInfoLong[0] | inversion;

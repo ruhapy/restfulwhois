@@ -18,6 +18,7 @@ import com.cnnic.whois.service.index.SearchResult;
 import com.cnnic.whois.util.ColumnCache;
 import com.cnnic.whois.util.WhoisUtil;
 //@Repository
+@Deprecated
 public class DomainQueryDao extends AbstractSearchQueryDao {
 	public static final String GET_ALL_DNRDOMAIN = "select * from DNRDomain";
 	public static final String GET_ALL_RIRDOMAIN = "select * from RIRDomain";

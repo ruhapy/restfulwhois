@@ -35,6 +35,14 @@ public class ValidateUtils {
 		return parm.matches(strReg);
 	}
 	
+	public static boolean containPunctuation(String str) {
+		String strReg = "[`~!@#%^&\\*()+=|\\\\;',.\\/?]";
+		if (StringUtils.isBlank(strReg)){
+			return false;
+		}
+		return str.matches(strReg);
+	}
+	
 	/**
 	 * Verifying the NameServer parameters
 	 * 
@@ -45,25 +53,26 @@ public class ValidateUtils {
 		if(StringUtils.isBlank(queryPara)){
 			return false;
 		}
-		if (!isCommonInvalidStr(queryPara)){
-			return false;
-		}
+//		if (!isCommonInvalidStr(queryPara)){
+//			return false;
+//		}
 		if(queryPara.length() > 255){
 			return false;
 		}
-		String fuzzyReg = "^(?!-.)(?!.*?-$)((\\*)?[\u0391-\uFFE50-9a-zA-Z-]{0,62}(\\*)?)+(\\.[\u0391-\uFFE50-9a-zA-Z-]{0,62}\\*?)*$";
-		if (queryPara.matches(fuzzyReg))
-			return true;
-		return false;
+		return true;
+//		String fuzzyReg = "^(?!-.)(?!.*?-$)((\\*)?[\u0391-\uFFE50-9a-zA-Z-]{0,62}(\\*)?)+(\\.[\u0391-\uFFE50-9a-zA-Z-]{0,62}\\*?)*$";
+//		if (queryPara.matches(fuzzyReg))
+//			return true;
+//		return false;
 	}
 	
 	public static boolean verifyFuzzyDomain(String queryPara) {
 		if(StringUtils.isBlank(queryPara)){
 			return false;
 		}
-		if (!isCommonInvalidStr(queryPara)){
-			return false;
-		}
+//		if (!isCommonInvalidStr(queryPara)){
+//			return false;
+//		}
 		if(queryPara.length() > 255){
 			return false;
 		}
@@ -84,22 +93,22 @@ public class ValidateUtils {
 	 * @return The correct parity returns true, failure to return false
 	 */
 	public static boolean verifyIP(String ipStr, String ipLengthStr) {
-		String regex = "^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])\\."
-				+ "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
-				+ "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
-				+ "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)$";
-		if (ipLengthStr.equals("0")) {
-			if (!ipStr.matches(regex) && !isIPv6(ipStr))
-				return false;
-		} else {
-			if (!ipStr.matches(regex))
-				return false;
-		}
-		if (!ipLengthStr.matches("^[0-9]*$"))
+		boolean isIpV4 = isIpv4(ipStr);
+		boolean isIpV6 = isIPv6(ipStr);
+		if(!isIpV4 && ! isIpV6){
 			return false;
-
-		return Integer.parseInt(ipLengthStr) >= 0
-				&& Integer.parseInt(ipLengthStr) < 32;
+		}
+		if (!ipLengthStr.matches("^[0-9]*$")){
+			return false;
+		}
+		if(Integer.parseInt(ipLengthStr) < 0){
+			return false;
+		}
+		if(isIpV4){
+			return Integer.parseInt(ipLengthStr) <= 32;
+		}else{
+			return Integer.parseInt(ipLengthStr) <= 128;
+		}
 	}
 	
 	/**

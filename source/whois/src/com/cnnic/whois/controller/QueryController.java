@@ -50,16 +50,19 @@ public class QueryController extends BaseController {
 
 	@RequestMapping(value = "/domains", method = RequestMethod.GET)
 	@ResponseBody
-	public void fuzzyQueryDomain(@RequestParam(required = true) String name,
+	public void fuzzyQueryDomain(@RequestParam(required = false) String name,
 			HttpServletRequest request, HttpServletResponse response)
 			throws QueryException, RedirectExecption, IOException,
 			ServletException {
+		request.setAttribute("queryType", "domain");
+		DomainQueryParam domainQueryParam = super.praseDomainQueryParams(request);
+		if (StringUtils.isBlank(name)) {
+			super.renderResponseError400(request, response,domainQueryParam);
+			return;
+		}
 		name = WhoisUtil.urlDecode(name);
 		name = StringUtils.trim(name);
 		Map<String, Object> resultMap = null;
-		DomainQueryParam domainQueryParam = super
-				.praseDomainQueryParams(request);
-		request.setAttribute("queryType", "domain");
 		name = super.getNormalization(name);
 		if ("*".equals(name)) {
 			super.renderResponseError422(request, response,domainQueryParam);
@@ -265,16 +268,24 @@ public class QueryController extends BaseController {
 	public void queryNs(@PathVariable String nsName,
 			HttpServletRequest request, HttpServletResponse response)
 			throws QueryException, SQLException, IOException, ServletException {
+		request.setAttribute("queryType", "nameserver");
 		nsName = StringUtils.trim(nsName);
 		nsName = StringUtils.lowerCase(nsName);
-		String punyNsName = IDN.toASCII(WhoisUtil.toChineseUrl(nsName));
+		String punyNsName = WhoisUtil.toChineseUrl(nsName);
+		DomainQueryParam queryParam = super.praseDomainQueryParams(request);
+		try{
+			punyNsName = IDN.toASCII(WhoisUtil.toChineseUrl(nsName));
+			// long lable exception/not utf8 exception
+		} catch (Exception e) {
+			super.renderResponseError400(request, response,queryParam);
+			return;
+		}
 		Map<String, Object> resultMap = null;
-		QueryParam queryParam = super.praseQueryParams(request);
-		request.setAttribute("queryType", "nameserver");
 		if (!ValidateUtils.verifyNameServer(nsName)) {
 			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE,queryParam);
 		} else {
-			queryParam.setQ(punyNsName);
+			queryParam.setQ(nsName);
+			queryParam.setDomainPuny(punyNsName);
 			queryParam.setQueryType(QueryType.NAMESERVER);
 			resultMap = queryService.query(queryParam);
 			request.setAttribute("queryPara", IDN.toUnicode(punyNsName));
@@ -324,7 +335,18 @@ public class QueryController extends BaseController {
 		renderResponse(request, response, resultMap, queryParam);
 	}
 
-	@RequestMapping(value = { "/ip/{ip}", "/ip/{ip}/" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/ip/{ip}/" }, method = RequestMethod.GET)
+	@ResponseBody
+	public void queryIpErrTail(HttpServletRequest request,
+			HttpServletResponse response) throws QueryException,
+			RedirectExecption, IOException, ServletException {
+		QueryParam queryParam = super.praseQueryParams(request);
+		request.setAttribute("queryType", "ip");
+		super.renderResponseError400(request, response,queryParam);
+		return;
+	}
+	
+	@RequestMapping(value = { "/ip/{ip}" }, method = RequestMethod.GET)
 	@ResponseBody
 	public void queryIp(@PathVariable String ip, HttpServletRequest request,
 			HttpServletResponse response) throws QueryException,
