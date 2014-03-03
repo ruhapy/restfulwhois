@@ -8,12 +8,11 @@ import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
+import com.cnnic.whois.bean.DomainQueryParam;
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
-import com.cnnic.whois.util.ColumnCache;
-import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
 
 @Repository
@@ -23,9 +22,10 @@ public class NsQueryDao extends AbstractDbQueryDao {
 	public Map<String, Object> query(QueryParam param) throws QueryException {
 		Map<String, Object> map = null;
 		try {
-			String selectSql = WhoisUtil.SELECT_LIST_NAMESREVER + "'"
-					+ param.getQ() + "'";
-			Map<String, Object> nsMap = query(selectSql,
+			DomainQueryParam domainQueryParam = (DomainQueryParam) param;
+			String sql = String.format(WhoisUtil.SELECT_LIST_NAMESREVER
+					,domainQueryParam.getDomainPuny(), param.getQ());
+			Map<String, Object> nsMap = query(sql,
 					columnCache.getNameServerKeyFileds(),
 					"$mul$nameServer");
 			if (nsMap != null) {

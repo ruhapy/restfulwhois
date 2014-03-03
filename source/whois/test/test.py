@@ -57,12 +57,19 @@ def sendAll(filePath):
             print "    status ok."
         else:
             print "    invalid status:"+str(res.status)
+            print "**********************************************"
         if(testData.responseMark != ""):
-            if(str(res.data.lower()).find(testData.responseMark.lower()) > 0):
-                print "    data ok."
-            else:
-                print "    invalid data:"+str(res.data)
+            marks = testData.responseMark.split(";")
+            for mark in marks:
+                mark = str(mark)
+                if(str(res.data).find(mark) > 0):
+                    print "    mark ok for : " + mark
+                else:
+                    print "    mark error for: " + mark
+                    print "    **********************************************"
+                    print "    " + str(res.data)
+                    break
         else:
             print "    no mark."
 # sendAll("data-search.csv")
-sendAll("data-search.csv")
+sendAll("data-bug-js.csv")

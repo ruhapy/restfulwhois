@@ -42,14 +42,7 @@ public class JsonResponseWriter extends AbstractResponseWriter {
 		request.setAttribute("queryFormat", FormatType.JSON.getName());
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		
-		//set response status
-		if(map.containsKey("Error_Code") || map.containsKey("Error Code")){
-			if(map.containsKey("Error_Code"))
-				errorCode = map.get("Error_Code").toString();
-			if (map.containsKey("Error Code"))
-				errorCode = map.get("Error Code").toString();
-			response.setStatus(Integer.valueOf(errorCode));
-		}
+		errorCode = writeResponseCode(response, map, errorCode);
 		response.setHeader("Content-Type", FormatType.RDAPANDJSON.getName());
 		out.print(DataFormat.getJsonObject(map));
 	}

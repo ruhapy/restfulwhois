@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import net.sf.json.JSONArray;
@@ -156,5 +158,20 @@ public abstract class AbstractResponseWriter implements ResponseWriter {
 		if (data.startsWith("$mul$"))
 			return data.substring("$mul$".length());
 		return data.replaceAll(" ", "");
+	}
+	
+	protected String writeResponseCode(HttpServletResponse response,
+			Map<String, Object> map,String errorCode) {
+		if(map.containsKey("Error_Code") || map.containsKey("Error Code")
+				||map.containsKey("errorCode")){
+			if(map.containsKey("Error_Code"))
+				errorCode = map.get("Error_Code").toString();
+			if (map.containsKey("Error Code"))
+				errorCode = map.get("Error Code").toString();
+			if (map.containsKey("errorCode"))
+				errorCode = map.get("errorCode").toString();
+			response.setStatus(Integer.valueOf(errorCode));
+		}
+		return errorCode;
 	}
 }
