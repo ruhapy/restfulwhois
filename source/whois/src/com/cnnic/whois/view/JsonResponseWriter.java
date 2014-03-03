@@ -50,7 +50,7 @@ public class JsonResponseWriter extends AbstractResponseWriter {
 				errorCode = map.get("Error Code").toString();
 			response.setStatus(Integer.valueOf(errorCode));
 		}
-		response.setHeader("Content-Type", FormatType.JSON.getName());
+		response.setHeader("Content-Type", FormatType.RDAPANDJSON.getName());
 		out.print(DataFormat.getJsonObject(map));
 	}
 	
@@ -71,7 +71,7 @@ public class JsonResponseWriter extends AbstractResponseWriter {
 		request.setAttribute("queryFormat", FormatType.JSON.getName());
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setStatus(429);
-		response.setHeader("Content-Type", FormatType.JSON.getName());
+		response.setHeader("Content-Type", FormatType.RDAPANDJSON.getName());
 		out.print(DataFormat.getJsonObject(map));
 	}
 	
