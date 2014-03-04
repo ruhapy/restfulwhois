@@ -478,7 +478,7 @@ public class QueryController extends BaseController {
 		}
 	}
 
-	@RequestMapping(value = "/**", method = RequestMethod.GET)
+	@RequestMapping(value = "/**")
 	@ResponseBody
 	public void error400(HttpServletRequest request,
 			HttpServletResponse response) throws QueryException,
