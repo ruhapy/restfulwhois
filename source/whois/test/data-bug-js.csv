@@ -1,5 +1,6 @@
 path,Accept,param,status,mark
-/.well-known/rdap/nameservers?ip=café,application/rdap+json,,400,"errorCode":";"title":";"description":;"lang":
+/.well-known/rdap/domains?name=xn--%2A,application/rdap+json,,400,"errorCode":";"title":";"description":;"lang":
+/.well-known/rdap/domains?name=xn--*,application/rdap+json,,400,"errorCode":";"title":";"description":;"lang":
 /.well-known/rdap/nameservers?ip=café,application/rdap+json,,400,"errorCode":";"title":";"description":;"lang":
 /.well-known/rdap/nameservers?name=ns1.f%C3%B3o%2A,application/rdap+json,,404,"errorCode":"404";"title":"Error Message";"lang":"";"description":["NOT FOUND"]
 /.well-known/rdap/nameservers?name=ns1.fóo*,application/rdap+json,,404,"errorCode":"404";"title":"Error Message";"lang":"";"description":["NOT FOUND"]
@@ -73,7 +74,7 @@ path,Accept,param,status,mark
 /.well-known/rdap/nameserver/ns.xn--cafés.com,application/rdap+json,,400,"errorCode":";"title":";"description":;"lang":
 /.well-known/rdap/nameserver/ns.xn--caf%C3%A9s.com,application/rdap+json,,400,"errorCode":";"title":";"description":;"lang":
 /.well-known/rdap/domains?name=άξés.com,application/json,,404,NOT FOUND
-/.well-known/rdap/unknowPath/z.cn,application/rdap+json,unkonwParam=zzz,400,"errorCode":";"title":";"description":;"lang":
+/.well-known/rdap/unknowPath/z.cn,application/+json,unkonwParam=zzz,400,"errorCode":";"title":";"description":;"lang":
 /.well-known/rdap/unknown/example.com,application/rdap+json,,400,"errorCode":";"title":";"description":;"lang":
 /.well-known/rdap/ip/1.1.1.1,application/rdap+json,,200,roles":["technical";"administrative"
 /.well-known/rdap/ip/2001:6a8:0:1:210:4bff:fe4b:4c61/128,application/rdap+json,,200,handle;startAddress;ipVersion

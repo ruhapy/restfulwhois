@@ -42,8 +42,6 @@ public class ResponseFilter {
 			if (!entry.getKey().equals(WhoisUtil.NOTICES)) {
 				resultMap.put(entry.getKey(), entry.getValue());
 				removeUnAuthedEntriesObject(entry.getValue());
-			}else{
-				System.err.println("remove notices:"+entry.getValue());
 			}
 		}
 		return resultMap;
