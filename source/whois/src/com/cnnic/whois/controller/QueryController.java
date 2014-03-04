@@ -62,6 +62,7 @@ public class QueryController extends BaseController {
 		}
 		name = WhoisUtil.urlDecode(name);
 		name = StringUtils.trim(name);
+		name = ValidateUtils.deleteLastPoint(name);
 		Map<String, Object> resultMap = null;
 		name = super.getNormalization(name);
 		if ("*".equals(name)) {
@@ -99,6 +100,7 @@ public class QueryController extends BaseController {
 			ServletException {
 		domainName = StringUtils.trim(domainName);
 		domainName = StringUtils.lowerCase(domainName);
+		domainName = ValidateUtils.deleteLastPoint(domainName);
 		String punyDomainName = domainName;
 		Map<String, Object> resultMap = null;
 		DomainQueryParam domainQueryParam = super
@@ -202,6 +204,7 @@ public class QueryController extends BaseController {
 		if(StringUtils.isNotBlank(name)){
 			name = StringUtils.trim(name);
 			name = WhoisUtil.urlDecode(name);
+			name = ValidateUtils.deleteLastPoint(name);
 			name = super.getNormalization(name);
 			if ("*".equals(name)) {
 				super.renderResponseError422(request, response,queryParam);
@@ -271,6 +274,7 @@ public class QueryController extends BaseController {
 		request.setAttribute("queryType", "nameserver");
 		nsName = StringUtils.trim(nsName);
 		nsName = StringUtils.lowerCase(nsName);
+		nsName = ValidateUtils.deleteLastPoint(nsName);
 		String punyNsName = WhoisUtil.toChineseUrl(nsName);
 		DomainQueryParam queryParam = super.praseDomainQueryParams(request);
 		try{
