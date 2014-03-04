@@ -379,6 +379,11 @@ public class QueryController extends BaseController {
 		String strInfo = ip;
 		request.setAttribute("queryPara", ip);
 		request.setAttribute("queryType", "ip");
+		String uri = request.getRequestURI();
+		if(uri.indexOf("//") != -1){
+			super.renderResponseError400(request, response,queryParam);
+			return;
+		}
 		if (!ValidateUtils.verifyIP(strInfo, ipLength)) {
 			super.renderResponseError400(request, response,queryParam);
 			return;
