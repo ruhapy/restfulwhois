@@ -11,6 +11,7 @@ import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.permission.PermissionController;
+import com.cnnic.whois.view.ResponseFilter;
 import com.cnnic.whois.view.ViewResolver;
 
 @Service
@@ -22,6 +23,8 @@ public class QueryEngine {
 	private QueryExecutor queryExecutor;
 	@Autowired
 	private ViewResolver viewResolver ;
+	@Autowired
+	private ResponseFilter responseFilter;
 	@Autowired
 	private PermissionController permissionController ;
 
@@ -42,6 +45,7 @@ public class QueryEngine {
 		Map<String, Object> result = queryExecutor.query(queryType, param);
 		result = permissionController.removeUnAuthedEntries(result);
 		result = viewResolver.format(result, param.getFormat());
+		result = responseFilter.removeNoticesEntries(result);
 		return result;
 	}
 	
