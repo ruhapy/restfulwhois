@@ -67,6 +67,18 @@ public class ViewResolver {
 		for (ResponseWriter writer : responseWriters) {
 			if (writer.support(formatType)) {
 				writer.displayOverTimeMessage(request, response, role,queryParam);
+				return;
+			}
+		}
+	}
+	
+	public void displayError400(HttpServletRequest request,
+			HttpServletResponse response,QueryParam queryParam)
+			throws IOException, ServletException {
+		for (ResponseWriter writer : responseWriters) {
+			if (writer.support(queryParam.getFormat())) {
+				writer.displayError400(request, response, queryParam);
+				return;
 			}
 		}
 	}

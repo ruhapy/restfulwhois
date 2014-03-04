@@ -17,11 +17,15 @@ public interface ResponseWriter {
 
 	void writeResponse(HttpServletRequest request,
 			HttpServletResponse response, Map<String, Object> map)
-		throws IOException, ServletException;
-	
-	void displayOverTimeMessage(HttpServletRequest request, HttpServletResponse response, 
-			String role,QueryParam queryParam) 
-					throws IOException, ServletException;
-	
+			throws IOException, ServletException;
+
+	void displayOverTimeMessage(HttpServletRequest request,
+			HttpServletResponse response, String role, QueryParam queryParam)
+			throws IOException, ServletException;
+
+	void displayError400(HttpServletRequest request,
+			HttpServletResponse response, QueryParam queryParam)
+			throws IOException, ServletException;
+
 	Map<String, Object> getMapKey(QueryType queryType, Map<String, Object> map);
 }

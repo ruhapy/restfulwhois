@@ -222,4 +222,26 @@ public class TextResponseWriter extends AbstractResponseWriter {
 			Map<String, Object> map) {
 		return map;
 	}
+
+	@Override
+	public void displayError400(HttpServletRequest request,
+			HttpServletResponse response, QueryParam queryParam)
+			throws IOException, ServletException {
+		request.setCharacterEncoding("utf-8");
+		response.setCharacterEncoding("utf-8");
+
+		Map<String, Object> map = new LinkedHashMap<String, Object>();
+
+		try {
+			map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE,queryParam);
+		} catch (QueryException e) {
+			e.printStackTrace();
+		}
+		PrintWriter out = response.getWriter();
+		request.setAttribute("queryFormat", FormatType.TEXTPLAIN.getName());
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		response.setStatus(429);
+		response.setHeader("Content-Type", FormatType.TEXTPLAIN.getName());
+		out.write(getPresentationFromMap(map, 0));
+	}
 }

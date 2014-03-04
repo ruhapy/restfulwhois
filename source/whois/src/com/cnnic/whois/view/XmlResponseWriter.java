@@ -282,4 +282,26 @@ public class XmlResponseWriter extends AbstractResponseWriter {
 		}
         return sb;
 	}
+
+	@Override
+	public void displayError400(HttpServletRequest request,
+			HttpServletResponse response, QueryParam queryParam)
+			throws IOException, ServletException {
+		request.setCharacterEncoding("utf-8");
+		response.setCharacterEncoding("utf-8");
+		
+		Map<String, Object> map = new LinkedHashMap<String, Object>();
+		
+		try {
+			map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE,queryParam);
+		} catch (QueryException e) {
+			e.printStackTrace();
+		}
+		PrintWriter out = response.getWriter();
+		request.setAttribute("queryFormat", FormatType.XML.getName());
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		response.setStatus(429);
+		response.setHeader("Content-Type", FormatType.XML.getName());
+		out.write(getXMLFromMap(map, 0));
+	}
 }

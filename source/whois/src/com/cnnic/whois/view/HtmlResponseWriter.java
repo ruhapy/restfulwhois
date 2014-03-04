@@ -108,4 +108,15 @@ public class HtmlResponseWriter extends AbstractResponseWriter {
 	public Map<String, Object> getMultiMapKey(QueryType queryType, Map<String, Object> map) {
 		return map;
 	}
+
+	@Override
+	public void displayError400(HttpServletRequest request,
+			HttpServletResponse response, QueryParam queryParam)
+			throws IOException, ServletException {
+		request.setCharacterEncoding("utf-8");
+		response.setCharacterEncoding("utf-8");
+		request.setAttribute("queryFormat", FormatType.HTML.getName());
+		response.setStatus(400);
+		response.sendError(400);
+	}
 }

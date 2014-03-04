@@ -72,4 +72,22 @@ public class JsonResponseWriter extends AbstractResponseWriter {
 	public boolean support(FormatType formatType) {
 		return null != formatType && formatType.isJsonFormat();
 	}
+
+	@Override
+	public void displayError400(HttpServletRequest request,
+			HttpServletResponse response, QueryParam queryParam)
+			throws IOException, ServletException {request.setCharacterEncoding("utf-8");
+			response.setCharacterEncoding("utf-8");
+			Map<String, Object> map = new LinkedHashMap<String, Object>();
+			try {
+				map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE,queryParam);
+			} catch (QueryException e) {
+				e.printStackTrace();
+			}
+			PrintWriter out = response.getWriter();
+			request.setAttribute("queryFormat", FormatType.JSON.getName());
+			response.setHeader("Access-Control-Allow-Origin", "*");
+			response.setStatus(Integer.valueOf(WhoisUtil.COMMENDRRORCODE));
+			response.setHeader("Content-Type", FormatType.RDAPANDJSON.getName());
+			out.print(DataFormat.getJsonObject(map));}
 }
