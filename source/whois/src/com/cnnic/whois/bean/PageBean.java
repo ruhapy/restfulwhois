@@ -8,11 +8,11 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class PageBean implements java.io.Serializable {
 	private static final long serialVersionUID = 693435998917420886L;
 	public static final int FIRST_PAGE_NUM = 1;
-	private Map<String, Object> parameterMap; // 生成分页时所带的参数键值对
-	private int currentPage = FIRST_PAGE_NUM; // 当前页数
-	private int recordsCount = -1; // 总记录数
-	private Integer maxRecords = 5; // 一次查询的最大记录数
-	private int pageCount; // 总页面数
+	private Map<String, Object> parameterMap;
+	private int currentPage = FIRST_PAGE_NUM;
+	private int recordsCount = -1;
+	private Integer maxRecords = 5;
+	private int pageCount;
 
 	/**
 	 * Creates a new PageBean object.
@@ -104,7 +104,6 @@ public class PageBean implements java.io.Serializable {
 	}
 
 	/**
-	 * 获取总记录数
 	 * 
 	 * @param currentPage
 	 *            DOCUMENT ME!
@@ -114,7 +113,6 @@ public class PageBean implements java.io.Serializable {
 	}
 
 	/**
-	 * 设置总记录数
 	 * 
 	 * @param recordsCount
 	 *            DOCUMENT ME!
@@ -124,7 +122,6 @@ public class PageBean implements java.io.Serializable {
 	}
 
 	/**
-	 * 一次查询的最大记录数
 	 * 
 	 * @param parameterMap
 	 *            DOCUMENT ME!
@@ -134,10 +131,8 @@ public class PageBean implements java.io.Serializable {
 	}
 
 	/**
-	 * 设置一次查询的最大记录数
 	 * 
 	 * @param maxRecords
-	 *            记录数
 	 */
 	public void setMaxRecords(Integer maxRecords) {
 		this.maxRecords = maxRecords;
