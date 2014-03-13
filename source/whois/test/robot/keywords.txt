@@ -1,24 +1,42 @@
 *** Keywords ***
-Enter Username  [Arguments]  ${username}
-  Input Text  uname  ${username}
-
-Enter Password  [Arguments]  ${password}
-  Input Text  pwd  ${password}
-
-Click the Login Button
-  Click Button  login
-
-Login Is Successful
-  Page Should Contain  Welcome
-
-Login is Unsuccessful
-  Run Keyword And Expect Error  *  Login Is Successful
-
-Login Test Setup
-  Open Browser  ${login address}  ${browser}
-  Maximize Browser Window 
-
-Login Test Teardown
-  Capture Screenshot
-  Close Browser
-
+Return 400,With rdap+json header
+    [Arguments]    ${uri}
+    ${headers}          Create Dictionary       Accept  application/rdap+json
+    ${resp}=            Get             rdap    ${uri}          headers=${headers}
+    Should Be Equal As Strings      ${resp.status_code}        400
+    ${encodeRespContent}		Decode Data		${resp.content}
+    Should Contain    ${encodeRespContent}     errorCode
+    Should Contain    ${encodeRespContent}     title
+    Should Contain    ${encodeRespContent}     description
+    Should Contain    ${encodeRespContent}     lang
+    Should Contain    ${encodeRespContent}     BAD REQUEST
+    Should Contain    ${encodeRespContent}     400
+Return 404,With rdap+json header
+    [Arguments]    ${uri}
+    ${headers}          Create Dictionary       Accept  application/rdap+json
+    ${resp}=            Get             rdap    ${uri}          headers=${headers}
+    Should Be Equal As Strings      ${resp.status_code}        404
+    ${encodeRespContent}		Decode Data		${resp.content}
+    Should Contain    ${encodeRespContent}     errorCode
+    Should Contain    ${encodeRespContent}     title
+    Should Contain    ${encodeRespContent}     description
+    Should Contain    ${encodeRespContent}     lang
+    Should Contain    ${encodeRespContent}     NOT FOUND
+    Should Contain    ${encodeRespContent}     404
+Return 301,With rdap+json header
+    [Arguments]    ${uri}
+    ${headers}          Create Dictionary       Accept  application/rdap+json
+    ${resp}=            Get             rdap    ${uri}          headers=${headers}
+    Should Be Equal As Strings      ${resp.status_code}        301
+Return 429,With rdap+json header
+    [Arguments]    ${uri}
+    ${headers}          Create Dictionary       Accept  application/rdap+json
+    ${resp}=            Get             rdap    ${uri}          headers=${headers}
+    Should Be Equal As Strings      ${resp.status_code}        429
+Return 422,With rdap+json header
+    [Arguments]    ${uri}
+    ${headers}          Create Dictionary       Accept  application/rdap+json
+    ${resp}=            Get             rdap    ${uri}          headers=${headers}
+    Should Be Equal As Strings      ${resp.status_code}        422
+    ${encodeRespContent}		Decode Data		${resp.content}
+    Should Contain    ${encodeRespContent}     UnProcessed
