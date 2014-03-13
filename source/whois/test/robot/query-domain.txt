@@ -1,0 +1,27 @@
+*** Settings ***
+Resource          variables.txt
+Test Template     Return 200,With rdap+json header
+Resource          keywords.txt
+Library           Collections
+Library           RequestsLibrary
+Library           UrlEncode
+Test Setup      	Create Session	rdap     ${HOST}
+*** Testcases ***     uri
+Return 200
+	/.well-known/rdap/domain/清华大学.中国
+	/.well-known/rdap/domain/xn--xkry9kk1bz66a.xn--fiqs8s
+	/.well-known/rdap/domain/192.in-addr.arpa
+	/.well-known/rdap/domain/%E6%B8%85%E5%8D%8E%E5%A4%A7%E5%AD%A6.%E4%B8%AD%E5%9B%BD
+	/.well-known/rdap/domain/xn--xkry9kk1bz66a.xn--fiqs8s
+	
+	
+*** Keywords ***
+Return 200,With rdap+json header
+    [Arguments]    ${uri}
+    ${encodeUri}		Encode Url		${uri}
+    ${headers}          Create Dictionary       Accept  application/rdap+json
+    ${resp}=            Get             rdap    ${encodeUri}          headers=${headers}
+    Should Be Equal As Strings      ${resp.status_code}        200
+    Should Contain    ${resp.content}     rdapConformance
+    Should Contain    ${resp.content}     handle
+    Should Contain    ${resp.content}     ldhName

@@ -1,0 +1,24 @@
+*** Keywords ***
+Enter Username  [Arguments]  ${username}
+  Input Text  uname  ${username}
+
+Enter Password  [Arguments]  ${password}
+  Input Text  pwd  ${password}
+
+Click the Login Button
+  Click Button  login
+
+Login Is Successful
+  Page Should Contain  Welcome
+
+Login is Unsuccessful
+  Run Keyword And Expect Error  *  Login Is Successful
+
+Login Test Setup
+  Open Browser  ${login address}  ${browser}
+  Maximize Browser Window 
+
+Login Test Teardown
+  Capture Screenshot
+  Close Browser
+
