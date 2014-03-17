@@ -23,15 +23,17 @@ RESTful Whois is written in JAVA and needs a database which MySQL is selected. Y
 	git clone http://github.com/cnnic/restfulwhois.git
 	```
 5. install maven
+	
 	```
-	cd  $WORK_DIR
-	cd restfulwhois/deployment
-	tar -zxvf apache-maven-3.1.tar.gz
-	export PATH=`pwd`/apache-maven-3.1/bin:$PATH
-	(export this PATH to .bash_profile is best)
+	cd  $WORK_DIR 
+	cd restfulwhois/deployment 
+	tar -zxvf apache-maven-3.1.tar.gz 
+	export PATH=`pwd`/apache-maven-3.1/bin:$PATH 
+	(export this PATH to .bash_profile is best) 
 	chmod a+x apache-maven-3.1/bin/mvn
 	```
 6. build project
+	
 	```
 	cd  $WORK_DIR 
 	cd restfulwhois/source/whois
@@ -67,7 +69,8 @@ RESTful Whois is written in JAVA and needs a database which MySQL is selected. Y
 		./apache-tomcat-solr/bin/startup.sh 
 	```
 10. deploy whois webapp  (use port 8080)
-      	```
+      	
+	```
 	cd  $WORK_DIR
 	cd restfulwhois/deployment
 	tar -zxvf apache-tomcat-whois.tar.gz
@@ -87,6 +90,7 @@ RESTful Whois is written in JAVA and needs a database which MySQL is selected. Y
 	(done, whois webapp service url is : http://localhost:8080)
 	```
 11. deploy whois port43 proxy
+
 	```
 	cd  $WORK_DIR
 	cd restfulwhois/deployment/whois43Proxy
@@ -96,6 +100,7 @@ RESTful Whois is written in JAVA and needs a database which MySQL is selected. Y
 	```
 12. test for whois webapp
 	1>.use robotframework:
+	
 	```
 		install python and pip first,then install robotframework:
 			pip install robotframework
@@ -106,6 +111,7 @@ RESTful Whois is written in JAVA and needs a database which MySQL is selected. Y
 			and this command will generate test result : report.html/output.xml/log.html
 	```
 	2>.use curl:
+
 	```
 		curl -H Accept:application/json rdap.restfulwhois.org/ip/1.0.0.0
 		curl -H Accept:application/xml rdap.restfulwhois.org/domain/qq.cn
@@ -114,6 +120,7 @@ RESTful Whois is written in JAVA and needs a database which MySQL is selected. Y
 		curl rdap.restfulwhois.org/nameserver/ns2.ee28.cn
 	```
 13. test for port43 whois
+
 	```
 	whois -h rdap.restfulwhois.org 1.0.0.0
 	whois -h rdap.restfulwhois.org qq.cn
@@ -122,9 +129,11 @@ RESTful Whois is written in JAVA and needs a database which MySQL is selected. Y
 	whois -h rdap.restfulwhois.org ns ns2.ee28.cn
 	```
 14. configuration oauth if need oauth support:
-	```
+
 	oauth consumer project dir is restfulwhois/source/consumer
 	update configuration file : src/consumer.properties :
+	
+	```
 		sample.serviceProvider.baseURL: http://localhost:8080/
 		sample.consumerKey: rdap db table oauth_users_app 's column 'app_key'
 		sample.consumerSecret" rdap db table oauth_users_app 's column 'app_secret'
