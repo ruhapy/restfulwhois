@@ -81,6 +81,9 @@ Return 200,With rdap+json header
     Should Contain    ${encodeRespContent}     rdapConformance
     Should Contain    ${encodeRespContent}     handle
     Should Contain    ${encodeRespContent}     ldhName
+    ${containEntities}		Run Keyword And Return Status		Should Contain    ${encodeRespContent}     "entities":
+    Run Keyword If		${containEntities}==True		Should Contain		${encodeRespContent}	"entities":[
+    Run Keyword If		${containEntities}==True		Should Not Contain		${encodeRespContent}	"entities":{
 Search,Return 200,With rdap+json header
     [Arguments]    ${uri}
     ${encodeUri}		Encode Url		${uri}
