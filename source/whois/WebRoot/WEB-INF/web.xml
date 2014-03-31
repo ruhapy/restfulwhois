@@ -32,6 +32,14 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<filter>
+		<filter-name>InvalidUriFilter</filter-name>
+		<filter-class>com.cnnic.whois.web.InvalidUriFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>InvalidUriFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter>
 		<filter-name>CharacterEncoding</filter-name>
 		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
 		<init-param>
