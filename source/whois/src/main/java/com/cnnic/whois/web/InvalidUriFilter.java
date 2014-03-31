@@ -23,7 +23,6 @@ import com.cnnic.whois.util.WhoisProperties;
 import com.cnnic.whois.util.WhoisUtil;
 import com.cnnic.whois.view.FormatType;
 import com.cnnic.whois.view.ViewResolver;
-@Deprecated
 public class InvalidUriFilter implements Filter {
 
 	@Override
@@ -36,15 +35,14 @@ public class InvalidUriFilter implements Filter {
 		HttpServletRequest request = (HttpServletRequest) arg0;
 		HttpServletResponse response = (HttpServletResponse) arg1;
 		FormatType format = BaseController.getFormatType(request);
-		QueryType queryType = BaseController.getQueryType(request);
 		String path = request.getRequestURI();
+		QueryType queryType = QueryType.IP;
 		if (StringUtils.isBlank(path)) {
 			displayErrorMessage(request, response, chain, format, queryType);
 			return;
 		}
 		String uri = path.substring(request.getContextPath().length());
-		uri = uri.replaceFirst("/", "");
-		if (!uri.startsWith(WhoisProperties.getRdapUrl())) {
+		if (uri.contains("ip/::/")) {
 			displayErrorMessage(request, response, chain, format, queryType);
 		} else {
 			chain.doFilter(request, response);
