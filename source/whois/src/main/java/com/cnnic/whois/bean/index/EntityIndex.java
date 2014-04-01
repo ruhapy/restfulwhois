@@ -4,7 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.solr.client.solrj.beans.Field;
-
+/**
+ * entity for search
+ * @author nic
+ *
+ */
 public class EntityIndex implements Index {
 	private static String DNRENTITY_TYPE = "dnrEntity";
 	private static String RIRENTITY_TYPE = "rirEntity";
@@ -79,14 +83,25 @@ public class EntityIndex implements Index {
 	private String url;
 	private Map<String, Object> propValueMap = new HashMap<String, Object>();
 
+	/**
+	 * check is dnr
+	 * @return true if is dnr,false if not
+	 */
 	public boolean isDnrEntity() {
 		return DNRENTITY_TYPE.equals(this.docType);
 	}
 
+	/**
+	 * get prop value from cached map
+	 * @return prop value
+	 */
 	public String getPropValue(String key) {
 		return (String) this.propValueMap.get(key);
 	}
 
+	/**
+	 * init map for prop value
+	 */
 	public void initPropValueMap() {
 		this.propValueMap.put("Handle", this.handle);
 		this.propValueMap.put("Entity_Names", this.entityNames);
@@ -112,10 +127,17 @@ public class EntityIndex implements Index {
 		this.propValueMap.put("Url", this.url);
 	}
 
+	/**
+	 * get handle
+	 * @return entity handle
+	 */
 	public String getHandle() {
 		return this.handle;
 	}
 
+	/**
+	 * get doc type,'dnrEntity' or 'rirEntity'
+	 */
 	public String getDocType() {
 		return this.docType;
 	}

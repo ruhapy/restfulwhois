@@ -26,7 +26,11 @@ import com.cnnic.whois.service.QueryService;
 import com.cnnic.whois.util.WhoisUtil;
 import com.cnnic.whois.view.FormatType;
 import com.cnnic.whois.view.ViewResolver;
-
+/**
+ * base controller
+ * @author nic
+ *
+ */
 public class BaseController {
 	@Autowired
 	protected ViewResolver viewResolver;
@@ -34,6 +38,10 @@ public class BaseController {
 	private static Logger logger = LoggerFactory
 			.getLogger(BaseController.class);
 
+	/**
+	 * set max records for fuzzy query param
+	 * @param queryParam:query params
+	 */
 	protected void setMaxRecordsForFuzzyQ(QueryParam queryParam) {
 		if (queryParam.getFormat().isJsonOrXmlFormat()) {
 			queryParam.getPage().setMaxRecords(
@@ -41,6 +49,11 @@ public class BaseController {
 		}
 	}
 
+	/**
+	 * construct domain param
+	 * @param request:http request
+	 * @return: domain param
+	 */
 	protected DomainQueryParam praseDomainQueryParams(HttpServletRequest request) {
 		FormatType formatType = getFormatType(request);
 		logger.info("formatType:" + formatType);
@@ -48,24 +61,44 @@ public class BaseController {
 		return new DomainQueryParam(formatType, page);
 	}
 
+	/**
+	 * construct entity  param
+	 * @param request:http request
+	 * @return entity param
+	 */
 	protected EntityQueryParam praseEntityQueryParams(HttpServletRequest request) {
 		FormatType formatType = getFormatType(request);
 		PageBean page = getPageParam(request);
 		return new EntityQueryParam(formatType, page);
 	}
 
+	/**
+	 * construct  param
+	 * @param request:http request
+	 * @return param
+	 */
 	public static QueryParam praseQueryParams(HttpServletRequest request) {
 		FormatType formatType = getFormatType(request);
 		PageBean page = getPageParam(request);
 		return new QueryParam(formatType, page);
 	}
 
+	/**
+	 * construct ip query param
+	 * @param request:http request
+	 * @return ip query param
+	 */
 	protected IpQueryParam praseIpQueryParams(HttpServletRequest request) {
 		FormatType formatType = getFormatType(request);
 		PageBean page = getPageParam(request);
 		return new IpQueryParam(formatType, page);
 	}
 
+	/**
+	 * get page param
+	 * @param request
+	 * @return page param
+	 */
 	private static PageBean getPageParam(HttpServletRequest request) {
 		Object currentPageObj = request.getParameter("currentPage");
 		PageBean page = new PageBean();
@@ -75,6 +108,15 @@ public class BaseController {
 		return page;
 	}
 
+	/**
+	 * render response
+	 * @param request:http request
+	 * @param response:http reponse
+	 * @param resultMap:query result map
+	 * @param queryParam:query param
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	protected void renderResponse(HttpServletRequest request,
 			HttpServletResponse response, Map<String, Object> resultMap,
 			QueryParam queryParam) throws IOException, ServletException {
@@ -82,6 +124,15 @@ public class BaseController {
 				queryParam.getQueryType(), request, response, resultMap);
 	}
 
+	/**
+	 * render response error 400
+	 * @param request:http request
+	 * @param response:http response
+	 * @param queryParam:query param
+	 * @throws IOException
+	 * @throws ServletException
+	 * @throws QueryException
+	 */
 	protected void renderResponseError400(HttpServletRequest request,
 			HttpServletResponse response,QueryParam queryParam) throws IOException, ServletException,
 			QueryException {
@@ -91,6 +142,15 @@ public class BaseController {
 				getQueryType(request), request, response, resultMap);
 	}
 
+	/**
+	 * render response for error 422
+	 * @param request:http request
+	 * @param response:http response
+	 * @param queryParam:query param
+	 * @throws IOException
+	 * @throws ServletException
+	 * @throws QueryException
+	 */
 	protected void renderResponseError422(HttpServletRequest request,
 			HttpServletResponse response,QueryParam queryParam) throws IOException, ServletException,
 			QueryException {
@@ -100,6 +160,11 @@ public class BaseController {
 				getQueryType(request), request, response, resultMap);
 	}
 
+	/**
+	 * get format from cooike
+	 * @param request:http request
+	 * @return format
+	 */
 	public static String getFormatCookie(HttpServletRequest request) {
 		Cookie[] cookies = request.getCookies();
 		String format = null;
@@ -112,7 +177,12 @@ public class BaseController {
 		}
 		return format;
 	}
-
+	
+	/**
+	 * get format type
+	 * @param request:http request
+	 * @return format type
+	 */
 	public static FormatType getFormatType(HttpServletRequest request) {
 		String format = getFormatCookie(request);
 		if (StringUtils.isNotBlank(format)) {
@@ -134,6 +204,11 @@ public class BaseController {
 		return FormatType.getFormatType(format);
 	}
 
+	/**
+	 * get query type
+	 * @param request:http request
+	 * @return query type
+	 */
 	public static QueryType getQueryType(HttpServletRequest request) {
 		if (request.getAttribute("queryType") != null) {
 			String queryType = (String) request.getAttribute("queryType");
@@ -144,6 +219,11 @@ public class BaseController {
 		}
 	}
 
+	/**
+	 * is web browser
+	 * @param request:http request
+	 * @return true if is,false if not
+	 */
 	public static boolean isWebBrowser(HttpServletRequest request) {
 		String userAgent = "";
 		try {
@@ -159,6 +239,11 @@ public class BaseController {
 		return false;
 	}
 
+	/**
+	 * get normalization format string
+	 * @param str:string
+	 * @return formated string
+	 */
 	protected String getNormalization(String str) {
 		if (StringUtils.isBlank(str)) {
 			return str;
