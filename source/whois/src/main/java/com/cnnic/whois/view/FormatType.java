@@ -1,5 +1,9 @@
 package com.cnnic.whois.view;
-
+/**
+ * response format 
+ * @author nic
+ *
+ */
 public enum FormatType {
 	NONE("none"), JSON("application/json"), RDAPANDJSON("application/rdap+json"), RDAPORJSON(
 			"application/rdap+json;application/json"), XML("application/xml"), HTML(

@@ -17,7 +17,11 @@ import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.controller.BaseController;
 import com.cnnic.whois.util.AuthenticationHolder;
 import com.cnnic.whois.view.ViewResolver;
-
+/**
+ * filter http method
+ * @author nic
+ *
+ */
 public class HttpMethodFilter implements Filter {
 
 	@Override

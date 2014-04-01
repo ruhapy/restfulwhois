@@ -2,15 +2,14 @@ package com.cnnic.whois.view;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import net.sf.json.JSONArray;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.dao.query.db.DbQueryExecutor;
@@ -21,7 +20,9 @@ public abstract class AbstractResponseWriter implements ResponseWriter {
 	private DbQueryExecutor dbQueryExecutor ;
 
 	abstract protected String formatKey(String keyName);
-
+	/**
+	 * format
+	 */
 	@Override
 	public Map<String, Object> format(Map<String, Object> map) {
 		Map<String, Object> result = formatMap(map);
@@ -33,7 +34,12 @@ public abstract class AbstractResponseWriter implements ResponseWriter {
 		Map<String, Object> result = getMultiMapKey(queryType, map);
 		return result;
 	}
-	
+	/**
+	 * get multi objs map key
+	 * @param queryType
+	 * @param map
+	 * @return
+	 */
 	protected Map<String, Object> getMultiMapKey(QueryType queryType, Map<String, Object> map) {
 		if(null != queryType){
 			Iterator<String> iterr = map.keySet().iterator();
@@ -53,7 +59,11 @@ public abstract class AbstractResponseWriter implements ResponseWriter {
 		} 
 		return map;
 	}
-	
+	/**
+	 * is unused entity
+	 * @param entry
+	 * @return
+	 */
 	protected boolean isUnusedEntry(Entry<String, Object> entry) {
 		String key = entry.getKey();
 		boolean endwithId = key.substring(key.length() - 2).toLowerCase()

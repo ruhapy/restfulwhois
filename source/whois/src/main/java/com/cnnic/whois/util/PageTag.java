@@ -19,7 +19,11 @@ import javax.servlet.jsp.tagext.TagSupport;
 import org.apache.commons.lang.StringUtils;
 
 import com.cnnic.whois.bean.PageBean;
-
+/**
+ * paging
+ * @author nic
+ *
+ */
 public class PageTag extends TagSupport {
 	private static final long serialVersionUID = -2230112545469172831L;
 	private static final String PAGINATION_INFO = "total<b> %s </b>page,<b> %s </b>records";

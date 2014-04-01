@@ -16,7 +16,11 @@ import org.springframework.stereotype.Component;
 import com.cnnic.whois.bean.index.DomainIndex;
 import com.cnnic.whois.bean.index.EntityIndex;
 import com.cnnic.whois.bean.index.NameServerIndex;
-
+/**
+ * permission cache for auth
+ * @author nic
+ *
+ */
 @Component
 public class PermissionCache {
 	@Autowired

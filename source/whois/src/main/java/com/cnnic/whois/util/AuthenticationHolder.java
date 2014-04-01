@@ -1,7 +1,11 @@
 package com.cnnic.whois.util;
 
 import com.cnnic.whois.bean.Authentication;
-
+/**
+ * thread local auth holder
+ * @author nic
+ *
+ */
 public class AuthenticationHolder {
 	private static final ThreadLocal<Authentication> thread = new ThreadLocal<Authentication>();
 

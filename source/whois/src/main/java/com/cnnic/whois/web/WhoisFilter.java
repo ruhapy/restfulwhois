@@ -17,7 +17,11 @@ import com.cnnic.whois.util.WhoisProperties;
 import com.cnnic.whois.util.WhoisUtil;
 import com.cnnic.whois.view.FormatType;
 import com.cnnic.whois.view.ViewResolver;
-
+/**
+ * filter for ip auth control
+ * @author nic
+ *
+ */
 public class WhoisFilter implements Filter {
 
 	@Override
