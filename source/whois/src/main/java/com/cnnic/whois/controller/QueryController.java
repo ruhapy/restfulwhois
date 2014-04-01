@@ -27,14 +27,17 @@ import com.cnnic.whois.bean.IpQueryParam;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.dao.query.QueryEngine;
-import com.cnnic.whois.dao.query.search.AbstractSearchQueryDao;
 import com.cnnic.whois.dao.query.search.EntityQueryDao;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.service.QueryService;
 import com.cnnic.whois.util.WhoisUtil;
 import com.cnnic.whois.util.validate.ValidateUtils;
-
+/**
+ * query controller
+ * @author nic
+ *
+ */
 @Controller
 @RequestMapping("/{dot}well-known/rdap")
 public class QueryController extends BaseController {
@@ -47,7 +50,16 @@ public class QueryController extends BaseController {
 	public String index() {
 		return "/doc/index";
 	}
-
+	/**
+	 * fuzzy query domain
+	 * @param name
+	 * @param request
+	 * @param response
+	 * @throws QueryException
+	 * @throws RedirectExecption
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	@RequestMapping(value = "/domains", method = RequestMethod.GET)
 	@ResponseBody
 	public void fuzzyQueryDomain(@RequestParam(required = false) String name,
@@ -92,6 +104,16 @@ public class QueryController extends BaseController {
 		renderResponse(request, response, resultMap, domainQueryParam);
 	}
 	
+	/**
+	 * prise query domain
+	 * @param domainName
+	 * @param request
+	 * @param response
+	 * @throws QueryException
+	 * @throws RedirectExecption
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	@RequestMapping(value = "/domain/{domainName}", method = RequestMethod.GET)
 	@ResponseBody
 	public void queryDomain(@PathVariable String domainName,
@@ -125,6 +147,17 @@ public class QueryController extends BaseController {
 		renderResponse(request, response, resultMap, domainQueryParam);
 	}
 
+	/**
+	 * fuzzy query entity
+	 * @param fn
+	 * @param handle
+	 * @param request
+	 * @param response
+	 * @throws QueryException
+	 * @throws SQLException
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	@RequestMapping(value = "/entities", method = RequestMethod.GET)
 	@ResponseBody
 	public void fuzzyQueryEntity(@RequestParam(required = false) String fn,
@@ -173,6 +206,16 @@ public class QueryController extends BaseController {
 		renderResponse(request, response, resultMap, queryParam);
 	}
 
+	/**
+	 * query entity
+	 * @param entityName
+	 * @param request
+	 * @param response
+	 * @throws QueryException
+	 * @throws SQLException
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	@RequestMapping(value = "/entity/{entityName}", method = RequestMethod.GET)
 	@ResponseBody
 	public void queryEntity(@PathVariable String entityName,
@@ -187,6 +230,18 @@ public class QueryController extends BaseController {
 		renderResponse(request, response, resultMap, queryParam);
 	}
 
+	/**
+	 * fuzzy query ns
+	 * @param name
+	 * @param ip
+	 * @param request
+	 * @param response
+	 * @throws QueryException
+	 * @throws SQLException
+	 * @throws IOException
+	 * @throws ServletException
+	 * @throws RedirectExecption
+	 */
 	@RequestMapping(value = "/nameservers", method = RequestMethod.GET)
 	@ResponseBody
 	public void fuzzyQueryNs(@RequestParam(required = false) String name, 
@@ -266,6 +321,16 @@ public class QueryController extends BaseController {
 		setMaxRecordsForFuzzyQ(queryParam);
 	}
 
+	/**
+	 * query ns
+	 * @param nsName
+	 * @param request
+	 * @param response
+	 * @throws QueryException
+	 * @throws SQLException
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	@RequestMapping(value = "/nameserver/{nsName}", method = RequestMethod.GET)
 	@ResponseBody
 	public void queryNs(@PathVariable String nsName,
@@ -297,6 +362,16 @@ public class QueryController extends BaseController {
 		renderResponse(request, response, resultMap, queryParam);
 	}
 
+	/**
+	 * query as
+	 * @param autnum
+	 * @param request
+	 * @param response
+	 * @throws QueryException
+	 * @throws RedirectExecption
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	@RequestMapping(value = "/autnum/{autnum}", method = RequestMethod.GET)
 	@ResponseBody
 	public void queryAs(@PathVariable String autnum,
@@ -319,6 +394,16 @@ public class QueryController extends BaseController {
 		query(QueryType.DSDATA, q, request, response);
 	}
 
+	/**
+	 * query event
+	 * @param q
+	 * @param request
+	 * @param response
+	 * @throws QueryException
+	 * @throws RedirectExecption
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	@RequestMapping(value = "/events/{q}", method = RequestMethod.GET)
 	@ResponseBody
 	public void queryEvents(@PathVariable String q, HttpServletRequest request,
@@ -327,6 +412,15 @@ public class QueryController extends BaseController {
 		query(QueryType.EVENTS, q, request, response);
 	}
 
+	/**
+	 * query help
+	 * @param request
+	 * @param response
+	 * @throws QueryException
+	 * @throws RedirectExecption
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	@RequestMapping(value = "/help", method = RequestMethod.GET)
 	@ResponseBody
 	public void queryHelp(HttpServletRequest request,
@@ -339,6 +433,15 @@ public class QueryController extends BaseController {
 		renderResponse(request, response, resultMap, queryParam);
 	}
 
+	/**
+	 * query ip error with tail /
+	 * @param request
+	 * @param response
+	 * @throws QueryException
+	 * @throws RedirectExecption
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	@RequestMapping(value = { "/ip/{ip}/" }, method = RequestMethod.GET)
 	@ResponseBody
 	public void queryIpErrTail(HttpServletRequest request,
@@ -350,6 +453,16 @@ public class QueryController extends BaseController {
 		return;
 	}
 	
+	/**
+	 * query ip
+	 * @param ip
+	 * @param request
+	 * @param response
+	 * @throws QueryException
+	 * @throws RedirectExecption
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	@RequestMapping(value = { "/ip/{ip}" }, method = RequestMethod.GET)
 	@ResponseBody
 	public void queryIp(@PathVariable String ip, HttpServletRequest request,
@@ -359,6 +472,17 @@ public class QueryController extends BaseController {
 		doQueryIp(ip, request, response, net);
 	}
 
+	/**
+	 * query ip with net
+	 * @param ip
+	 * @param net
+	 * @param request
+	 * @param response
+	 * @throws QueryException
+	 * @throws RedirectExecption
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	@RequestMapping(value = { "/ip/{ip}/{net}", "/ip/{ip}/{net}/" }, method = RequestMethod.GET)
 	@ResponseBody
 	public void queryIpWithNet(@PathVariable String ip,
@@ -405,6 +529,16 @@ public class QueryController extends BaseController {
 		query(QueryType.KEYDATA, q, request, response);
 	}
 
+	/**
+	 * query link
+	 * @param q
+	 * @param request
+	 * @param response
+	 * @throws QueryException
+	 * @throws RedirectExecption
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	@RequestMapping(value = "/links/{q}", method = RequestMethod.GET)
 	@ResponseBody
 	public void queryLinks(@PathVariable String q, HttpServletRequest request,
@@ -413,6 +547,16 @@ public class QueryController extends BaseController {
 		query(QueryType.LINKS, q, request, response);
 	}
 
+	/**
+	 * query notice
+	 * @param q
+	 * @param request
+	 * @param response
+	 * @throws QueryException
+	 * @throws RedirectExecption
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	@RequestMapping(value = "/notices/{q}", method = RequestMethod.GET)
 	@ResponseBody
 	public void queryNotices(@PathVariable String q,
@@ -422,6 +566,16 @@ public class QueryController extends BaseController {
 		query(QueryType.NOTICES, q, request, response);
 	}
 
+	/**
+	 * query phone
+	 * @param q
+	 * @param request
+	 * @param response
+	 * @throws QueryException
+	 * @throws RedirectExecption
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	@RequestMapping(value = "/phones/{q}", method = RequestMethod.GET)
 	@ResponseBody
 	public void queryPhones(@PathVariable String q, HttpServletRequest request,
@@ -430,6 +584,16 @@ public class QueryController extends BaseController {
 		query(QueryType.PHONES, q, request, response);
 	}
 
+	/**
+	 * query address
+	 * @param q
+	 * @param request
+	 * @param response
+	 * @throws QueryException
+	 * @throws RedirectExecption
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	@RequestMapping(value = "/postalAddress/{q}", method = RequestMethod.GET)
 	@ResponseBody
 	public void queryPostalAddress(@PathVariable String q,
@@ -439,6 +603,16 @@ public class QueryController extends BaseController {
 		query(QueryType.POSTALADDRESS, q, request, response);
 	}
 
+	/**
+	 * query securedns
+	 * @param q
+	 * @param request
+	 * @param response
+	 * @throws QueryException
+	 * @throws RedirectExecption
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	@RequestMapping(value = "/secureDNS/{q}", method = RequestMethod.GET)
 	@ResponseBody
 	public void querySecureDNS(@PathVariable String q,
@@ -448,6 +622,16 @@ public class QueryController extends BaseController {
 		query(QueryType.SECUREDNS, q, request, response);
 	}
 
+	/**
+	 * query remark
+	 * @param q
+	 * @param request
+	 * @param response
+	 * @throws QueryException
+	 * @throws RedirectExecption
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	@RequestMapping(value = "/remarks/{q}", method = RequestMethod.GET)
 	@ResponseBody
 	public void queryRemarks(@PathVariable String q,
@@ -457,6 +641,16 @@ public class QueryController extends BaseController {
 		query(QueryType.REMARKS, q, request, response);
 	}
 
+	/**
+	 * query variant
+	 * @param q
+	 * @param request
+	 * @param response
+	 * @throws QueryException
+	 * @throws RedirectExecption
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	@RequestMapping(value = "/variants/{q}", method = RequestMethod.GET)
 	@ResponseBody
 	public void queryVariants(@PathVariable String q,
@@ -483,6 +677,9 @@ public class QueryController extends BaseController {
 		}
 	}
 
+	/**
+	 * query response 400
+	 */
 	@RequestMapping(value = "/**")
 	@ResponseBody
 	public void error400(HttpServletRequest request,
@@ -495,6 +692,13 @@ public class QueryController extends BaseController {
 		return;
 	}
 
+	/**
+	 * query response 301
+	 * @param ex
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@ExceptionHandler(value = { RedirectExecption.class })
 	@ResponseStatus(value = HttpStatus.MOVED_PERMANENTLY)
 	public String exp(Exception ex, HttpServletRequest request,
