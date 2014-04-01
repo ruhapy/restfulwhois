@@ -18,7 +18,11 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.ColumnCache;
 import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
-
+/**
+ * abs db query dao
+ * @author nic
+ *
+ */
 public abstract class AbstractDbQueryDao implements QueryDao{
 	//	private static AbstractDbQueryDao queryDAO = new AbstractDbQueryDao();
 	
@@ -32,7 +36,9 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
-	
+	/**
+	 * permission cache for auth controll
+	 */
 	protected PermissionCache permissionCache;
 	
 	@Autowired
