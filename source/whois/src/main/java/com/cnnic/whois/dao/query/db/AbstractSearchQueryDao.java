@@ -16,7 +16,11 @@ import com.cnnic.whois.dao.query.search.SearchQueryExecutor;
 import com.cnnic.whois.service.QueryService;
 import com.cnnic.whois.service.index.SearchResult;
 import com.cnnic.whois.util.WhoisUtil;
-
+/**
+ * search query dao
+ * @author nic
+ *
+ */
 public abstract class AbstractSearchQueryDao extends AbstractDbQueryDao{
 	@Autowired
 	protected SearchQueryExecutor searchQueryExecutor;

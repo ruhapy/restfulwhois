@@ -40,6 +40,14 @@ public class QueryEngine {
 		init();
 	}
 
+	/**
+	 * query main method
+	 * @param queryType
+	 * @param param
+	 * @return
+	 * @throws QueryException
+	 * @throws RedirectExecption
+	 */
 	public Map<String, Object> query(QueryType queryType, QueryParam param)
 			throws QueryException, RedirectExecption {
 		Map<String, Object> result = queryExecutor.query(queryType, param);
@@ -49,6 +57,14 @@ public class QueryEngine {
 		return result;
 	}
 	
+	/**
+	 * format after query
+	 * @param result
+	 * @param param
+	 * @return
+	 * @throws QueryException
+	 * @throws RedirectExecption
+	 */
 	public Map<String, Object> format(Map<String, Object> result, QueryParam param)
 			throws QueryException, RedirectExecption {
 		result = viewResolver.format(result, param.getFormat());

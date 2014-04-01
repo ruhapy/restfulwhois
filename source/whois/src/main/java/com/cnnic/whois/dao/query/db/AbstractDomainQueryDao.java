@@ -26,7 +26,13 @@ public abstract class AbstractDomainQueryDao extends AbstractDbQueryDao {
 //		String sql = listSql + "'" + q + "'";
 //		return this.queryBySql(sql, keyFields);
 //	}
-
+	/**
+	 * query by sql
+	 * @param sql
+	 * @param keyFields
+	 * @return
+	 * @throws QueryException
+	 */
 	protected Map<String, Object> queryBySql(String sql,
 			List<String> keyFields) throws QueryException {
 		Map<String, Object> map = null;

@@ -19,10 +19,14 @@ import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.controller.BaseController;
 import com.cnnic.whois.execption.QueryException;
-import com.cnnic.whois.util.WhoisProperties;
 import com.cnnic.whois.util.WhoisUtil;
 import com.cnnic.whois.view.FormatType;
 import com.cnnic.whois.view.ViewResolver;
+/**
+ * filter invalid uri
+ * @author nic
+ *
+ */
 public class InvalidUriFilter implements Filter {
 
 	@Override

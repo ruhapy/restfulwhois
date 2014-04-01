@@ -18,7 +18,11 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.ColumnCache;
 import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
-
+/**
+ * abs db query dao
+ * @author nic
+ *
+ */
 public abstract class AbstractDbQueryDao implements QueryDao{
 	//	private static AbstractDbQueryDao queryDAO = new AbstractDbQueryDao();
 	
@@ -32,32 +36,63 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
-	
+	/**
+	 * permission cache for auth controll
+	 */
 	protected PermissionCache permissionCache;
 	
 	@Autowired
 	public void setPermissionCache(PermissionCache permissionCache) {
 		this.permissionCache = permissionCache;
 	}
-	
+	/**
+	 * column cache: for authority
+	 */
 	protected ColumnCache columnCache;
 	@Autowired
 	public void setColumnCache(ColumnCache columnCache) {
 		this.columnCache = columnCache;
 	}
 
+	/**
+	 * daos
+	 */
 	@Autowired
 	protected List<AbstractDbQueryDao> dbQueryDaos;
+	/**
+	 * is support join type
+	 * @param queryType
+	 * @param queryJoinType
+	 * @return
+	 */
 	protected abstract boolean supportJoinType(QueryType queryType,
 			QueryJoinType queryJoinType);
+	/**
+	 * query with join table
+	 * @param key
+	 * @param handle
+	 * @return
+	 * @throws SQLException
+	 */
 	public abstract Object querySpecificJoinTable(String key, String handle)
 			throws SQLException ;
+	/**
+	 * get all entity,for cache init
+	 */
 	@Override
 	public Map<String, Object> getAll()
 			throws QueryException {
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * query with sql
+	 * @param sql
+	 * @param keyFlieds
+	 * @param keyName
+	 * @return
+	 * @throws SQLException
+	 */
 	protected Map<String, Object> query(String sql,
 			final List<String> keyFlieds, final String keyName)
 			throws SQLException {
@@ -126,15 +161,35 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 		});
 	}
 
+	/**
+	 * join filed name when query join
+	 * @param keyName
+	 * @return
+	 */
 	protected String getJoinFieldName(String keyName) {
 		return WhoisUtil.HANDLE;
 	}
 
+	/**
+	 * post handle fields
+	 * @param keyName
+	 * @param map
+	 * @return
+	 * @throws SQLException
+	 */
 	protected Map<String, Object> postHandleFields(String keyName,
 			Map<String, Object> map) throws SQLException {
 		return map;
 	}
 
+	/**
+	 * pre handle normal field
+	 * @param keyName
+	 * @param results
+	 * @param map
+	 * @param field
+	 * @throws SQLException
+	 */
 	protected void preHandleNormalField(String keyName,
 			ResultSet results, Map<String, Object> map, String field)
 			throws SQLException {}
@@ -202,6 +257,9 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 		return null;
 	}
 
+	/*
+	 * add rdap
+	 */
 	public static Map<String, Object> rdapConformance(Map<String, Object> map){
 		Map result = new LinkedHashMap<String, Object>();
 		Object[] conform = new Object[1];
@@ -212,7 +270,11 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 		}
 		return result;
 	}
-	
+	/**
+	 * get key fields
+	 * @param role
+	 * @return
+	 */
 	public List<String> getKeyFields(String role) {
 		throw new UnsupportedOperationException();
 	}

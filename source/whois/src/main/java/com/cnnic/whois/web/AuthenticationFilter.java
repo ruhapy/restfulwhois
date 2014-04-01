@@ -14,7 +14,11 @@ import javax.servlet.http.HttpServletResponse;
 import com.cnnic.whois.bean.Authentication;
 import com.cnnic.whois.util.AuthenticationHolder;
 import com.cnnic.whois.util.WhoisUtil;
-
+/**
+ * auth filter ,set role
+ * @author nic
+ *
+ */
 public class AuthenticationFilter implements Filter {
 
 	@Override
