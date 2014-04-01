@@ -8,11 +8,16 @@ import com.cnnic.whois.util.IpUtil;
 
 public class ValidateUtils {
 
-	public static boolean isPunyPartSearch(String q){
+	/**
+	 * as invalid: xn--abc*def
+	 * @param q
+	 * @return
+	 */
+	public static boolean isInvalidPunyPartSearch(String q){
 		if (StringUtils.isBlank(q)){
 			return false;
 		}
-		return q.contains("xn--*");
+		return q.startsWith("xn--") && q.contains("*")&& !q.endsWith("*");
 	}
 	
 	public static boolean validateDomainName(String domainName){

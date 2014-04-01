@@ -56,7 +56,7 @@ public class QueryController extends BaseController {
 			ServletException {
 		request.setAttribute("queryType", "domain");
 		DomainQueryParam domainQueryParam = super.praseDomainQueryParams(request);
-		if (StringUtils.isBlank(name) || ValidateUtils.isPunyPartSearch(name)) {
+		if (StringUtils.isBlank(name) || ValidateUtils.isInvalidPunyPartSearch(name)) {
 			super.renderResponseError400(request, response,domainQueryParam);
 			return;
 		}
@@ -220,7 +220,7 @@ public class QueryController extends BaseController {
 				return;
 			}
 			request.setAttribute("queryPara", name);
-			if (!ValidateUtils.verifyFuzzyDomain(name) || ValidateUtils.isPunyPartSearch(name) ) {
+			if (!ValidateUtils.verifyFuzzyDomain(name) || ValidateUtils.isInvalidPunyPartSearch(name) ) {
 				resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE,queryParam);
 			} else {
 				geneNsQByName(queryParam, punyQ, request);
