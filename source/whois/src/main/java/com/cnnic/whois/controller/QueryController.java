@@ -34,7 +34,8 @@ import com.cnnic.whois.service.QueryService;
 import com.cnnic.whois.util.WhoisUtil;
 import com.cnnic.whois.util.validate.ValidateUtils;
 /**
- * query controller
+ * query controller,mapping url begin with ".well-known/rdap/"
+ * 
  * @author nic
  *
  */
@@ -45,16 +46,19 @@ public class QueryController extends BaseController {
 	private QueryService queryService;
 	@Autowired
 	private QueryEngine queryEngine;
-
+	
+	/**
+	 * api doc
+	 */
 	@RequestMapping(value = { "/", "" }, method = RequestMethod.GET)
 	public String index() {
 		return "/doc/index";
 	}
 	/**
-	 * fuzzy query domain
-	 * @param name
-	 * @param request
-	 * @param response
+	 * fuzzy query domain by domain name
+	 * @param name : domain name
+	 * @param request:http request
+	 * @param response:http response
 	 * @throws QueryException
 	 * @throws RedirectExecption
 	 * @throws IOException
@@ -105,10 +109,10 @@ public class QueryController extends BaseController {
 	}
 	
 	/**
-	 * prise query domain
-	 * @param domainName
-	 * @param request
-	 * @param response
+	 * pricise query domain by domain name
+	 * @param domainName:domain name
+	 * @param request:http request
+	 * @param response:http response:http response
 	 * @throws QueryException
 	 * @throws RedirectExecption
 	 * @throws IOException
@@ -148,11 +152,11 @@ public class QueryController extends BaseController {
 	}
 
 	/**
-	 * fuzzy query entity
-	 * @param fn
-	 * @param handle
-	 * @param request
-	 * @param response
+	 * fuzzy query entity by name or handle
+	 * @param fn:entity name param
+	 * @param handle:entity handle param
+	 * @param request:http request
+	 * @param response:http response
 	 * @throws QueryException
 	 * @throws SQLException
 	 * @throws IOException
@@ -207,10 +211,10 @@ public class QueryController extends BaseController {
 	}
 
 	/**
-	 * query entity
-	 * @param entityName
-	 * @param request
-	 * @param response
+	 * pricise query entity by name
+	 * @param entityName:entity name
+	 * @param request:http request
+	 * @param response:http response
 	 * @throws QueryException
 	 * @throws SQLException
 	 * @throws IOException
@@ -231,11 +235,11 @@ public class QueryController extends BaseController {
 	}
 
 	/**
-	 * fuzzy query ns
+	 * fuzzy query ns by ns name
 	 * @param name
 	 * @param ip
-	 * @param request
-	 * @param response
+	 * @param request:http request
+	 * @param response:http response
 	 * @throws QueryException
 	 * @throws SQLException
 	 * @throws IOException
@@ -324,8 +328,8 @@ public class QueryController extends BaseController {
 	/**
 	 * query ns
 	 * @param nsName
-	 * @param request
-	 * @param response
+	 * @param request:http request
+	 * @param response:http response
 	 * @throws QueryException
 	 * @throws SQLException
 	 * @throws IOException
@@ -365,8 +369,8 @@ public class QueryController extends BaseController {
 	/**
 	 * query as
 	 * @param autnum
-	 * @param request
-	 * @param response
+	 * @param request:http request
+	 * @param response:http response
 	 * @throws QueryException
 	 * @throws RedirectExecption
 	 * @throws IOException
@@ -397,8 +401,8 @@ public class QueryController extends BaseController {
 	/**
 	 * query event
 	 * @param q
-	 * @param request
-	 * @param response
+	 * @param request:http request
+	 * @param response:http response
 	 * @throws QueryException
 	 * @throws RedirectExecption
 	 * @throws IOException
@@ -414,8 +418,8 @@ public class QueryController extends BaseController {
 
 	/**
 	 * query help
-	 * @param request
-	 * @param response
+	 * @param request:http request
+	 * @param response:http response
 	 * @throws QueryException
 	 * @throws RedirectExecption
 	 * @throws IOException
@@ -435,8 +439,8 @@ public class QueryController extends BaseController {
 
 	/**
 	 * query ip error with tail /
-	 * @param request
-	 * @param response
+	 * @param request:http request
+	 * @param response:http response
 	 * @throws QueryException
 	 * @throws RedirectExecption
 	 * @throws IOException
@@ -456,8 +460,8 @@ public class QueryController extends BaseController {
 	/**
 	 * query ip
 	 * @param ip
-	 * @param request
-	 * @param response
+	 * @param request:http request
+	 * @param response:http response
 	 * @throws QueryException
 	 * @throws RedirectExecption
 	 * @throws IOException
@@ -476,8 +480,8 @@ public class QueryController extends BaseController {
 	 * query ip with net
 	 * @param ip
 	 * @param net
-	 * @param request
-	 * @param response
+	 * @param request:http request
+	 * @param response:http response
 	 * @throws QueryException
 	 * @throws RedirectExecption
 	 * @throws IOException
@@ -532,8 +536,8 @@ public class QueryController extends BaseController {
 	/**
 	 * query link
 	 * @param q
-	 * @param request
-	 * @param response
+	 * @param request:http request
+	 * @param response:http response
 	 * @throws QueryException
 	 * @throws RedirectExecption
 	 * @throws IOException
@@ -550,8 +554,8 @@ public class QueryController extends BaseController {
 	/**
 	 * query notice
 	 * @param q
-	 * @param request
-	 * @param response
+	 * @param request:http request
+	 * @param response:http response
 	 * @throws QueryException
 	 * @throws RedirectExecption
 	 * @throws IOException
@@ -569,8 +573,8 @@ public class QueryController extends BaseController {
 	/**
 	 * query phone
 	 * @param q
-	 * @param request
-	 * @param response
+	 * @param request:http request
+	 * @param response:http response
 	 * @throws QueryException
 	 * @throws RedirectExecption
 	 * @throws IOException
@@ -587,8 +591,8 @@ public class QueryController extends BaseController {
 	/**
 	 * query address
 	 * @param q
-	 * @param request
-	 * @param response
+	 * @param request:http request
+	 * @param response:http response
 	 * @throws QueryException
 	 * @throws RedirectExecption
 	 * @throws IOException
@@ -606,8 +610,8 @@ public class QueryController extends BaseController {
 	/**
 	 * query securedns
 	 * @param q
-	 * @param request
-	 * @param response
+	 * @param request:http request
+	 * @param response:http response
 	 * @throws QueryException
 	 * @throws RedirectExecption
 	 * @throws IOException
@@ -625,8 +629,8 @@ public class QueryController extends BaseController {
 	/**
 	 * query remark
 	 * @param q
-	 * @param request
-	 * @param response
+	 * @param request:http request
+	 * @param response:http response
 	 * @throws QueryException
 	 * @throws RedirectExecption
 	 * @throws IOException
@@ -644,8 +648,8 @@ public class QueryController extends BaseController {
 	/**
 	 * query variant
 	 * @param q
-	 * @param request
-	 * @param response
+	 * @param request:http request
+	 * @param response:http response
 	 * @throws QueryException
 	 * @throws RedirectExecption
 	 * @throws IOException
@@ -695,8 +699,8 @@ public class QueryController extends BaseController {
 	/**
 	 * query response 301
 	 * @param ex
-	 * @param request
-	 * @param response
+	 * @param request:http request
+	 * @param response:http response
 	 * @return
 	 */
 	@ExceptionHandler(value = { RedirectExecption.class })
