@@ -18,7 +18,7 @@ import com.cnnic.whois.controller.BaseController;
 import com.cnnic.whois.util.AuthenticationHolder;
 import com.cnnic.whois.view.ViewResolver;
 /**
- * filter http method
+ * filter http method,only support get
  * @author nic
  *
  */

@@ -13,10 +13,20 @@ import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.permission.PermissionController;
 import com.cnnic.whois.view.ResponseFilter;
 import com.cnnic.whois.view.ViewResolver;
-
+/**
+ * query engine, call query executor for query .
+ * 
+ * @author nic
+ *
+ */
 @Service
 public class QueryEngine {
 	private static QueryEngine engine = new QueryEngine();
+	/**
+	 * QueryExecutor has two implemention:db executor,and cache executor
+	 * db and cache executor can replace each other,they all call solr executor for search
+	 * following executor can replace each other:db and cache
+	 */
 	@Autowired
 //	@Qualifier("cacheQueryExecutor")
 	@Qualifier("dbQueryExecutor")
@@ -28,6 +38,10 @@ public class QueryEngine {
 	@Autowired
 	private PermissionController permissionController ;
 
+	/**
+	 * get engine
+	 * @return query engine
+	 */
 	public static QueryEngine getEngine() {
 		return engine;
 	}
@@ -42,9 +56,9 @@ public class QueryEngine {
 
 	/**
 	 * query main method
-	 * @param queryType
-	 * @param param
-	 * @return
+	 * @param queryType:query type
+	 * @param param:query param
+	 * @return query result map
 	 * @throws QueryException
 	 * @throws RedirectExecption
 	 */
@@ -58,10 +72,10 @@ public class QueryEngine {
 	}
 	
 	/**
-	 * format after query
-	 * @param result
-	 * @param param
-	 * @return
+	 * format query result after query
+	 * @param result:query result
+	 * @param param:query param
+	 * @return query result
 	 * @throws QueryException
 	 * @throws RedirectExecption
 	 */

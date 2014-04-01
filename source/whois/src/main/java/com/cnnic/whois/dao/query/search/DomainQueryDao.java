@@ -7,8 +7,17 @@ import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.bean.index.DomainIndex;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.index.SearchResult;
+/**
+ * domain search dao
+ * @author nic
+ *
+ */
 public class DomainQueryDao extends AbstractSearchQueryDao<DomainIndex> {
 
+	/**
+	 * construction
+	 * @param url:solr core url
+	 */
 	public DomainQueryDao(String url) {
 		super(url);
 	}

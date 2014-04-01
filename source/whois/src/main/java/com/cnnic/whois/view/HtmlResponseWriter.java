@@ -18,7 +18,11 @@ import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.util.DataFormat;
 import com.cnnic.whois.util.WhoisUtil;
-
+/**
+ * html response writer
+ * @author nic
+ *
+ */
 @Component("htmlResponseWriter")
 public class HtmlResponseWriter extends AbstractResponseWriter {
 	private static HtmlResponseWriter writer = new HtmlResponseWriter();
@@ -27,6 +31,9 @@ public class HtmlResponseWriter extends AbstractResponseWriter {
 		return writer;
 	}
 
+	/**
+	 * html format key, replace _ by space
+	 */
 	public String formatKey(String keyName) {
 		return keyName.replaceAll("_", " ");
 	}
@@ -84,6 +91,9 @@ public class HtmlResponseWriter extends AbstractResponseWriter {
 		chain.doFilter(request, response);
 	}
 	
+	/**
+	 * display overtime message
+	 */
 	public void displayOverTimeMessage(HttpServletRequest request, HttpServletResponse response, 
 			String role,QueryParam queryParam) throws IOException, ServletException{
 		request.setCharacterEncoding("utf-8");

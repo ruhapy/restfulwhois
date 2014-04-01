@@ -9,16 +9,27 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.dao.query.db.DbQueryExecutor;
 import com.cnnic.whois.util.WhoisUtil;
 
+/**
+ * response writer 
+ * @author nic
+ *
+ */
 public abstract class AbstractResponseWriter implements ResponseWriter {
 	@Autowired
 	private DbQueryExecutor dbQueryExecutor ;
 
+	/**
+	 * format key
+	 * @param keyName
+	 * @return
+	 */
 	abstract protected String formatKey(String keyName);
 	/**
 	 * format
@@ -53,8 +64,10 @@ public abstract class AbstractResponseWriter implements ResponseWriter {
 			if( null != multiKey){
 				Object jsonObj = map.get(multiKey);
 				String mapKey = dbQueryExecutor.getMapKey(queryType);
-				map.remove(multiKey);
-				map.put(mapKey, jsonObj);
+				if(StringUtils.isNotBlank(mapKey)){
+					map.remove(multiKey);
+					map.put(mapKey, jsonObj);
+				}
 			}
 		} 
 		return map;

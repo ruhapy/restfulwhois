@@ -8,11 +8,20 @@ import com.cnnic.whois.bean.index.EntityIndex;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.QueryService;
 import com.cnnic.whois.service.index.SearchResult;
+/**
+ * entity search dao
+ * @author nic
+ *
+ */
 public class EntityQueryDao extends AbstractSearchQueryDao<EntityIndex> {
 	private static final String ARRAY_SPLITER = "'~'";
 	private static final String FUZZY_MARK = "*";
 	private static final String Q_OR = " OR ";
 
+	/**
+	 * construction
+	 * @param url:entity solr core
+	 */
 	public EntityQueryDao(String url) {
 		super(url);
 	}
@@ -37,6 +46,11 @@ public class EntityQueryDao extends AbstractSearchQueryDao<EntityIndex> {
 		return result;
 	}
 
+	/**
+	 * pricise search by handle or name
+	 * @param param: handle or name
+	 * @return search result
+	 */
 	public SearchResult<EntityIndex> preciseQueryEntitiesByHandleOrName(
 			QueryParam param) {
 		String handleOrName = param.getQ();
@@ -59,6 +73,13 @@ public class EntityQueryDao extends AbstractSearchQueryDao<EntityIndex> {
 		return query(queryStr, page);
 	}
 
+	/**
+	 * fuzzy query by handle and name
+	 * @param fuzzyQueryParamName:param name
+	 * @param handleOrName:handle or name param key
+	 * @param page:page param
+	 * @return search result
+	 */
 	private SearchResult<EntityIndex> fuzzyQueryEntitiesByHandleAndName(
 			String fuzzyQueryParamName, String handleOrName, PageBean page) {
 		handleOrName = super.escapeSolrChar(handleOrName);
@@ -73,11 +94,21 @@ public class EntityQueryDao extends AbstractSearchQueryDao<EntityIndex> {
 		return result;
 	}
 	
+	/**
+	 * generate ns search query string by ipv4
+	 * @param param:ipv4
+	 * @return query string
+	 */
 	public static String geneNsQByPreciseIpv4(String param){
 		String ipV4 = "ipV4Address:*" + param + " OR ipV4Address:" + param + "* OR ipV4Address:*" + param + "*";
 		return ipV4;
 	}
 	
+	/**
+	 * generate ns search query string by ipv4
+	 * @param param : ipv6
+	 * @return query string
+	 */
 	public static String geneNsQByPreciseIpv6(String param){
 		param = param.replace(":","\\:");
 		String ipV6 = "ipV6Address:*" + param + " OR ipV6Address:" + param + "* OR ipV6Address:*" + param + "*";

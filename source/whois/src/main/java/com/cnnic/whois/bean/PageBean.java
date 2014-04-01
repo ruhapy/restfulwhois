@@ -4,7 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
-
+/**
+ * page bean for paging
+ * @author nic
+ *
+ */
 public class PageBean implements java.io.Serializable {
 	private static final long serialVersionUID = 693435998917420886L;
 	public static final int FIRST_PAGE_NUM = 1;
@@ -23,10 +27,8 @@ public class PageBean implements java.io.Serializable {
 	/**
 	 * Creates a new PageBean object.
 	 * 
-	 * @param currentPage
-	 *            DOCUMENT ME!
-	 * @param maxRecords
-	 *            DOCUMENT ME!
+	 * @param currentPage:current page
+	 * @param maxRecords:max records of page
 	 */
 	public PageBean(int currentPage, int maxRecords) {
 		this.currentPage = currentPage;
@@ -36,8 +38,7 @@ public class PageBean implements java.io.Serializable {
 	/**
 	 * Creates a new PageBean object.
 	 * 
-	 * @param maxRecords
-	 *            DOCUMENT ME!
+	 * @param maxRecords:max records of page
 	 */
 	public PageBean(int maxRecords) {
 		this.maxRecords = maxRecords;
@@ -46,12 +47,9 @@ public class PageBean implements java.io.Serializable {
 	/**
 	 * Creates a new PageBean object.
 	 * 
-	 * @param currentPage
-	 *            DOCUMENT ME!
-	 * @param recordsCount
-	 *            DOCUMENT ME!
-	 * @param params
-	 *            DOCUMENT ME!
+	 * @param currentPage:current page
+	 * @param recordsCount:total count
+	 * @param params:params
 	 */
 	public PageBean(int currentPage, int recordsCount,
 			Map<String, Object> params) {
@@ -61,94 +59,88 @@ public class PageBean implements java.io.Serializable {
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * put params to map
 	 * 
-	 * @param key
-	 *            DOCUMENT ME!
-	 * @param value
-	 *            DOCUMENT ME!
+	 * @param key:param key
+	 * @param value:param value
 	 */
 	public void putParameter(String key, Object value) {
 		if (parameterMap == null) {
 			parameterMap = new HashMap<String, Object>();
 		}
-
 		parameterMap.put(key, value);
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * get current page
 	 * 
-	 * @return DOCUMENT ME!
+	 * @return current page
 	 */
 	public int getCurrentPage() {
 		return currentPage;
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * get total records count
 	 * 
-	 * @return DOCUMENT ME!
+	 * @return total records count
 	 */
 	public int getRecordsCount() {
 		return recordsCount;
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * get max records of page
 	 * 
-	 * @return DOCUMENT ME!
+	 * @return max records of page
 	 */
 	public Integer getMaxRecords() {
 		return maxRecords;
 	}
 
 	/**
-	 * 
-	 * @param currentPage
-	 *            DOCUMENT ME!
+	 * set current page
+	 * @param currentPage:current page
 	 */
 	public void setCurrentPage(int currentPage) {
 		this.currentPage = currentPage;
 	}
 
 	/**
-	 * 
-	 * @param recordsCount
-	 *            DOCUMENT ME!
+	 * set records count
+	 * @param recordsCount:records count
 	 */
 	public void setRecordsCount(int recordsCount) {
 		this.recordsCount = recordsCount;
 	}
 
 	/**
-	 * 
-	 * @param parameterMap
-	 *            DOCUMENT ME!
+	 * set params map
+	 * @param parameterMap:params map
 	 */
 	public void setParameterMap(Map<String, Object> parameterMap) {
 		this.parameterMap = parameterMap;
 	}
 
 	/**
-	 * 
-	 * @param maxRecords
+	 * set max records of page
+	 * @param maxRecords:max records of page
 	 */
 	public void setMaxRecords(Integer maxRecords) {
 		this.maxRecords = maxRecords;
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * increment current page
 	 */
 	public void incrementCurrentPage() {
 		this.currentPage++;
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * to string
 	 * 
-	 * @return DOCUMENT ME!
+	 * @return string of bean
 	 */
 	@Override
 	public String toString() {
@@ -158,12 +150,19 @@ public class PageBean implements java.io.Serializable {
 				.toString();
 	}
 
+	/**
+	 * set page count
+	 * @param pageCount: page count
+	 */
 	public void setPageCount(int pageCount) {
 		this.pageCount = pageCount;
 	}
 
+	/**
+	 * get  page count
+	 * @return: page count
+	 */
 	public int getPageCount() {
 		return pageCount;
 	}
-
 }

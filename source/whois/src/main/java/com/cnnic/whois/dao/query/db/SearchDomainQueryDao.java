@@ -12,6 +12,11 @@ import com.cnnic.whois.bean.index.Index;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.index.SearchResult;
 
+/**
+ * search domain dao
+ * @author nic
+ *
+ */
 @Repository("db.searchDomainQueryDao")
 public class SearchDomainQueryDao extends AbstractSearchQueryDao {
 

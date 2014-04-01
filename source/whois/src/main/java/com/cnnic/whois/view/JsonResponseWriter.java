@@ -15,7 +15,11 @@ import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.DataFormat;
 import com.cnnic.whois.util.WhoisUtil;
-
+/**
+ * json response writer
+ * @author nic
+ *
+ */
 @Component("jsonResponseWriter")
 public class JsonResponseWriter extends AbstractResponseWriter {
 	private static JsonResponseWriter writer = new JsonResponseWriter();
@@ -47,6 +51,9 @@ public class JsonResponseWriter extends AbstractResponseWriter {
 		out.print(DataFormat.getJsonObject(map));
 	}
 	
+	/**
+	 * display overtime message
+	 */
 	public void displayOverTimeMessage(HttpServletRequest request, HttpServletResponse response,  
 			String role,QueryParam queryParam) throws IOException, ServletException{
 		request.setCharacterEncoding("utf-8");

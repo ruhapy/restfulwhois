@@ -16,7 +16,11 @@ import com.cnnic.whois.dao.query.QueryEngine;
 import com.cnnic.whois.dao.query.cache.CacheQueryExecutor;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
-
+/**
+ * cache controller
+ * @author nic
+ *
+ */
 @Controller
 @RequestMapping("/cache")
 public class CacheController extends BaseController {
@@ -25,6 +29,15 @@ public class CacheController extends BaseController {
 	@Autowired
 	private QueryEngine queryEngine;
 
+	/**
+	 * cache init ,load data from db,is full init.
+	 * @param request:http request
+	 * @param response:http response
+	 * @throws QueryException
+	 * @throws RedirectExecption
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	@RequestMapping(value = "/init", method = RequestMethod.GET)
 	@ResponseBody
 	public void init(HttpServletRequest request,

@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.stereotype.Repository;
-
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryParam;
@@ -15,8 +13,12 @@ import com.cnnic.whois.bean.index.Index;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.service.index.SearchResult;
-import com.cnnic.whois.util.ColumnCache;
 import com.cnnic.whois.util.WhoisUtil;
+/**
+ * domain query dao,use dnr/rir domain query dao instead
+ * @author nic
+ *
+ */
 //@Repository
 @Deprecated
 public class DomainQueryDao extends AbstractSearchQueryDao {
@@ -33,6 +35,12 @@ public class DomainQueryDao extends AbstractSearchQueryDao {
 		}
 	}
 
+	/**
+	 * fuzzy query
+	 * @param param:query param
+	 * @return query result
+	 * @throws QueryException
+	 */
 	private Map<String, Object> doFuzzyQuery(QueryParam param) throws QueryException {
 		SearchResult<? extends Index> result = searchQueryExecutor.query(
 				QueryType.SEARCHDOMAIN, param);
@@ -59,6 +67,13 @@ public class DomainQueryDao extends AbstractSearchQueryDao {
 		return map;
 	}
 
+	/**
+	 * do fuzzy query
+	 * @param param:query param
+	 * @param page:page param
+	 * @return query result map
+	 * @throws QueryException
+	 */
 	private Map<String, Object> doQuery(QueryParam param, 
 			PageBean... page) throws QueryException {
 		Map<String, Object> map = null;
@@ -88,12 +103,13 @@ public class DomainQueryDao extends AbstractSearchQueryDao {
 		return map;
 	}
 
-//	protected Map<String, Object> querys(String listSql, List<String> keyFields,
-//			String q) throws QueryException {
-//		String sql = listSql + "'" + q + "'";
-//		return this.queryBySql(sql, keyFields);
-//	}
-
+	/**
+	 * query by sql
+	 * @param sql : query sql
+	 * @param keyFields:authrozied keys
+	 * @return query result map
+	 * @throws QueryException
+	 */
 	protected Map<String, Object> queryBySql(String sql,
 			List<String> keyFields) throws QueryException {
 		Map<String, Object> map = null;

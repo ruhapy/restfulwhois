@@ -28,6 +28,10 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 	
 	private JdbcTemplate jdbcTemplate;
 
+	/**
+	 * get jdbc template
+	 * @return
+	 */
 	public JdbcTemplate getJdbcTemplate() {
 		return jdbcTemplate;
 	}
@@ -90,7 +94,7 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 	 * @param sql
 	 * @param keyFlieds
 	 * @param keyName
-	 * @return
+	 * @return query result map
 	 * @throws SQLException
 	 */
 	protected Map<String, Object> query(String sql,
@@ -164,7 +168,7 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 	/**
 	 * join filed name when query join
 	 * @param keyName
-	 * @return
+	 * @return filed name
 	 */
 	protected String getJoinFieldName(String keyName) {
 		return WhoisUtil.HANDLE;
@@ -174,7 +178,7 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 	 * post handle fields
 	 * @param keyName
 	 * @param map
-	 * @return
+	 * @return query result
 	 * @throws SQLException
 	 */
 	protected Map<String, Object> postHandleFields(String keyName,
@@ -225,6 +229,12 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 		}
 		return null;
 	}
+	
+	/**
+	 * add query join type to query result ,for filter columns,will be removed by format filter
+	 * @param joinType
+	 * @param result
+	 */
 	private void addQueryJoinTypeEntry(QueryJoinType joinType, Object result) {
 		Map map = (Map)result;
 		map.put("queryJoinType", joinType.getName());
@@ -257,8 +267,10 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 		return null;
 	}
 
-	/*
-	 * add rdap
+	/**
+	 * add add rdap mark to query result map
+	 * @param map:query result map
+	 * @return query result map after add rdap
 	 */
 	public static Map<String, Object> rdapConformance(Map<String, Object> map){
 		Map result = new LinkedHashMap<String, Object>();
@@ -271,22 +283,35 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 		return result;
 	}
 	/**
-	 * get key fields
+	 * get authroized key fields by role
 	 * @param role
-	 * @return
+	 * @return authroized key field names list
 	 */
 	public List<String> getKeyFields(String role) {
 		throw new UnsupportedOperationException();
 	}
 	
+	/**
+	 * get map key
+	 * @return map key
+	 */
 	public String getMapKey() {
 		throw new UnsupportedOperationException();
 	}
 	
+	/**
+	 * some entites nedd reformat value,eg:ns,entity
+	 * @param query result map
+	 * @return query result map after formated value
+	 */
 	protected Map<String, Object> formatValue(Map<String, Object> map){
 		return map;
 	}
 	
+	/**
+	 * put query type to query result map,used for filter columns ,will be removed by filter
+	 * @param query result map
+	 */
 	private void putQueryType(Map<String, Object> map){
 		if(map == null){
 			return;

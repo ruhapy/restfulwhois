@@ -13,17 +13,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
-import com.cnnic.whois.util.DataFormat;
 import com.cnnic.whois.util.WhoisUtil;
-
+/**
+ * text response writer,for whois proxy
+ * @author nic
+ *
+ */
 @Component("textResponseWriter")
 public class TextResponseWriter extends AbstractResponseWriter {
 	private static TextResponseWriter writer = new TextResponseWriter();
@@ -72,6 +73,7 @@ public class TextResponseWriter extends AbstractResponseWriter {
 		out.write(result);
 	}
 
+	@Override
 	public void displayOverTimeMessage(HttpServletRequest request,
 			HttpServletResponse response, String role,QueryParam queryParam) throws IOException,
 			ServletException {
@@ -94,6 +96,12 @@ public class TextResponseWriter extends AbstractResponseWriter {
 		out.write(getPresentationFromMap(map, 0));
 	}
 
+	/**
+	 * get presentation from query result map
+	 * @param map:query result map
+	 * @param iMode
+	 * @return
+	 */
 	private String getPresentationFromMap(Map<String, Object> map, int iMode) {
 		StringBuffer sb = new StringBuffer();
 
@@ -188,6 +196,11 @@ public class TextResponseWriter extends AbstractResponseWriter {
 		return sb.toString();
 	}
 	
+	/**
+	 * convert json array to list for json array
+	 * @param jsonArray:json array
+	 * @return list objects
+	 */
 	private List<Object> convertJsonArrayToList(JSONArray jsonArray){
 		Object[] objectArray =jsonArray.toArray();
 		List<Object> result = new ArrayList<Object>();
@@ -197,6 +210,11 @@ public class TextResponseWriter extends AbstractResponseWriter {
 		return result;
 	}
 
+	/**
+	 * convert json array to list for json object
+	 * @param obj :json object
+	 * @return object
+	 */
 	private Object convertJSONArrayToLists(Object obj) {
 		Object[] objectArray = ((JSONArray) obj)
 				.toArray();
@@ -217,7 +235,8 @@ public class TextResponseWriter extends AbstractResponseWriter {
 	public boolean support(FormatType formatType) {
 		return null != formatType && formatType.isTextFormat();
 	}
-
+	
+	@Override
 	public Map<String, Object> getMultiMapKey(QueryType queryType,
 			Map<String, Object> map) {
 		return map;
