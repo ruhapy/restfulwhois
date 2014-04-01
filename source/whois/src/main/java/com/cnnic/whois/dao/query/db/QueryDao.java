@@ -15,27 +15,32 @@ public interface QueryDao {
 	/**
 	 * get query join type
 	 * 
-	 * @return
+	 * @return query type
 	 */
 	QueryType getQueryType();
 
 	/**
-	 * suppot query type
+	 * check is suppot query type
 	 * 
 	 * @param queryType
-	 * @return
+	 * @return true if support,false if not
 	 */
 	boolean supportType(QueryType queryType);
 
 	/**
-	 * 
-	 * @param param
-	 * @return
+	 * query 
+	 * @param param:query param
+	 * @return query result map
 	 * @throws QueryException
 	 * @throws RedirectExecption
 	 */
 	Map<String, Object> query(QueryParam param)
 			throws QueryException, RedirectExecption;
 
+	/**
+	 * get all data from db ,used for init cache
+	 * @return query result map
+	 * @throws QueryException
+	 */
 	Map<String, Object> getAll() throws QueryException;
 }

@@ -15,8 +15,12 @@ import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.bean.index.Index;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.index.SearchResult;
-import com.cnnic.whois.util.ColumnCache;
 import com.cnnic.whois.util.WhoisUtil;
+/**
+ * entity query dao
+ * @author nic
+ *
+ */
 @Repository
 public class EntityQueryDao extends AbstractSearchQueryDao {
 	private static final String MAP_KEY = "$mul$entity";
@@ -65,6 +69,14 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 		return map;
 	}
 
+	/**
+	 * query rir entity 
+	 * @param queryInfo:query string
+	 * @param role :user role
+	 * @param format:response format
+	 * @return query result map
+	 * @throws QueryException
+	 */
 	@SuppressWarnings("unused")
 	private Map<String, Object> queryRIREntity(String queryInfo, String role,
 			String format) throws QueryException {
@@ -107,6 +119,13 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 		return map;
 	}
 
+	/**
+	 * get all entity ,will be implemented by dnr/rir entity dao
+	 * @param sql:dnr/rir query sql
+	 * @param keyFields:authrozied keys
+	 * @return query result map
+	 * @throws QueryException
+	 */
 	protected Map<String, Object> getAllEntity(String sql, List<String> keyFields)
 			throws QueryException {
 		Map<String, Object> map = null;
@@ -122,21 +141,6 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 			throw new QueryException(e);
 		}
 		return map;
-	}
-
-	private void getListFromMap(Map<String, Object> allEntity,
-			List<Map<String, Object>> mapList) {
-		if (null == allEntity) {
-			return;
-		}
-		if (null != allEntity.get("Handle")) {// only one result
-			mapList.add(allEntity);
-		} else {
-			Object[] entities = (Object[]) allEntity.get(MAP_KEY);
-			for (Object entity : entities) {
-				mapList.add((Map<String, Object>) entity);
-			}
-		}
 	}
 
 	@Override

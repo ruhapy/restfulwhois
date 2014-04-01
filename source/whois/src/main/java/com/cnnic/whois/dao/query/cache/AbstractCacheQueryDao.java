@@ -23,6 +23,11 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.util.DataFormat;
 
+/**
+ * cache query dao,query data from redis,must execute /cache/init first to load data from db
+ * @author nic
+ *
+ */
 public abstract class AbstractCacheQueryDao implements QueryDao {
 	@Autowired
 	@Qualifier("dbQueryExecutor")

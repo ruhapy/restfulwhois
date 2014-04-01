@@ -7,14 +7,18 @@ import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
-
+/**
+ * query executor,called by @see QueryEngine
+ * @author nic
+ *
+ */
 public interface QueryExecutor {
 	/**
 	 * query main method
-	 * @param queryType
-	 * @param param
+	 * @param queryType:query type
+	 * @param param:query param
 	 * @param pageParam
-	 * @return
+	 * @return query result map
 	 * @throws QueryException
 	 * @throws RedirectExecption
 	 */

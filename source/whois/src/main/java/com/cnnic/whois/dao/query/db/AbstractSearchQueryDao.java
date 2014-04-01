@@ -17,7 +17,7 @@ import com.cnnic.whois.service.QueryService;
 import com.cnnic.whois.service.index.SearchResult;
 import com.cnnic.whois.util.WhoisUtil;
 /**
- * search query dao
+ * search dao,search data from solr.solr must be init after data changed in db
  * @author nic
  *
  */
@@ -34,6 +34,11 @@ public abstract class AbstractSearchQueryDao extends AbstractDbQueryDao{
 			QueryJoinType queryJoinType) {
 		return false;
 	}
+	/**
+	 * add truncated param to query result map
+	 * @param map:query result map
+	 * @param result:query result map after add truncated param
+	 */
 	protected void addTruncatedParamToMap(Map<String, Object> map,
 			SearchResult<? extends Index> result) {
 		if(result.getTotalResults()>QueryService.MAX_SIZE_FUZZY_QUERY){
@@ -41,6 +46,13 @@ public abstract class AbstractSearchQueryDao extends AbstractDbQueryDao{
 		}
 	}
 	
+	/**
+	 * fuzzy query domain
+	 * @param domains:query string,eg cn*.cn,cn*
+	 * @param keyName:query result map key name
+	 * @return:query result map 
+	 * @throws SQLException
+	 */
 	protected Map<String, Object> fuzzyQuery(SearchResult<? extends Index> domains,
 			String keyName)
 			throws SQLException {
@@ -96,25 +108,22 @@ public abstract class AbstractSearchQueryDao extends AbstractDbQueryDao{
 			return mapInfo;
 	}
 
+	/**
+	 * post handle fields when fuzzy query
+	 * @param keyName
+	 * @param map
+	 * @return
+	 */
 	protected Map<String, Object> postHandleFieldsFuzzy(String keyName,
 			 Map<String, Object> map) {
-//		if (keyName.equals("$mul$nameServer") || keyName.equals("$join$nameServer")){
-//			Map<String, Object> map_IP = new LinkedHashMap<String, Object>();
-//			Object IPAddressArray = map.get("IPV4_Addresses");
-//			map_IP.put(WhoisUtil.IPV4PREFIX, IPAddressArray);
-//			IPAddressArray = map.get("IPV6_Addresses");
-//			map_IP.put(WhoisUtil.IPV6PREFIX, IPAddressArray);
-//			map.put(WhoisUtil.IPPREFIX, map_IP);
-//			map.remove("IPV4_Addresses");
-//			map.remove("IPV6_Addresses");
-//		}
-		//vcard format
-//		if(keyName.equals(WhoisUtil.MULTIPRXENTITY)){
-//			map = WhoisUtil.toVCard(map);
-//		}
 		return map;
 	}
 	
+	/**
+	 * put query type to query result,for filter column,will be removed after filter
+	 * @param map:query result map
+	 * @param index: search index
+	 */
 	private void putQueryType(Map<String, Object> map,Index index){
 		if(map == null){
 			return;

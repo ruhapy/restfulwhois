@@ -10,6 +10,11 @@ import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 
+/**
+ * domain query dao
+ * @author nic
+ *
+ */
 public abstract class AbstractDomainQueryDao extends AbstractDbQueryDao {
 	public static final String GET_ALL_DNRDOMAIN = "select * from DNRDomain";
 	public static final String GET_ALL_RIRDOMAIN = "select * from RIRDomain";
@@ -21,16 +26,11 @@ public abstract class AbstractDomainQueryDao extends AbstractDbQueryDao {
 		throw new UnsupportedOperationException();
 	}
 
-//	public Map<String, Object> query(String listSql, List<String> keyFields,
-//			String q) throws QueryException {
-//		String sql = listSql + "'" + q + "'";
-//		return this.queryBySql(sql, keyFields);
-//	}
 	/**
 	 * query by sql
-	 * @param sql
-	 * @param keyFields
-	 * @return
+	 * @param sql:query sql
+	 * @param keyFields:authorized fileds
+	 * @return query result map
 	 * @throws QueryException
 	 */
 	protected Map<String, Object> queryBySql(String sql,

@@ -6,22 +6,33 @@ import com.cnnic.whois.bean.index.Index;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.index.SearchResult;
 
+/**
+ * search query dao 
+ * @author nic
+ *
+ */
 public interface SearchQueryDao{
 	/**
 	 * get query join type
 	 * 
-	 * @return
+	 * @return query type
 	 */
 	QueryType getQueryType();
 
 	/**
-	 * suppot query type
+	 * check is suppot query type
 	 * 
 	 * @param queryType
-	 * @return
+	 * @return true if support,false if not
 	 */
 	boolean supportType(QueryType queryType);
 
+	/**
+	 * search object
+	 * @param param:query param
+	 * @return search result
+	 * @throws QueryException
+	 */
 	SearchResult<? extends Index> search(QueryParam param)
 			throws QueryException;
 }

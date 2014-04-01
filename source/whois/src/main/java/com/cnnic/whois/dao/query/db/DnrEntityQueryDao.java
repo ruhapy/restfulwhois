@@ -9,9 +9,12 @@ import org.springframework.stereotype.Repository;
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
-import com.cnnic.whois.util.ColumnCache;
-import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
+/**
+ * dnr entity query dao
+ * @author nic
+ *
+ */
 @Repository
 public class DnrEntityQueryDao extends EntityQueryDao {
 

@@ -14,6 +14,11 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.index.SearchResult;
 import com.cnnic.whois.util.WhoisUtil;
 
+/**
+ * search ns dao
+ * @author nic
+ *
+ */
 @Repository("db.searchNsQueryDao")
 public class SearchNsQueryDao extends AbstractSearchQueryDao {
 
@@ -38,6 +43,13 @@ public class SearchNsQueryDao extends AbstractSearchQueryDao {
 		return map;
 	}
 
+	/**
+	 * rebuild query result
+	 * @param keyName
+	 * @param format
+	 * @param map
+	 * @return
+	 */
 	protected Map<String, Object> postHandleFieldsFuzzy(String keyName,
 			String format, Map<String, Object> map) {
 		Map<String, Object> map_IP = new LinkedHashMap<String, Object>();

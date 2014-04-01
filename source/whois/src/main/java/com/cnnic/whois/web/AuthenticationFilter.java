@@ -15,7 +15,7 @@ import com.cnnic.whois.bean.Authentication;
 import com.cnnic.whois.util.AuthenticationHolder;
 import com.cnnic.whois.util.WhoisUtil;
 /**
- * auth filter ,set role
+ * auth filter ,store role
  * @author nic
  *
  */

@@ -17,6 +17,11 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.util.JdbcUtils;
 import com.cnnic.whois.util.WhoisUtil;
+/**
+ * redirection query dao,query from redirect table
+ * @author nic
+ *
+ */
 @Repository
 public class RedirectionQueryDao extends AbstractDbQueryDao {
 
@@ -43,10 +48,6 @@ public class RedirectionQueryDao extends AbstractDbQueryDao {
 					+ queryInfo + "'";
 		}
 
-//		this.getJdbcTemplate().query(selectSql, new RowCallbackHandler() {
-//		    @Override
-//		    public void processRow(ResultSet results) throws SQLException {
-//		});
 		try {
 			connection = jdbcUtils.getConnection();
 			stmt = connection.prepareStatement(selectSql);
