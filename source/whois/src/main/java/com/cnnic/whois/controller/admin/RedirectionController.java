@@ -13,13 +13,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cnnic.whois.service.admin.RedirectionService;
 import com.cnnic.whois.util.WhoisUtil;
-
+/**
+ * redirect controller
+ * @author nic
+ *
+ */
 @Controller
 public class RedirectionController {
 
 	@Autowired
 	private RedirectionService redirectionService;
 	
+	/**
+	 * list redirect table
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/admin/redirectionController/list")
 	public String list(HttpServletRequest request,
 			HttpServletResponse response, ModelMap model) throws Exception {
@@ -32,7 +44,14 @@ public class RedirectionController {
 		
 		return "/admin/redirectionTable";
 	}
-
+	/**
+	 * add redirect table
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/admin/redirectionController/add")
 	public String add(HttpServletRequest request, HttpServletResponse response,
 			ModelMap model) throws Exception {
@@ -51,7 +70,14 @@ public class RedirectionController {
 
 		return "redirect:/admin/redirectionController/list?tableName="+tableName;
 	}
-	
+	/**
+	 * update redirect table
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/admin/redirectionController/update")
 	public String update(HttpServletRequest request, HttpServletResponse response,
 			ModelMap model) throws Exception {
@@ -71,7 +97,14 @@ public class RedirectionController {
 
 		return "redirect:/admin/redirectionController/list?tableName="+tableName;
 	}
-	
+	/**
+	 * delete redirect
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/admin/redirectionController/delete")
 	public String delete(HttpServletRequest request, HttpServletResponse response,
 			ModelMap model) throws Exception {

@@ -47,7 +47,13 @@ public class RequestTokenController {
 //          throw new ServletException(e.getMessage());
 //      }
 //	}
-    
+    /**
+     * call for request token
+     * @param request
+     * @param response
+     * @param model
+     * @throws Exception
+     */
     @RequestMapping(value = "/request_token")
 	public void request_token(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception{
     	try {
@@ -79,7 +85,13 @@ public class RequestTokenController {
             OAuthProvider.handleException(e, request, response, true);
         }
 	}
-
+    /**
+     * handle authorize url
+     * @param request
+     * @param response
+     * @param model
+     * @throws Exception
+     */
 	@RequestMapping(value = "/authorize" , method = RequestMethod.GET)
 	public void authorize_get(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception{
 		try{
@@ -98,7 +110,13 @@ public class RequestTokenController {
             OAuthProvider.handleException(e, request, response, true);
         }
 	}
-	
+	/**
+	 * handle auth url,post
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/authorize" , method = RequestMethod.POST)
 	public void authorizePost(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception{
 		
@@ -132,7 +150,13 @@ public class RequestTokenController {
             OAuthProvider.handleException(e, request, response, true);
         }
 	}
-    
+    /**
+     * handle access token
+     * @param request
+     * @param response
+     * @param model
+     * @throws Exception
+     */
 	@RequestMapping(value = "/access_token")
 	public void access_token(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception{
 		try{
@@ -162,7 +186,14 @@ public class RequestTokenController {
         }
 	}
 	
-	
+	/**
+	 * send authorize page
+	 * @param request
+	 * @param response
+	 * @param accessor
+	 * @throws IOException
+	 * @throws ServletException
+	 */
     private void sendToAuthorizePage(HttpServletRequest request, 
             HttpServletResponse response, OAuthAccessor accessor)
     throws IOException, ServletException{
@@ -178,7 +209,14 @@ public class RequestTokenController {
                     ("/WEB-INF/pages/oauth/authorize.jsp").forward(request, response);
         
     }
-    
+    /**
+     * next to auth page
+     * @param request
+     * @param response
+     * @param accessor
+     * @throws IOException
+     * @throws ServletException
+     */
     private void nextToAuthorizePage(HttpServletRequest request, 
             HttpServletResponse response, OAuthAccessor accessor)
     throws IOException, ServletException{
@@ -194,7 +232,14 @@ public class RequestTokenController {
                     ("/WEB-INF/pages/oauth/nextAuthorize.jsp").forward(request, response);
         
     }
-    
+    /**
+     * return to consumer
+     * @param request
+     * @param response
+     * @param accessor
+     * @throws IOException
+     * @throws ServletException
+     */
     private void returnToConsumer(HttpServletRequest request, 
             HttpServletResponse response, OAuthAccessor accessor)
     throws IOException, ServletException{

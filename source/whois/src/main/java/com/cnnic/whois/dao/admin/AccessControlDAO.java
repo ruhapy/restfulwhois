@@ -16,7 +16,11 @@ import org.springframework.stereotype.Repository;
 import com.cnnic.whois.dao.base.BaseJdbcDao;
 import com.cnnic.whois.execption.ManagementException;
 import com.cnnic.whois.util.WhoisUtil;
-
+/**
+ * access control dao
+ * @author nic
+ *
+ */
 @Repository
 public class AccessControlDAO extends BaseJdbcDao {
 	

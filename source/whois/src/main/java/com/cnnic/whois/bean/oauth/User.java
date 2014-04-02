@@ -1,5 +1,9 @@
 package com.cnnic.whois.bean.oauth;
-
+/**
+ * oauth user
+ * @author nic
+ *
+ */
 public class User {
 	
 	private int id;
