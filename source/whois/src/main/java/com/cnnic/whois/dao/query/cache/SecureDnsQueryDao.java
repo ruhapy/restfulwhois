@@ -6,6 +6,11 @@ import org.springframework.stereotype.Repository;
 
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
+/**
+ * secure dns query dao
+ * @author nic
+ *
+ */
 @Repository("cacheSecureDnsQueryDao")
 public class SecureDnsQueryDao extends AbstractCacheQueryDao {
 	@Override

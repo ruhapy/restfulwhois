@@ -6,6 +6,11 @@ import org.springframework.stereotype.Repository;
 
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
+/**
+ * event query dao
+ * @author nic
+ *
+ */
 @Repository("cacheEventsQueryDao")
 public class EventsQueryDao extends AbstractCacheQueryDao {
 	@Override

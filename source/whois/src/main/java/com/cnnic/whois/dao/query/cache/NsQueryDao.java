@@ -7,6 +7,11 @@ import org.springframework.stereotype.Repository;
 
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
+/**
+ * ns query dao
+ * @author nic
+ *
+ */
 @Repository("cacheNsQueryDao")
 public class NsQueryDao extends AbstractCacheQueryDao {
 	@Override

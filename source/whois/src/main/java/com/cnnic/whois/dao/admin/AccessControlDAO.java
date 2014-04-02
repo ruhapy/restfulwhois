@@ -78,24 +78,5 @@ public class AccessControlDAO extends BaseJdbcDao {
                     }  
                 });  
 
-//		Connection connection = JdbcUtils.getConnection();
-//		PreparedStatement stmt = null;
-//		try {
-//			stmt = connection.prepareStatement(WhoisUtil.UPDATE_PERMISSION);
-//			for (String key : columnkeySet) {
-//				List<String> permissionValueList = (List<String>) permissionList.get(key);
-//				stmt.setString(1, permissionValueList.get(0));
-//				stmt.setString(2, permissionValueList.get(1));
-//				stmt.setString(3, permissionValueList.get(2));
-//				stmt.setString(4, tableName);
-//				stmt.setString(5, key);
-//				stmt.execute();
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			throw new ManagementException(e);
-//		} finally {
-//			JdbcUtils.free(null, null, connection);
-//		}
 	}
 }

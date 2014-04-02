@@ -9,10 +9,18 @@ import org.springframework.stereotype.Repository;
 import com.cnnic.whois.bean.oauth.UserApp;
 import com.cnnic.whois.bean.oauth.UserAppRowMapper;
 import com.cnnic.whois.dao.base.BaseJdbcDao;
-
+/**
+ * user app dao
+ * @author nic
+ *
+ */
 @Repository
 public class UserAppDao extends BaseJdbcDao {
 
+	/**
+	 * save app
+	 * @param userApp
+	 */
 	public void save(UserApp userApp) {
 //		TODO : this part need modification, default invalid_time setting 7 days
 		userApp.setApp_key("key" +System.currentTimeMillis());
@@ -23,37 +31,61 @@ public class UserAppDao extends BaseJdbcDao {
 		Object[] param = new Object[]{userApp.getApp_key(), userApp.getApp_secret(), userApp.getApp_description(), userApp.getUser_id(), userApp.getInvalid_time() };
 		this.getJdbcTemplate().update(sql, param);
 	}
-	
+	/**
+	 * update app
+	 * @param id app id
+	 * @param userApp
+	 */
 	public void update(int id, UserApp userApp) {
 		String sql = "update oauth_users set app_description=? where id = ?";
 		Object[] param = new Object[]{userApp.getApp_description(), id };
 		this.getJdbcTemplate().update(sql, param);
 	}
 	
+	/**
+	 * delete app
+	 * @param id:app id
+	 */
 	public void delete(int id) {
 		String sql = "delete from oauth_users_app where id =?";
 		Object[] param = new Object[]{id };
 		this.getJdbcTemplate().update(sql, param);
 	}
-
+	/**
+	 * get user app by id
+	 * @param user_id:app id
+	 * @return app
+	 */
 	public UserApp getUserAppById(int user_id) {
 		String sql = "select id, app_key, app_secret, app_description, user_id from oauth_users_app where id = ? ";
 		Object[] param = new Object[] {user_id };
 		return this.getJdbcTemplate().queryForObject(sql, param, new UserAppRowMapper());
 	}
-	
+	/**
+	 * get user app
+	 * @param user_id :app id
+	 * @return app
+	 */
 	public UserApp getUserAppByUserId(int user_id) {
 		String sql = "select id, app_key, app_secret, app_description, user_id from oauth_users_app where user_id = ? ";
 		Object[] param = new Object[] {user_id };
 		return this.getJdbcTemplate().queryForObject(sql, param, new UserAppRowMapper());
 	}
-
+	/**
+	 * get apps
+	 * @param user_id
+	 * @return app list
+	 */
 	public List<UserApp> getUserApps(int user_id) {
 		String sql = "select id, app_key, app_secret, app_description, user_id from oauth_users_app where user_id = ? ";
 		Object[] param = new Object[] {user_id };
 		return this.getJdbcTemplate().query(sql, param, new UserAppRowMapper());
 	}
 
+	/**
+	 * get all apps
+	 * @return app map
+	 */
 	public Map<String, String> getUserApps() {
 		String sql = "select id, app_key, app_secret, app_description, user_id from oauth_users_app ";
 		List<UserApp> userApps = this.getJdbcTemplate().query(sql, new UserAppRowMapper());
