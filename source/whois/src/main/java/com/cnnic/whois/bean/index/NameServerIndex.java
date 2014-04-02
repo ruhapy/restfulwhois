@@ -4,7 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.solr.client.solrj.beans.Field;
-
+/**
+ * ns index for search
+ * @author nic
+ *
+ */
 public class NameServerIndex implements Index{
 
 	@Field("docType")
@@ -29,13 +33,23 @@ public class NameServerIndex implements Index{
 	private String ipV6Address;
 	private Map<String,String> propValueMap = new HashMap<String,String>();
 
+	/**
+	 * get prop value from cached map
+	 * @return prop value
+	 */
 	public String getPropValue(String key){
 		return propValueMap.get(key);
 	}
 
+	/**
+	 * default construction
+	 */
 	public NameServerIndex() {
 	}
 
+	/**
+	 * init prop map
+	 */
 	public void initPropValueMap() {
 		propValueMap.put("Handle", this.handle);
 		propValueMap.put("Ldh_Name", this.ldhName);
@@ -52,10 +66,18 @@ public class NameServerIndex implements Index{
 		return handle;
 	}
 
+	/**
+	 * get doc type
+	 * return 'nameserver'
+	 */
 	public String getDocType() {
 		return docType;
 	}
 
+	/**
+	 * set doc type
+	 * @param docType
+	 */
 	public void setDocType(String docType) {
 		this.docType = docType;
 	}

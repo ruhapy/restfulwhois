@@ -13,13 +13,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cnnic.whois.service.admin.ExColumnService;
 import com.cnnic.whois.util.WhoisUtil;
-
+/**
+ * column controller
+ * @author nic
+ *
+ */
 @Controller
 public class ExColumnController {
 
 	@Autowired
 	private ExColumnService exColumnService;
 	
+	/**
+	 * list column
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/admin/columnController/list")
 	public String list(HttpServletRequest request,
 			HttpServletResponse response, ModelMap model) throws Exception {
@@ -32,6 +44,14 @@ public class ExColumnController {
 		return "/admin/exColumnList";
 	}
 
+	/**
+	 * add column
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/admin/columnController/add")
 	public String add(HttpServletRequest request, HttpServletResponse response,
 			ModelMap model) throws Exception {
@@ -49,7 +69,14 @@ public class ExColumnController {
 
 		return "redirect:/admin/columnController/list?tableType="+tableType;
 	}
-	
+	/**
+	 * update column
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/admin/columnController/update")
 	public String update(HttpServletRequest request, HttpServletResponse response,
 			ModelMap model) throws Exception {
@@ -65,6 +92,14 @@ public class ExColumnController {
 		return "redirect:/admin/columnController/list?tableType="+tableType;
 	}
 	
+	/**
+	 * delete column
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/admin/columnController/delete")
 	public String delete(HttpServletRequest request, HttpServletResponse response,
 			ModelMap model) throws Exception {

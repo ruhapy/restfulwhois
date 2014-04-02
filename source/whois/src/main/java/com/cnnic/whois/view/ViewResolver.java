@@ -15,6 +15,11 @@ import org.springframework.stereotype.Service;
 
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
+/**
+ * resolve view
+ * @author nic
+ *
+ */
 @Service
 public class ViewResolver {
 	private static ViewResolver resolver = new ViewResolver();
@@ -23,6 +28,9 @@ public class ViewResolver {
 		return resolver;
 	}
 
+	/**
+	 * call response writer for resolve
+	 */
 	@Autowired
 	private List<ResponseWriter> responseWriters  = new ArrayList<ResponseWriter>();
 	
@@ -38,6 +46,12 @@ public class ViewResolver {
 		responseWriters.add(new TextResponseWriter());
 	}
 	
+	/**
+	 * formate key/value of result map
+	 * @param map :query result map
+	 * @param formatType:format type
+	 * @return query result after formated
+	 */
 	public Map<String, Object> format(Map<String, Object> map,
 			FormatType formatType) {
 		for (ResponseWriter writer : responseWriters) {
@@ -48,6 +62,16 @@ public class ViewResolver {
 		return map;
 	}
 
+	/**
+	 * write response to client
+	 * @param formatType:format type
+	 * @param queryType:query type
+	 * @param request:http request
+	 * @param response:http response
+	 * @param map:query result map
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	public void writeResponse(FormatType formatType, QueryType queryType,
 			HttpServletRequest request, HttpServletResponse response,
 			Map<String, Object> map) throws IOException,
@@ -61,6 +85,16 @@ public class ViewResolver {
 		}
 	}
 
+	/**
+	 * display over time message 
+	 * @param request:http request
+	 * @param response:http response
+	 * @param formatType:format type
+	 * @param role:user role
+	 * @param queryParam:query param
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	public void displayOverTimeMessage(HttpServletRequest request,
 			HttpServletResponse response, FormatType formatType, String role,QueryParam queryParam)
 			throws IOException, ServletException {
@@ -72,6 +106,14 @@ public class ViewResolver {
 		}
 	}
 	
+	/**
+	 * display 400 error
+	 * @param request:http request
+	 * @param response:http response
+	 * @param queryParam:query param
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	public void displayError400(HttpServletRequest request,
 			HttpServletResponse response,QueryParam queryParam)
 			throws IOException, ServletException {

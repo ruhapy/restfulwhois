@@ -13,7 +13,11 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.ColumnCache;
 import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
-
+/**
+ * address  query dao
+ * @author nic
+ *
+ */
 @Repository
 public class PostalAddressQueryDao extends AbstractDbQueryDao {
 

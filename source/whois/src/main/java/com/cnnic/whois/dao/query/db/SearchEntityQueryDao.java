@@ -10,7 +10,11 @@ import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.bean.index.Index;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.index.SearchResult;
-
+/**
+ * entity query dao
+ * @author nic
+ *
+ */
 @Repository("db.searchEntityQueryDao")
 public class SearchEntityQueryDao extends AbstractSearchQueryDao {
 
@@ -34,6 +38,13 @@ public class SearchEntityQueryDao extends AbstractSearchQueryDao {
 		return map;
 	}
 
+	/**
+	 * post handle filed
+	 * @param keyName
+	 * @param format
+	 * @param map
+	 * @return
+	 */
 	protected Map<String, Object> postHandleFieldsFuzzy(String keyName,
 			String format, Map<String, Object> map) {
 //		map = WhoisUtil.toVCard(map);

@@ -12,7 +12,11 @@ import org.springframework.stereotype.Component;
 
 import com.cnnic.whois.dao.query.db.DbQueryExecutor;
 import com.cnnic.whois.util.WhoisUtil;
-
+/**
+ * filter special key in result map,eg :notices can't be non top key of result map
+ * @author nic
+ *
+ */
 @Component
 public class ResponseFilter {
 	@Autowired

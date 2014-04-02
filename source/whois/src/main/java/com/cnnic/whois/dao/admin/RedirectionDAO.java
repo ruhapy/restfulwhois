@@ -19,7 +19,11 @@ import com.cnnic.whois.execption.ManagementException;
 import com.cnnic.whois.util.IpUtil;
 import com.cnnic.whois.util.JdbcUtils;
 import com.cnnic.whois.util.WhoisUtil;
-
+/**
+ * redirect dao
+ * @author nic
+ *
+ */
 @Repository
 public class RedirectionDAO extends BaseJdbcDao {
 

@@ -21,7 +21,11 @@ import org.openid4java.message.MessageExtension;
 import org.openid4java.message.ParameterList;
 import org.openid4java.message.ax.AxMessage;
 import org.openid4java.message.ax.FetchResponse;
-
+/**
+ * handle openid client 
+ * @author nic
+ *
+ */
 public class AuthOpenIdClientServlet extends HttpServlet {
 	/**
 	 * Called by the server (via the service method) to allow a servlet to

@@ -4,21 +4,29 @@ import java.lang.reflect.ParameterizedType;
 import java.net.MalformedURLException;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.client.solrj.util.ClientUtils;
 
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.index.SearchCondition;
 import com.cnnic.whois.service.index.SearchResult;
 import com.cnnic.whois.util.WhoisUtil;
 
+/**
+ * search query dao,query from solr
+ * @author nic
+ *
+ * @param <T>
+ */
 public abstract class AbstractSearchQueryDao<T> implements SearchQueryDao {
 	private CommonsHttpSolrServer server;
 
+	/**
+	 * construction
+	 * @param url:solr core url
+	 */
 	public AbstractSearchQueryDao(String url) {
 		super();
 		try {
@@ -28,6 +36,12 @@ public abstract class AbstractSearchQueryDao<T> implements SearchQueryDao {
 		}
 	}
 
+	/**
+	 * search by query string
+	 * @param q:query string
+	 * @param page:page param
+	 * @return search result
+	 */
 	protected SearchResult<T> query(String q, PageBean page) {
 		SearchCondition searchCondition = new SearchCondition(q);
 		int startPage = page.getCurrentPage() - 1;
@@ -54,7 +68,12 @@ public abstract class AbstractSearchQueryDao<T> implements SearchQueryDao {
 		page.setRecordsCount(Long.valueOf(searchResult.getTotalResults()).intValue());
 		return searchResult;
 	}
-
+	
+	/**
+	 * set search result
+	 * @param searchResult :search result
+	 * @param queryResponse:search result from solr
+	 */
 	@SuppressWarnings("unchecked")
 	private void setSearchResult(SearchResult<T> searchResult,
 			QueryResponse queryResponse) {
@@ -64,6 +83,11 @@ public abstract class AbstractSearchQueryDao<T> implements SearchQueryDao {
 		List indexes = queryResponse.getBeans(entityClass);
 		searchResult.setResultList(indexes);
 	}
+	/**
+	 * escape special solr char
+	 * @param q:query string
+	 * @return encoded query string
+	 */
 	public static String escapeSolrChar(String q){
 		return WhoisUtil.escapeQueryChars(q);
 	}

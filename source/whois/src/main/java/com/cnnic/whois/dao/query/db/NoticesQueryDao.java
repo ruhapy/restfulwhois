@@ -13,7 +13,11 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.ColumnCache;
 import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
-
+/**
+ * notice query dao
+ * @author nic
+ *
+ */
 @Repository
 public class NoticesQueryDao extends AbstractDbQueryDao {
 	public static final String GET_ALL_NOTICES = "select * from notices ";

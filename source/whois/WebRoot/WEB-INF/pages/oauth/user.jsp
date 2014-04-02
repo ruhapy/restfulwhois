@@ -28,10 +28,10 @@
 						${lists.user_name }
 					</td>
 					<td>
-						<a href="${ctx }/user/add-update?id=${lists.id }" style="text-decoration: none;">&nbsp;&nbsp;修改</a>&nbsp;&nbsp;&nbsp;
-						<a href="${ctx }/user/delete?id=${lists.id }" style="text-decoration: none;">删除&nbsp;&nbsp;</a>
+						<a href="${ctx }/user/add-update?id=${lists.id }" style="text-decoration: none;">&nbsp;&nbsp;EDIT</a>&nbsp;&nbsp;&nbsp;
+						<a href="${ctx }/user/delete?id=${lists.id }" style="text-decoration: none;">DELETE&nbsp;&nbsp;</a>
 						
-						<a href="${ctx }/app?user_id=${lists.id }" style="text-decoration: none;">设置APP&nbsp;&nbsp;</a>
+						<a href="${ctx }/app?user_id=${lists.id }" style="text-decoration: none;">SET APP&nbsp;&nbsp;</a>
 					</td>
 					
 				</tr>
@@ -40,7 +40,7 @@
 			
 			<tr>
 				<td style="width: 100px;height: 40px;">
-					<a href="${ctx }/user/add-update">添加</a>
+					<a href="${ctx }/user/add-update">ADD</a>
 				</td>
 			</tr>
 

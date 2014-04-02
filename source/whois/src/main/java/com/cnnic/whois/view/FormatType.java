@@ -10,6 +10,11 @@ public enum FormatType {
 			"application/html"), TEXTPLAIN("text/plain");
 	private String name;
 	
+	/**
+	 * get format type by name
+	 * @param name: type name
+	 * @return format type
+	 */
 	public static FormatType getFormatType(String name) {
 		FormatType[] queryJoinTypes = FormatType.values();
 		for (FormatType type : queryJoinTypes) {
@@ -20,6 +25,10 @@ public enum FormatType {
 		return null;
 	}
 	
+	/**
+	 * check is json format
+	 * @return true if is json,false if not
+	 */
 	public boolean isJsonFormat() {
 		return this.equals(JSON) || this.equals(RDAPANDJSON)
 				|| this.equals(RDAPORJSON);

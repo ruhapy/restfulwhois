@@ -11,10 +11,12 @@ import org.springframework.stereotype.Repository;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
-import com.cnnic.whois.util.ColumnCache;
-import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
-
+/**
+ * rir domain query dao
+ * @author nic
+ *
+ */
 @Repository
 public class RirDomainQueryDao extends AbstractDomainQueryDao {
 
@@ -51,6 +53,11 @@ public class RirDomainQueryDao extends AbstractDomainQueryDao {
 		return result;
 	}
 
+	/**
+	 * get list from map,by single key or multi key
+	 * @param allDnrEntity
+	 * @param mapList
+	 */
 	private void getListFromMap(Map<String, Object> allDnrEntity,
 			List<Map<String, Object>> mapList) {
 		if (null != allDnrEntity.get("Handle")) {// only one result

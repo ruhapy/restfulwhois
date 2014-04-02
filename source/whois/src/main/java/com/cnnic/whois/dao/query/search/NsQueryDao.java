@@ -5,9 +5,17 @@ import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.bean.index.NameServerIndex;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.index.SearchResult;
-
+/**
+ * ns search dao
+ * @author nic
+ *
+ */
 public class NsQueryDao extends AbstractSearchQueryDao<NameServerIndex> {
 
+	/**
+	 * construction
+	 * @param url:ns solr core url
+	 */
 	public NsQueryDao(String url) {
 		super(url);
 	}

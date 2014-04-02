@@ -49,6 +49,7 @@ public class QueryController extends BaseController {
 	
 	/**
 	 * api doc
+	 * @return
 	 */
 	@RequestMapping(value = { "/", "" }, method = RequestMethod.GET)
 	public String index() {
@@ -108,6 +109,11 @@ public class QueryController extends BaseController {
 		renderResponse(request, response, resultMap, domainQueryParam);
 	}
 	
+	public static void main(String[] args) {
+		String a = "xn--hxaajaoebldbselhkqsqmapxidccaaahjrgk3chhdip9bclcgddbb4ooioa";
+		String p = IDN.toUnicode(a);
+		System.err.println(p.length());
+	}
 	/**
 	 * pricise query domain by domain name
 	 * @param domainName:domain name
@@ -235,9 +241,9 @@ public class QueryController extends BaseController {
 	}
 
 	/**
-	 * fuzzy query ns by ns name
-	 * @param name
-	 * @param ip
+	 * fuzzy query ns by ns name, or ip 
+	 * @param name:ns name
+	 * @param ip:ns's ip.if 'name' param is not blank, 'ip' param will be ignored
 	 * @param request:http request
 	 * @param response:http response
 	 * @throws QueryException
@@ -309,6 +315,12 @@ public class QueryController extends BaseController {
 		setMaxRecordsForFuzzyQ(queryParam);
 	}
 	
+	/**
+	 * generate ns query params by ip
+	 * @param queryParam:origin queryParam
+	 * @param ip:ip param
+	 * @param request:http request
+	 */
 	private void geneNsQByIp(QueryParam queryParam, String ip, HttpServletRequest request){
 		String punyQ = ip;
 		request.setAttribute("queryPara", ip);
@@ -326,8 +338,8 @@ public class QueryController extends BaseController {
 	}
 
 	/**
-	 * query ns
-	 * @param nsName
+	 * query ns by ns name
+	 * @param nsName:ns name
 	 * @param request:http request
 	 * @param response:http response
 	 * @throws QueryException
@@ -367,8 +379,8 @@ public class QueryController extends BaseController {
 	}
 
 	/**
-	 * query as
-	 * @param autnum
+	 * query Autonomous number
+	 * @param autnum : as number
 	 * @param request:http request
 	 * @param response:http response
 	 * @throws QueryException
@@ -399,8 +411,8 @@ public class QueryController extends BaseController {
 	}
 
 	/**
-	 * query event
-	 * @param q
+	 * query event by handle
+	 * @param q:envent handle
 	 * @param request:http request
 	 * @param response:http response
 	 * @throws QueryException
@@ -438,7 +450,7 @@ public class QueryController extends BaseController {
 	}
 
 	/**
-	 * query ip error with tail /
+	 * query ip error with tail '/',return 400 error
 	 * @param request:http request
 	 * @param response:http response
 	 * @throws QueryException
@@ -458,8 +470,8 @@ public class QueryController extends BaseController {
 	}
 	
 	/**
-	 * query ip
-	 * @param ip
+	 * query ip by ip address,return subnet info of the ip
+	 * @param ip:ip v4/v6 address
 	 * @param request:http request
 	 * @param response:http response
 	 * @throws QueryException
@@ -477,9 +489,9 @@ public class QueryController extends BaseController {
 	}
 
 	/**
-	 * query ip with net
-	 * @param ip
-	 * @param net
+	 * query ip with net mask
+	 * @param ip:ip v4/v6 address
+	 * @param net:net mask.should between [0-32] when ipv4, and between [0-128] when ipv6,Contains the boundary
 	 * @param request:http request
 	 * @param response:http response
 	 * @throws QueryException
@@ -534,8 +546,8 @@ public class QueryController extends BaseController {
 	}
 
 	/**
-	 * query link
-	 * @param q
+	 * query link by link id
+	 * @param q:link id
 	 * @param request:http request
 	 * @param response:http response
 	 * @throws QueryException
@@ -552,8 +564,8 @@ public class QueryController extends BaseController {
 	}
 
 	/**
-	 * query notice
-	 * @param q
+	 * query notice by notice id
+	 * @param q:notice id
 	 * @param request:http request
 	 * @param response:http response
 	 * @throws QueryException
@@ -571,8 +583,8 @@ public class QueryController extends BaseController {
 	}
 
 	/**
-	 * query phone
-	 * @param q
+	 * query phone by phone id
+	 * @param q:phone id
 	 * @param request:http request
 	 * @param response:http response
 	 * @throws QueryException
@@ -589,8 +601,8 @@ public class QueryController extends BaseController {
 	}
 
 	/**
-	 * query address
-	 * @param q
+	 * query address by address id
+	 * @param q:address id
 	 * @param request:http request
 	 * @param response:http response
 	 * @throws QueryException
@@ -608,8 +620,8 @@ public class QueryController extends BaseController {
 	}
 
 	/**
-	 * query securedns
-	 * @param q
+	 * query securedns by id
+	 * @param q:securedns id
 	 * @param request:http request
 	 * @param response:http response
 	 * @throws QueryException
@@ -627,8 +639,8 @@ public class QueryController extends BaseController {
 	}
 
 	/**
-	 * query remark
-	 * @param q
+	 * query remark by id
+	 * @param q: remark id
 	 * @param request:http request
 	 * @param response:http response
 	 * @throws QueryException
@@ -646,8 +658,8 @@ public class QueryController extends BaseController {
 	}
 
 	/**
-	 * query variant
-	 * @param q
+	 * query variant by id
+	 * @param q:variant id
 	 * @param request:http request
 	 * @param response:http response
 	 * @throws QueryException
@@ -664,6 +676,16 @@ public class QueryController extends BaseController {
 		query(QueryType.VARIANTS, q, request, response);
 	}
 
+	/**
+	 * common query
+	 * @param queryType:query type @see QueryType
+	 * @param q:query param
+	 * @param request :http request
+	 * @param response:http response
+	 * @throws QueryException
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	private void query(QueryType queryType, String q,
 			HttpServletRequest request, HttpServletResponse response)
 			throws QueryException, IOException, ServletException {
@@ -682,7 +704,7 @@ public class QueryController extends BaseController {
 	}
 
 	/**
-	 * query response 400
+	 * other invalid query uri will response 400 error
 	 */
 	@RequestMapping(value = "/**")
 	@ResponseBody
@@ -697,11 +719,11 @@ public class QueryController extends BaseController {
 	}
 
 	/**
-	 * query response 301
-	 * @param ex
+	 * redirect exception handle,response 301
+	 * @param ex:exception
 	 * @param request:http request
 	 * @param response:http response
-	 * @return
+	 * @return null
 	 */
 	@ExceptionHandler(value = { RedirectExecption.class })
 	@ResponseStatus(value = HttpStatus.MOVED_PERMANENTLY)

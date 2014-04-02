@@ -16,7 +16,11 @@ import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.util.WhoisUtil;
-
+/**
+ * ip redirect query dao
+ * @author nic
+ *
+ */
 @Repository
 public class IpRedirectionQueryDao extends AbstractDbQueryDao {
 

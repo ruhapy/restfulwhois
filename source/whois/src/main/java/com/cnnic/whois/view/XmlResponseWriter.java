@@ -19,7 +19,11 @@ import org.springframework.stereotype.Component;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.WhoisUtil;
-
+/**
+ * xml response writer
+ * @author nic
+ *
+ */
 @Component("xmlResponseWriter")
 public class XmlResponseWriter extends AbstractResponseWriter {
 	private static XmlResponseWriter writer = new XmlResponseWriter();
@@ -50,7 +54,7 @@ public class XmlResponseWriter extends AbstractResponseWriter {
 		response.setHeader("Content-Type", FormatType.XML.getName());
 		out.write(getXMLFromMap(map, 0));
 	}
-	
+	@Override
 	public void displayOverTimeMessage(HttpServletRequest request, HttpServletResponse response, 
 			String role,QueryParam queryParam) throws IOException, ServletException{
 		request.setCharacterEncoding("utf-8");
@@ -77,6 +81,12 @@ public class XmlResponseWriter extends AbstractResponseWriter {
 		return null != formatType && formatType.isXmlFormat();
 	}
 	
+	/**
+	 * get xml from query result map
+	 * @param map: query result map
+	 * @param iMode:mark for root 
+	 * @return xml string
+	 */
 	@SuppressWarnings("unchecked")
 	protected String getXMLFromMap(Map<String, Object> map, int iMode) {
 		StringBuffer sb = new StringBuffer();
@@ -140,7 +150,11 @@ public class XmlResponseWriter extends AbstractResponseWriter {
 		}
 		return sb.toString();
 	}
-	
+	/**
+	 * get xml from vcard
+	 * @param VcardData:vcard data
+	 * @return xml vcard string
+	 */
 	@SuppressWarnings("unchecked")
 	protected String getXMLFromVcard(Object VcardData) {
 		StringBuffer sb = new StringBuffer();		
@@ -165,6 +179,11 @@ public class XmlResponseWriter extends AbstractResponseWriter {
 	    return sb.toString();
 	}
 	
+	/**
+	 * get vcard xml string
+	 * @param vcard:vcard list
+	 * @return xml string buffer
+	 */
 	@SuppressWarnings("unchecked")
 	protected StringBuffer toVCardXml(List<Object> vcard) {
 		StringBuffer sb = new StringBuffer();
@@ -237,6 +256,12 @@ public class XmlResponseWriter extends AbstractResponseWriter {
 		return sb;
 	}
 	
+	/**
+	 * 
+	 * @param vcard
+	 * @param keyName
+	 * @return
+	 */
 	protected String keyNameFront(List<Object> vcard, String keyName) {
 		String keyNameFront = "";
 		String Attribute =  vcard.get(1).toString();

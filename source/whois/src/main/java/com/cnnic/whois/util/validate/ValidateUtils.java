@@ -6,6 +6,10 @@ import org.apache.commons.lang.StringUtils;
 
 import com.cnnic.whois.util.IpUtil;
 
+/***
+ * Utils for domain and IP validation 
+ *
+ */
 public class ValidateUtils {
 
 	/**
@@ -20,6 +24,11 @@ public class ValidateUtils {
 		return q.startsWith("xn--") && q.contains("*")&& !q.endsWith("*");
 	}
 	
+	/**
+	 * Is a validated domain name
+	 * @param domainName 
+	 * @return boolean
+	 */
 	public static boolean validateDomainName(String domainName){
 		if (!isCommonInvalidStr(domainName)){
 			return false;
@@ -36,8 +45,8 @@ public class ValidateUtils {
 	/**
 	 * Verifying the String parameters
 	 * 
-	 * @param parm
-	 * @return The correct parity returns true, failure to return false
+	 * @param String parm
+	 * @return The correct param returns true, failure to return false
 	 */
 	public static boolean isCommonInvalidStr(String parm) {
 		String strReg = "^[\u0391-\uFFE5a-zA-Z\\d\\*]{1}([\u0391-\uFFE5\\w\\-\\.\\_\\*]*)$";
@@ -47,6 +56,11 @@ public class ValidateUtils {
 		return parm.matches(strReg);
 	}
 	
+	/**
+	 * Contain Punctuation in a str
+	 * @param String str
+	 * @return boolean
+	 */
 	public static boolean containPunctuation(String str) {
 		String strReg = "[`~!@#%^&\\*()+=|\\\\;',.\\/?]";
 		if (StringUtils.isBlank(strReg)){
@@ -58,8 +72,8 @@ public class ValidateUtils {
 	/**
 	 * Verifying the NameServer parameters
 	 * 
-	 * @param queryPara
-	 * @return The correct parity returns true, failure to return false
+	 * @param String queryPara
+	 * @return The correct queryPara returns true, failure to return false
 	 */
 	public static boolean verifyNameServer(String queryPara) {
 		if(StringUtils.isBlank(queryPara)){
@@ -78,6 +92,11 @@ public class ValidateUtils {
 //		return false;
 	}
 	
+	/**
+	 * verify fuzzy domain
+	 * @param String queryPara
+	 * @return boolean
+	 */
 	public static boolean verifyFuzzyDomain(String queryPara) {
 		if(StringUtils.isBlank(queryPara)){
 			return false;
@@ -100,9 +119,9 @@ public class ValidateUtils {
 	/**
 	 * Verifying the IP parameters
 	 * 
-	 * @param ipStr
-	 * @param ipLengthStr
-	 * @return The correct parity returns true, failure to return false
+	 * @param String ipStr
+	 * @param String ipLengthStr
+	 * @return The correct ipstr returns true, failure to return false
 	 */
 	public static boolean verifyIP(String ipStr, String ipLengthStr) {
 		boolean isIpV4 = isIpv4(ipStr);
@@ -125,6 +144,8 @@ public class ValidateUtils {
 	
 	/**
 	 * Verifying the IPv4 parameters
+	 * @param String address
+	 * @return The correct ipv4 returns true, failure to return false
 	 */
 	public static boolean isIpv4(String address) {
 		String regex = "^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])\\." 
@@ -139,8 +160,8 @@ public class ValidateUtils {
 	/**
 	 * Verifying the IPv6 parameters
 	 * 
-	 * @param address
-	 * @return The correct parity returns true, failure to return false
+	 * @param String address
+	 * @return The correct ipv6 returns true, failure to return false
 	 */
 	public static boolean isIPv6(String address) {
 		boolean result = false;
@@ -177,9 +198,9 @@ public class ValidateUtils {
 	}
 	
 	/**
-	 * transform Long to IP address
+	 * transform map of Long to IP address
 	 * @param map
-	 * @return
+	 * @return map of IP range
 	 */
 	public static Map<String, Object> longToIP(Map<String, Object> map) {
 		Object ipversion = map.get("IP Version");
@@ -214,6 +235,12 @@ public class ValidateUtils {
 		}
 		return map;
 	}
+	
+	/**
+	 * remove the last . in paraStr
+	 * @param paramStr
+	 * @return 
+	 */
 	public static String deleteLastPoint(String paramStr) {
 		if(StringUtils.isBlank(paramStr)){
 			return paramStr;

@@ -36,7 +36,10 @@ public class CacheQueryExecutor implements QueryExecutor {
 		}
 		return null;
 	}
-
+	/**
+	 * init cache
+	 * @return query result
+	 */
 	public Map<String, Object> initCache() {
 		for (QueryDao queryDao : cacheQueryDaos) {
 			if (queryDao instanceof AbstractCacheQueryDao) {

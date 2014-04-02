@@ -14,7 +14,11 @@ import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.WhoisUtil;
-
+/**
+ * ns query dao
+ * @author nic
+ *
+ */
 @Repository
 public class NsQueryDao extends AbstractDbQueryDao {
 	public static final String GET_ALL_NAMESREVER = "select * from nameServer ";

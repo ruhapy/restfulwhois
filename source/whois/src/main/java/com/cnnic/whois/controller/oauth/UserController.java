@@ -12,20 +12,38 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cnnic.whois.bean.oauth.User;
 import com.cnnic.whois.dao.oauth.UserDao;
-
+/**
+ * oauth user controller
+ * @author nic
+ *
+ */
 @Controller
 public class UserController {
 	
 	@Autowired
 	private UserDao userDao;
-	
+	/**
+	 * list all user
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/user")
 	public String list(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception{
 		List<User> userList = userDao.getUsers();
 		model.addAttribute("list", userList);
 		return "/oauth/user";
 	}
-	
+	/**
+	 * update a user
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/user/add-update")
 	public String update(HttpServletRequest request, HttpServletResponse response, ModelMap model ) throws Exception{
 		String id = request.getParameter("id");
@@ -36,7 +54,14 @@ public class UserController {
 		model.addAttribute("user", user);
 		return "/oauth/user_update";
 	}
-	
+	/**
+	 * save user
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/user/save")
 	public String save(HttpServletRequest request, HttpServletResponse response, ModelMap model ) throws Exception{
 		String id = request.getParameter("id");
@@ -52,7 +77,13 @@ public class UserController {
 		}
 		return "redirect:/user";
 	}
-	
+	/**
+	 * delete a user
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/user/delete")
 	public String delete(HttpServletRequest request, HttpServletResponse response ) throws Exception{
 		userDao.delete(Integer.valueOf(request.getParameter("id")));

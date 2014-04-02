@@ -17,7 +17,11 @@ import com.cnnic.whois.dao.base.BaseJdbcDao;
 import com.cnnic.whois.execption.ManagementException;
 import com.cnnic.whois.util.JdbcUtils;
 import com.cnnic.whois.util.WhoisUtil;
-
+/**
+ * dynamic column dao 
+ * @author nic
+ *
+ */
 @Repository
 public class ExColumnDAO extends BaseJdbcDao {
 

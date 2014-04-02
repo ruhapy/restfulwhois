@@ -13,7 +13,11 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.ColumnCache;
 import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
-
+/**
+ * phone  query dao
+ * @author nic
+ *
+ */
 @Repository
 public class PhonesQueryDao extends AbstractDbQueryDao {
 

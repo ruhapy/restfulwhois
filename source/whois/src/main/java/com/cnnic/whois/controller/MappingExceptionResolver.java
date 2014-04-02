@@ -9,9 +9,17 @@ import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.cnnic.whois.execption.RedirectExecption;
+/**
+ * handle exception
+ * @author nic
+ *
+ */
 @Deprecated
 public class MappingExceptionResolver extends SimpleMappingExceptionResolver {
 
+	/**
+	 * handle redirect exception
+	 */
 	@Override
 	protected ModelAndView doResolveException(HttpServletRequest request,
 			HttpServletResponse response, Object handler, Exception ex) {	
