@@ -34,8 +34,8 @@
 						${lists.app_description }
 					</td>
 					<td>
-						<a href="${ctx }/app?id=${lists.id }&user_id=${user_id}" style="text-decoration: none;">&nbsp;&nbsp;修改</a>&nbsp;&nbsp;&nbsp;
-						<a href="${ctx }/app/delete?id=${lists.id }&user_id=${user_id}" style="text-decoration: none;">删除&nbsp;&nbsp;</a>
+						<a href="${ctx }/app?id=${lists.id }&user_id=${user_id}" style="text-decoration: none;">&nbsp;&nbsp;EDIT</a>&nbsp;&nbsp;&nbsp;
+						<a href="${ctx }/app/delete?id=${lists.id }&user_id=${user_id}" style="text-decoration: none;">DELETE&nbsp;&nbsp;</a>
 					</td>
 					
 				</tr>
@@ -44,7 +44,7 @@
 			
 			<tr>
 				<td style="width: 100px;height: 40px;">
-					<a href="${ctx }/app/add-update?user_id=${user_id}">添加</a>
+					<a href="${ctx }/app/add-update?user_id=${user_id}">ADD</a>
 				</td>
 			</tr>
 
