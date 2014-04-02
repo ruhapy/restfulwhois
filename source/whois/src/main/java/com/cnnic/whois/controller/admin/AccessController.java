@@ -11,13 +11,24 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cnnic.whois.service.admin.AccessControlService;
-
+/**
+ * oauth access controller
+ * @author nic
+ *
+ */
 @Controller
 public class AccessController {
 
 	@Autowired
 	private AccessControlService accessControlService;
-	
+	/**
+	 * list oauth
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/admin/accessController/list")
 	public String list(HttpServletRequest request,
 			HttpServletResponse response, ModelMap model) throws Exception {
@@ -29,7 +40,14 @@ public class AccessController {
 		
 		return "/admin/permissions";
 	}
-	
+	/**
+	 * update 
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/admin/accessController/update")
 	public String update(HttpServletRequest request,
 			HttpServletResponse response, ModelMap model) throws Exception {

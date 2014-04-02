@@ -4,7 +4,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
-
+/**
+ * oauth row mapper,for db query
+ * @author nic
+ *
+ */
 public class OAuthAccessorBeanRowMapper implements RowMapper<OAuthAccessorBean> {
 
 	public OAuthAccessorBean mapRow(ResultSet rs, int row) throws SQLException {

@@ -64,7 +64,15 @@ public class EchoController extends BaseController {
 	private OAuthAccessorDao oauthAccessorDao;
 	@Autowired
 	private OAuthProvider oauthProvider;
-
+	/**
+	 * query domain
+	 * @param request
+	 * @param response
+	 * @throws QueryException
+	 * @throws RedirectExecption
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	@RequestMapping(value = "/echo")
 	@ResponseBody
 	public void queryDomain(HttpServletRequest request,
@@ -80,7 +88,13 @@ public class EchoController extends BaseController {
 			OAuthProvider.handleException(e, request, response, false);
 		}
 	}
-	
+	/**
+	 * access query api
+	 * @param accessToken
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
 	private void accessApi(String accessToken, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		

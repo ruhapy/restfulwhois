@@ -16,7 +16,11 @@ import org.openid4java.message.AuthRequest;
 import org.openid4java.message.ax.FetchRequest;
 
 import com.cnnic.whois.util.WhoisProperties;
-
+/**
+ * open id servlet
+ * @author nic
+ *
+ */
 public class AuthOpenIDServlet extends HttpServlet {
 	private ConsumerManager manager = new ConsumerManager();
 	private String returnToUrl = WhoisProperties.getServerurl() + "/authOpenIdClientServlet.do";

@@ -109,6 +109,11 @@ public class QueryController extends BaseController {
 		renderResponse(request, response, resultMap, domainQueryParam);
 	}
 	
+	public static void main(String[] args) {
+		String a = "xn--hxaajaoebldbselhkqsqmapxidccaaahjrgk3chhdip9bclcgddbb4ooioa";
+		String p = IDN.toUnicode(a);
+		System.err.println(p.length());
+	}
 	/**
 	 * pricise query domain by domain name
 	 * @param domainName:domain name

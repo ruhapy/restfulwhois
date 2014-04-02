@@ -1,7 +1,11 @@
 package com.cnnic.whois.bean.oauth;
 
 import java.util.Date;
-
+/**
+ * oauth access bean
+ * @author nic
+ *
+ */
 public class OAuthAccessorBean {
 
 	private int id;
