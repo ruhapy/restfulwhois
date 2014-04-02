@@ -9,6 +9,11 @@ import org.springframework.stereotype.Repository;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.dao.query.db.AbstractDomainQueryDao;
+/**
+ * rir domain query dao
+ * @author nic
+ *
+ */
 @Repository("cacheRirDomainQueryDao")
 public class RirDomainQueryDao extends AbstractCacheQueryDao {
 	@Override

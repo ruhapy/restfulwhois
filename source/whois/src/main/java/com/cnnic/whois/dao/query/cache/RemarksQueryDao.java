@@ -6,6 +6,11 @@ import org.springframework.stereotype.Repository;
 
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
+/**
+ * remark query dao
+ * @author nic
+ *
+ */
 @Repository("cacheRemarksQueryDao")
 public class RemarksQueryDao extends AbstractCacheQueryDao {
 	@Override

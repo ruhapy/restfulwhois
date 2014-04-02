@@ -17,7 +17,11 @@ import com.cnnic.whois.util.ColumnCache;
 import com.cnnic.whois.util.IpUtil;
 import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
-
+/**
+ * ip query dao
+ * @author nic
+ *
+ */
 @Repository
 public class IpQueryDao extends AbstractDbQueryDao {
 

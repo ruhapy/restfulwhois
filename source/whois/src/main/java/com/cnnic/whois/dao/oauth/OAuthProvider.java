@@ -55,7 +55,10 @@ public class OAuthProvider {
 	private static final Collection<OAuthAccessor> ALL_TOKENS = new HashSet<OAuthAccessor>();
 	
 	private static Properties consumerProperties = null;
-
+	/**
+	 * load all consumer
+	 * @throws IOException
+	 */
 	@PostConstruct
 	public void loadConsumers()
 			throws IOException {
@@ -93,6 +96,13 @@ public class OAuthProvider {
 
 	}
 
+	/**
+	 * get consumer
+	 * @param requestMessage
+	 * @return consumer
+	 * @throws IOException
+	 * @throws OAuthProblemException
+	 */
 	public static OAuthConsumer getConsumer(
 			OAuthMessage requestMessage) throws IOException,
 			OAuthProblemException {
@@ -234,6 +244,15 @@ public class OAuthProvider {
 //		ALL_TOKENS.add(accessor);
 	}
 
+	/**
+	 * handle exception
+	 * @param e
+	 * @param request
+	 * @param response
+	 * @param sendBody
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	public static void handleException(Exception e, HttpServletRequest request,
 			HttpServletResponse response, boolean sendBody) throws IOException,
 			ServletException {

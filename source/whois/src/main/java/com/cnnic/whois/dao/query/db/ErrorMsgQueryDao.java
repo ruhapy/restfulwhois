@@ -13,6 +13,11 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.ColumnCache;
 import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
+/**
+ * error msg query dao
+ * @author nic
+ *
+ */
 @Repository
 public class ErrorMsgQueryDao extends AbstractDbQueryDao {
 	public static final String GET_ALL_ERRORMESSAGE = "select * from errormessage ";

@@ -13,6 +13,11 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.ColumnCache;
 import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
+/**
+ * link query dao
+ * @author nic
+ *
+ */
 @Repository
 public class LinksQueryDao extends AbstractDbQueryDao {
 	public static final String GET_ALL_LINK = "select * from link ";
